@@ -3,17 +3,15 @@ import hashlib
 import json
 import os
 import secrets
-import sqlite3
 import unicodedata
-from contextlib import contextmanager
 from datetime import date, datetime, time, timedelta, timezone
 from http.cookies import SimpleCookie, CookieError
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
+from storage import connect, StorageUnavailable
 
 ROOT = Path(__file__).resolve().parent
-DB_PATH = Path(os.environ.get('GOLGUESS_DB', ROOT / '.runtime/game.sqlite3'))
 BRASILIA = timezone(timedelta(hours=-3))
 EPOCH = date(2026, 9, 11)
 PLAYERS = json.loads((ROOT / 'data/players.json').read_text(encoding='utf-8'))
@@ -29,32 +27,19 @@ def today():
 def answer(day):
     return SCHEDULE[(day - EPOCH).days % len(SCHEDULE)]
 
-@contextmanager
-def connect():
-    db = sqlite3.connect(DB_PATH, timeout=15)
-    db.row_factory = sqlite3.Row
-    try:
-        with db:
-            yield db
-    finally:
-        db.close()
-
 def initialize():
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     with connect() as db:
-        db.execute('PRAGMA journal_mode=WAL')
-        db.execute('CREATE TABLE IF NOT EXISTS visitors (id TEXT PRIMARY KEY)')
-        db.execute('CREATE TABLE IF NOT EXISTS rounds (visitor TEXT, day TEXT, moves TEXT NOT NULL, PRIMARY KEY(visitor, day))')
+        db.execute('SELECT 1')
 
 def read_moves(db, visitor, day):
-    row = db.execute('SELECT moves FROM rounds WHERE visitor=? AND day=?', (visitor, str(day))).fetchone()
+    row = db.execute('SELECT moves FROM career_rounds WHERE visitor=? AND day=?', (visitor, str(day))).fetchone()
     return json.loads(row['moves']) if row else []
 
 def finished(moves):
     return len(moves) >= 5 or any(m['result'] == 'correct' for m in moves)
 
 def stats(db, visitor, day):
-    rows = db.execute('SELECT day, moves FROM rounds WHERE visitor=? AND day<=? ORDER BY day DESC', (visitor, str(day))).fetchall()
+    rows = db.execute('SELECT day, moves FROM career_rounds WHERE visitor=? AND day<=? ORDER BY day DESC', (visitor, str(day))).fetchall()
     complete = [(date.fromisoformat(r['day']), json.loads(r['moves'])) for r in rows if finished(json.loads(r['moves']))]
     wins = sum(any(x['result'] == 'correct' for x in m) for _, m in complete)
     expected = day if complete and complete[0][0] == day else day - timedelta(days=1)
@@ -96,7 +81,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Referrer-Policy', 'same-origin')
         self.send_header('X-Frame-Options', 'DENY')
         if cookie:
-            secure = '; Secure' if os.environ.get('GOLGUESS_SECURE_COOKIE') == '1' else ''
+            secure = '; Secure' if os.environ.get('VERCEL') or os.environ.get('GOLGUESS_SECURE_COOKIE') == '1' else ''
             self.send_header('Set-Cookie', f'gg_visitor={cookie}; HttpOnly; SameSite=Lax; Path=/; Max-Age=34560000{secure}')
         self.end_headers()
         self.wfile.write(raw)
@@ -118,7 +103,17 @@ class Handler(BaseHTTPRequestHandler):
         return token, token
 
     def do_GET(self):
+        try:
+            self.get()
+        except StorageUnavailable as exc:
+            self.send(503, {'error': 'O jogo está em manutenção. Tente novamente em instantes.', 'code': exc.code})
+
+    def get(self):
         url = urlsplit(self.path)
+        if url.path == '/api/health':
+            with connect() as db:
+                db.execute('SELECT 1')
+            return self.send(200, {'status': 'ok', 'catalog': 'career-v1', 'players': len(PLAYERS)})
         if url.path == '/api/game':
             with connect() as db:
                 visitor, cookie = self.visitor(db, create=True)
@@ -140,6 +135,12 @@ class Handler(BaseHTTPRequestHandler):
         self.send(200, (ROOT / file).read_bytes(), content_type)
 
     def do_POST(self):
+        try:
+            self.post()
+        except StorageUnavailable as exc:
+            self.send(503, {'error': 'Não foi possível salvar o lance. Tente novamente em instantes.', 'code': exc.code})
+
+    def post(self):
         if self.path != '/api/guess':
             return self.send(404, {'error': 'Rota não encontrada.'})
         origin = self.headers.get('Origin')
@@ -155,10 +156,12 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError, UnicodeError):
             return self.send(400, {'error': 'Palpite inválido.'})
         with connect() as db:
-            db.execute('BEGIN IMMEDIATE')
+            if not db.postgres:
+                db.execute('BEGIN IMMEDIATE')
             visitor, _ = self.visitor(db)
             if not visitor:
                 return self.send(403, {'error': 'Permita cookies essenciais e recarregue para jogar.'})
+            db.lock_visitor(visitor)
             day = today()
             moves = read_moves(db, visitor, day)
             if body.get('day') != str(day) or body.get('version') != len(moves) or finished(moves):
@@ -170,7 +173,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send(400, {'error': 'Você já tentou esse jogador. Escolha outro.'})
             result = 'skip' if player_id is None else 'correct' if player_id == answer(day)['id'] else 'wrong'
             moves.append(dict(id=player_id, name=BY_ID[player_id]['name'] if player_id else 'Pista revelada', result=result))
-            db.execute('INSERT INTO rounds VALUES (?, ?, ?) ON CONFLICT(visitor, day) DO UPDATE SET moves=excluded.moves',
+            db.execute('INSERT INTO career_rounds VALUES (?, ?, ?) ON CONFLICT(visitor, day) DO UPDATE SET moves=excluded.moves',
                        (visitor, str(day), json.dumps(moves)))
             payload = snapshot(db, visitor, day)
         self.send(200, payload)

@@ -1,3 +1,8 @@
 __pycache__/
 *.pyc
 .runtime/
+public/
+.vercel/
+.env
+.env.*
+!.env.example
