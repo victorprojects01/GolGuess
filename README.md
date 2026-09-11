@@ -25,6 +25,10 @@ O jogador do dia é igual para todos. Há cinco chances, e um erro ou passe reve
 
 O ciclo determinístico percorre todos os 874 jogadores antes de repetir. A busca ignora acentos e maiúsculas. O resultado pode ser compartilhado sem revelar a resposta.
 
+## Interface
+
+A tela mobile-first abre diretamente no jogo, em uma coluna central de até 560px. As pistas usam componentes próprios para placar, cartões e time, e a interface pode ser alternada entre português, inglês e espanhol pelo menu do cabeçalho.
+
 ## Deploy no Vercel
 
 O projeto inclui `vercel.json`, funções Python em `api/` e um build que publica somente HTML, CSS, JavaScript e atribuição. O catálogo completo continua dentro da função e não é servido como arquivo estático.
@@ -74,4 +78,4 @@ Os testes cobrem catálogo, ordem das pistas, cálculo de idade, resposta oculta
 
 ## Publicidade
 
-Os espaços laterais e após o jogo continuam reservados, sem scripts de anúncios. A lateral desaparece no celular para proteger a jogabilidade. Antes de ativar AdSense, atualize o texto de privacidade e configure consentimento conforme as regiões atendidas.
+Há um espaço reservado após o jogo, sem scripts de anúncios. Ele fica fora do fluxo de pistas e palpite para proteger a jogabilidade em qualquer tela. Antes de ativar AdSense, atualize o texto de privacidade e configure consentimento conforme as regiões atendidas.

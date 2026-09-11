@@ -104,11 +104,14 @@ def make_snapshot(moves, player_stats, day):
     cards = f"{player['yellow']} amarelo{'s' if player['yellow'] != 1 else ''}"
     if player['red']:
         cards += f" · {player['red']} vermelho{'s' if player['red'] != 1 else ''}"
-    clues = [dict(label='Liga e temporada', value=f"{player['league']} · {player['season']}"),
-             dict(label='Gols e assistências', value=f"{player['goals']} gols · {player['assists']} assistências"),
-             dict(label='Cartões', value=cards),
-             dict(label='Idade atual', value=f'{age} anos'),
-             dict(label='Time', value=player['team'])]
+    clues = [dict(key='leagueSeason', label='Liga e temporada', value=f"{player['league']} · {player['season']}",
+                  league=player['league'], season=player['season']),
+             dict(key='goalsAssists', label='Gols e assistências',
+                  value=f"{player['goals']} gols · {player['assists']} assistências",
+                  goals=player['goals'], assists=player['assists']),
+             dict(key='cards', label='Cartões', value=cards, yellow=player['yellow'], red=player['red']),
+             dict(key='age', label='Idade atual', value=f'{age} anos', age=age),
+             dict(key='team', label='Time', value=player['team'], team=player['team'])]
     return dict(day=str(day), number=(day-EPOCH).days+1, totalPlayers=len(PLAYERS),
                 serverTime=datetime.now(BRASILIA).isoformat(),
                 nextAt=datetime.combine(day+timedelta(days=1), time(), BRASILIA).isoformat(),

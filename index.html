@@ -1,35 +1,86 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#101411">
-<title>GolGuess — O jogador misterioso</title><meta name="description" content="Um jogador. Cinco chances. Seu desafio diário de futebol: descubra o craque e compartilhe seu placar.">
-<link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#122D00">
+<title>GolGuess — Jogador do dia</title>
+<meta name="description" content="Descubra o jogador do dia em cinco tentativas.">
+<link rel="stylesheet" href="/styles.css">
+<script src="/app.js" defer></script>
 </head>
 <body>
 <a class="sr-only skip-link" href="#guessInput">Pular para o palpite</a>
-<header class="site-header"><a class="brand" href="/" aria-label="GolGuess início"><span class="brand-mark" aria-hidden="true">g<span>g</span></span><span>gol<span class="brand-light">guess</span><span class="brand-dot">.</span></span></a><nav aria-label="Menu principal"><span class="daily-label"><i></i> TODO DIA TEM JOGO</span><button class="icon-button" id="statsBtn" aria-label="Suas estatísticas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M5 20V12M12 20V4M19 20V8"/></svg></button><button class="icon-button" id="helpBtn" aria-label="Como jogar">?</button></nav></header>
+<header class="site-header">
+  <a class="brand" href="/" aria-label="GolGuess início"><span class="ball-mark" aria-hidden="true"></span><span>golguess</span><b>.</b></a>
+  <nav aria-label="Menu">
+    <button class="icon-button" id="statsBtn" aria-label="Estatísticas" title="Estatísticas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V13M12 20V5M19 20V9"/></svg></button>
+    <button class="icon-button help-button" id="helpBtn" aria-label="Como jogar" title="Como jogar">?</button>
+    <details class="language-menu" id="languageMenu">
+      <summary aria-label="Selecionar idioma" title="Idioma"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.5 3.6 5.5 3.6 9S14.4 18.5 12 21M12 3C9.6 5.5 8.4 8.5 8.4 12S9.6 18.5 12 21"/></svg></summary>
+      <div class="language-options" role="menu">
+        <button data-lang="pt" role="menuitemradio" aria-checked="true">Português</button>
+        <button data-lang="en" role="menuitemradio" aria-checked="false">English</button>
+        <button data-lang="es" role="menuitemradio" aria-checked="false">Español</button>
+      </div>
+    </details>
+  </nav>
+</header>
 <main>
-<section class="hero" aria-labelledby="title"><div class="edition"><span class="live-dot"></span> DESAFIO DIÁRIO <span class="edition-number" id="dayNumber">—</span></div><h1 id="title">Reconhece o <em>craque?</em></h1><p>Um jogador. Cinco chances. Mostre que você entende de bola.</p><div class="hero-meta"><span>◷ &nbsp; Em menos de 2 minutos</span><span class="meta-divider"></span><span>Sem cadastro. Só futebol.</span></div></section>
-<div class="layout">
-<section class="game" aria-label="Desafio de hoje" aria-busy="true" id="game">
-<div class="game-header"><div><span class="section-kicker">O JOGADOR MISTERIOSO</span><h2>Carreiras <span>2005 — hoje</span></h2></div><span class="tag">7 GRANDES LIGAS</span></div>
-<div class="player-banner"><div class="jersey" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M32 15 12 26 22 46 31 42V87H69V42L78 46 88 26 68 15Q50 28 32 15Z" fill="currentColor"/><path d="M40 20Q50 36 60 20" fill="none" stroke="#101b15" stroke-width="3"/></svg><span>?</span></div><div><span class="section-kicker">QUEM VESTE ESSA CAMISA?</span><p id="bannerText">A primeira pista já está em campo.</p><span class="subtle">Uma temporada marcante da carreira.</span></div></div>
-<div class="clue-heading"><h3>Suas pistas</h3><span id="clueCount">1 de 5 reveladas</span></div><ol id="clues" class="clues"><li class="loading">Preparando o campo…</li></ol>
-<div id="playArea" class="play-area"><div class="attempt-heading"><label for="guessInput">Qual é o seu palpite?</label><span id="attemptLabel">5 chances restantes</span></div><form id="guessForm"><div class="input-container"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input id="guessInput" placeholder="Busque o nome do jogador…" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggestions" aria-describedby="feedback" disabled><button type="button" id="clearBtn" class="clear-button" aria-label="Limpar busca" hidden>×</button><ul id="suggestions" role="listbox" aria-label="Jogadores encontrados" hidden></ul></div><button class="primary" id="guessBtn" disabled>Chutar <span aria-hidden="true">↗</span></button></form><button class="skip-button" id="skipBtn" disabled>Não sei, revelar próxima pista <span aria-hidden="true">→</span></button><p class="skip-note" id="skipNote">Revelar uma pista usa uma chance.</p></div>
-<div id="feedback" class="feedback" role="status" aria-live="polite"></div><button class="retry-button" id="retryBtn" hidden>Tentar conectar novamente</button>
-<section id="result" class="result" aria-labelledby="resultTitle" hidden><div class="result-icon" id="resultIcon" aria-hidden="true">⚽</div><h2 id="resultTitle"></h2><p id="resultText"></p><div id="resultSquares" class="result-squares" aria-hidden="true"></div><button id="shareBtn" class="primary">Compartilhar meu resultado ↗</button><p class="share-note">Sem spoiler. Desafie seu grupo.</p><div class="next-game">PRÓXIMO APITO INICIAL <strong class="countdown">--:--:--</strong></div></section>
-<div class="history-area" id="historyArea" hidden><span class="section-kicker">SEUS LANCES</span><ol id="history"></ol></div><div class="game-bottom"><span><i class="live-dot"></i> Mesmo jogador para todo mundo</span><span id="attemptDots" aria-label="Tentativas"></span></div>
-</section>
-<aside class="sidebar" aria-label="Informações do desafio"><section class="how-card"><span class="section-kicker">RÁPIDO NO GATILHO</span><h2>Do apito ao gol.</h2><ol><li><span>01</span><div><strong>Leia a pista</strong><p>Um detalhe para começar.</p></div></li><li><span>02</span><div><strong>Arrisque um nome</strong><p>Errou? Uma nova pista vem aí.</p></div></li><li><span>03</span><div><strong>Leve para a resenha</strong><p>Compartilhe e desafie a galera.</p></div></li></ol><div class="how-footer">5 chances. Vale cada chute.</div></section><section class="ad-slot ad-side" aria-label="Espaço publicitário"><span>PUBLICIDADE</span><div class="ad-placeholder"><span class="ad-symbol">+</span><p>Uma pausa para quem<br>apoia o jogo.</p></div><small>ESPAÇO RESERVADO</small></section></aside>
-</div>
-<section class="daily-strip" aria-label="Seu próximo desafio"><div class="strip-icon" aria-hidden="true">↻</div><div><strong>Um novo dia. Um novo craque.</strong><p>Todo dia à meia-noite, no horário de Brasília.</p></div><div class="strip-timer"><span>PRÓXIMO DESAFIO</span><strong class="countdown">--:--:--</strong></div></section>
-<section class="ad-slot ad-bottom" aria-label="Espaço publicitário após o jogo"><span>PUBLICIDADE</span><p>O futebol continua. A resenha também.</p><small>ESPAÇO RESERVADO</small></section>
+  <section class="game" aria-label="Desafio de hoje" aria-busy="true" id="game">
+    <div class="round-bar">
+      <h1><span class="round-kicker" data-i18n="dailyPlayer">Jogador do dia</span> <strong id="dayNumber">#—</strong></h1>
+      <div id="attemptDots" class="attempt-dots" aria-label="Tentativas"></div>
+    </div>
+    <ol id="clues" class="clues" aria-label="Pistas"><li class="loading">Preparando…</li></ol>
+    <div id="playArea" class="play-area">
+      <form id="guessForm">
+        <div class="input-container">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg>
+          <input id="guessInput" placeholder="Qual jogador?" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggestions" aria-describedby="feedback" disabled>
+          <button type="button" id="clearBtn" class="clear-button" aria-label="Limpar busca" hidden>×</button>
+          <ul id="suggestions" role="listbox" aria-label="Jogadores encontrados" hidden></ul>
+        </div>
+        <button class="primary guess-button" id="guessBtn" disabled data-i18n="guess">Chutar</button>
+      </form>
+      <button class="skip-button" id="skipBtn" disabled>Pular · revelar pista</button>
+    </div>
+    <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+    <button class="retry-button" id="retryBtn" hidden data-i18n="retry">Tentar novamente</button>
+    <section id="result" class="result" aria-labelledby="resultTitle" hidden>
+      <span class="result-kicker" id="resultKicker">FIM DE JOGO</span>
+      <h1 id="resultTitle"></h1>
+      <p id="resultText"></p>
+      <div id="resultSquares" class="result-squares" aria-label="Resultado das tentativas"></div>
+      <button id="shareBtn" class="primary" data-i18n="share">Compartilhar</button>
+      <div class="next-game"><span data-i18n="nextGame">Próximo jogador em</span><strong class="countdown">--:--:--</strong></div>
+    </section>
+    <section class="history-area" id="historyArea" hidden aria-labelledby="historyTitle">
+      <h2 id="historyTitle" data-i18n="guesses">Palpites</h2>
+      <ol id="history"></ol>
+    </section>
+  </section>
+  <aside class="ad-slot" aria-label="Espaço publicitário"><span>PUBLICIDADE</span></aside>
 </main>
-<footer><a class="brand footer-brand" href="/">golguess<span class="brand-dot">.</span></a><span>Feito para quem respira futebol.</span><div><button id="privacyBtn">Privacidade</button><button id="sourcesBtn">Sobre os dados</button></div></footer>
-<dialog id="helpDialog"><button class="dialog-close" aria-label="Fechar">×</button><span class="section-kicker">BORA PRO JOGO</span><h2>Seu futebol em 5 chances.</h2><p>Descubra um nome conhecido por uma temporada em uma das sete grandes ligas do jogo.</p><ol><li>Comece por liga e temporada.</li><li>Um erro ou passe usa uma chance e revela outra pista.</li><li>Acerte em até cinco lances e compartilhe sem entregar o nome.</li></ol><p>Você pode sair e continuar hoje. A rodada encerrada só libera um novo jogador à meia-noite de Brasília.</p><button class="primary dialog-done">Entendi, vamos jogar →</button></dialog>
-<dialog id="statsDialog"><button class="dialog-close" aria-label="Fechar">×</button><span class="section-kicker">SEU DESEMPENHO</span><h2>O placar da casa.</h2><div class="stats-grid"><div><strong id="played">0</strong><span>Jogos</span></div><div><strong id="wins">0%</strong><span>Vitórias</span></div><div><strong id="streak">0</strong><span>Dias seguidos</span></div></div><p>Suas partidas ficam ligadas a este navegador. Volte amanhã para manter a sequência.</p></dialog>
-<dialog id="privacyDialog"><button class="dialog-close" aria-label="Fechar">×</button><h2>Sem conta, sem complicação.</h2><p>Um cookie essencial, anônimo e protegido guarda ou identifica sua rodada para você continuar de onde parou.</p><p>Não pedimos nome ou e-mail. Apagar cookies, usar uma janela anônima ou outro dispositivo cria outra identificação. Por isso, o limite é por navegador, não uma garantia por pessoa.</p><p>Os espaços de publicidade são demonstrativos. Nenhum anúncio ou rastreador do Google está ativo nesta versão.</p></dialog>
-<dialog id="sourcesDialog"><button class="dialog-close" aria-label="Fechar">×</button><h2>Futebol tem história.</h2><p><strong id="catalogCount">365+</strong> jogadores conhecidos das principais ligas da Inglaterra, Espanha, Itália, Alemanha, França, Brasil e Argentina. O ciclo percorre todo o catálogo antes de repetir.</p><p>Cada desafio usa os números de uma temporada de liga: gols, assistências e cartões. A idade é calculada no dia do jogo.</p><p>Fonte principal: <a href="https://github.com/dcaribou/transfermarkt-datasets" target="_blank" rel="noopener">transfermarkt-datasets</a>, catálogo editorial adaptado sob CC0. Registros históricos complementares são revisados e documentados.</p><a href="/data/ATTRIBUTION.md" target="_blank">Créditos e metodologia ↗</a></dialog>
-<dialog id="shareDialog"><button class="dialog-close" aria-label="Fechar">×</button><h2>Leve para a resenha.</h2><p>Copie o texto abaixo e mande no seu grupo.</p><textarea id="shareText" readonly aria-label="Resultado para copiar" rows="5"></textarea><button class="primary" id="copyBtn">Copiar resultado</button></dialog>
-<noscript><p class="noscript">Ative o JavaScript para jogar o desafio diário.</p></noscript>
-</body></html>
+<footer><button id="privacyBtn" data-i18n="privacy">Privacidade</button><span aria-hidden="true">·</span><button id="sourcesBtn" data-i18n="data">Dados</button></footer>
+<dialog id="helpDialog">
+  <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="howTitle">Como jogar</h2>
+  <ol class="help-list"><li><b>1</b><span data-i18n="help1">Leia a primeira pista.</span></li><li><b>2</b><span data-i18n="help2">Escolha um jogador ou revele outra pista.</span></li><li><b>3</b><span data-i18n="help3">Acerte em até cinco tentativas.</span></li></ol>
+  <button class="primary dialog-done" data-i18n="play">Jogar</button>
+</dialog>
+<dialog id="statsDialog">
+  <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="statsTitle">Estatísticas</h2>
+  <div class="stats-grid"><div><strong id="played">0</strong><span data-i18n="played">Partidas</span></div><div><strong id="wins">0%</strong><span data-i18n="winRate">Vitórias</span></div><div><strong id="streak">0</strong><span data-i18n="streak">Sequência</span></div></div>
+</dialog>
+<dialog id="privacyDialog">
+  <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="privacy">Privacidade</h2><p data-i18n="privacyText">Um cookie anônimo mantém sua rodada neste navegador. Não pedimos nome ou e-mail.</p>
+</dialog>
+<dialog id="sourcesDialog">
+  <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="data">Dados</h2><p><strong id="catalogCount">365+</strong> <span data-i18n="catalogText">jogadores conhecidos de sete grandes ligas.</span></p><p><a href="/data/ATTRIBUTION.md" target="_blank" data-i18n="methodology">Créditos e metodologia ↗</a></p>
+</dialog>
+<dialog id="shareDialog">
+  <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="share">Compartilhar</h2><textarea id="shareText" readonly aria-label="Resultado para copiar" rows="4"></textarea><button class="primary" id="copyBtn" data-i18n="copy">Copiar resultado</button>
+</dialog>
+<noscript><p class="noscript">Ative o JavaScript para jogar.</p></noscript>
+</body>
+</html>

@@ -84,6 +84,10 @@ class DailyGameTests(unittest.TestCase):
             _, game, _ = self.move(game, cookie)
         self.assertEqual([c['label'] for c in game['clues']], [
             'Liga e temporada', 'Gols e assistências', 'Cartões', 'Idade atual', 'Time'])
+        self.assertEqual([c['key'] for c in game['clues']], [
+            'leagueSeason', 'goalsAssists', 'cards', 'age', 'team'])
+        self.assertTrue(all(key in game['clues'][1] for key in ('goals', 'assists')))
+        self.assertTrue(all(key in game['clues'][2] for key in ('yellow', 'red')))
         player = server.answer(server.today())
         birth = server.date.fromisoformat(player['birth'])
         expected_age = server.today().year - birth.year - ((server.today().month, server.today().day) < (birth.month, birth.day))
