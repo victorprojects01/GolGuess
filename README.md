@@ -1,4 +1,4 @@
-# Camisa 10 — MVP
+# GolGuess
 
 Exportação do código da primeira versão do jogo. O site publicado não foi alterado.
 
