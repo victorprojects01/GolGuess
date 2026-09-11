@@ -17,7 +17,7 @@ const copy = {
 let lang = (() => { try { return localStorage.getItem('golguess-lang') || 'pt'; } catch { return 'pt'; } })();
 if (!copy[lang]) lang = 'pt';
 let game, selected = null, results = [], active = -1, busy = false, loading = false;
-let queryTimer, searchController, serverOffset = 0, nextRefresh = 0;
+let queryTimer, searchController, blurTimer, serverOffset = 0, nextRefresh = 0;
 const input = $('guessInput');
 const channel = 'BroadcastChannel' in window ? new BroadcastChannel('golguess-round') : null;
 const marks = {correct:'🟩', wrong:'🟥', skip:'🟨'};
@@ -28,6 +28,7 @@ function feedback(message = '', error = false) {
   $('feedback').classList.toggle('error', error);
 }
 function closeSearch() {
+  clearTimeout(blurTimer);
   $('suggestions').hidden = true;
   input.setAttribute('aria-expanded', 'false');
   input.removeAttribute('aria-activedescendant');
@@ -162,6 +163,7 @@ async function loadGame() {
   } finally { loading = false; }
 }
 function choose(index) {
+  clearTimeout(blurTimer);
   if (!results[index]) return;
   selected = results[index]; input.value = selected.name; closeSearch(); controls(); feedback(t('selected')); input.focus();
 }
@@ -178,7 +180,7 @@ function showResults() {
   } else {
     $('suggestions').replaceChildren(...results.map((player, index) => {
       const li = document.createElement('li'); li.id = `player-option-${index}`; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', 'false'); li.textContent = player.name;
-      li.addEventListener('pointerdown', event => event.preventDefault()); li.addEventListener('click', () => choose(index)); return li;
+      li.addEventListener('click', () => choose(index)); return li;
     }));
   }
   $('suggestions').hidden = false; input.setAttribute('aria-expanded', 'true');
@@ -205,7 +207,9 @@ input.addEventListener('keydown', event => {
     if (event.key === 'Enter') { event.preventDefault(); if (active >= 0) choose(active); else if (results.length === 1) choose(0); else feedback(t('pick')); }
   }
 });
-input.addEventListener('blur', closeSearch);
+input.addEventListener('blur', () => { blurTimer = setTimeout(closeSearch, 200); });
+input.addEventListener('focus', () => clearTimeout(blurTimer));
+$('suggestions').addEventListener('pointerdown', () => clearTimeout(blurTimer));
 $('clearBtn').onclick = () => { resetSearch(); controls(); feedback(); input.focus(); };
 async function submit(playerId) {
   if (busy || !game || game.done) return;

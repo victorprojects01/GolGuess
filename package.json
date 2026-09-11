@@ -1,0 +1,11 @@
+{
+  "name": "golguess",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "HOST=0.0.0.0 PORT=3000 python3 server.py",
+    "build": "python3 scripts/build_static.py",
+    "start": "HOST=0.0.0.0 PORT=3000 python3 server.py"
+  }
+}

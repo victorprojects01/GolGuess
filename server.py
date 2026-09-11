@@ -132,7 +132,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Cache-Control', 'no-store')
         self.send_header('X-Content-Type-Options', 'nosniff')
         self.send_header('Referrer-Policy', 'same-origin')
-        self.send_header('X-Frame-Options', 'DENY')
+        if os.environ.get('GOLGUESS_ALLOW_FRAME') != '1' and os.environ.get('HOST') != '0.0.0.0':
+            self.send_header('X-Frame-Options', 'DENY')
         if cookie:
             secure = '; Secure' if os.environ.get('VERCEL') or os.environ.get('GOLGUESS_SECURE_COOKIE') == '1' else ''
             self.send_header('Set-Cookie', f'gg_visitor={cookie}; HttpOnly; SameSite=Lax; Path=/; Max-Age=34560000{secure}')

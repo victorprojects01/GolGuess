@@ -3,6 +3,9 @@ __pycache__/
 .runtime/
 public/
 .vercel/
+node_modules/
+dist/
+.DS_Store
 .env
 .env.*
 !.env.example

@@ -1,0 +1,6 @@
+{
+  "name": "GolGuess — Jogador do dia",
+  "description": "Descubra o jogador do dia em cinco tentativas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
