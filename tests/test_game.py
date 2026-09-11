@@ -4,19 +4,22 @@ import json
 import tempfile
 import threading
 import unittest
+import os
 from datetime import timedelta
 from pathlib import Path
 from unittest.mock import patch
 
 import server
+import storage
 
 
 class DailyGameTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.temp = tempfile.TemporaryDirectory()
-        cls.old_db = server.DB_PATH
-        server.DB_PATH = Path(cls.temp.name) / 'test.sqlite3'
+        cls.old_db = storage.DB_PATH
+        storage.DB_PATH = Path(cls.temp.name) / 'test.sqlite3'
+        storage._initialized.clear()
         server.initialize()
         cls.http = server.ThreadingHTTPServer(('127.0.0.1', 0), server.Handler)
         cls.thread = threading.Thread(target=cls.http.serve_forever, daemon=True)
@@ -27,7 +30,8 @@ class DailyGameTests(unittest.TestCase):
         cls.http.shutdown()
         cls.http.server_close()
         cls.thread.join()
-        server.DB_PATH = cls.old_db
+        storage.DB_PATH = cls.old_db
+        storage._initialized.clear()
         cls.temp.cleanup()
 
     def request(self, path='/api/game', body=None, cookie=None, origin=None):
@@ -60,9 +64,30 @@ class DailyGameTests(unittest.TestCase):
         ids = [server.answer(server.EPOCH + timedelta(days=i))['id'] for i in range(len(server.PLAYERS))]
         self.assertEqual(len(set(ids)), len(ids))
         self.assertEqual(ids[0], server.answer(server.EPOCH + timedelta(days=len(ids)))['id'])
+        self.assertEqual({p['league'] for p in server.PLAYERS}, {
+            'Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1',
+            'Campeonato Brasileiro - Série A', 'Liga Profesional'})
+        for name in ['Rogério Ceni', 'Raheem Sterling', 'Samuel Umtiti', 'Antonio Di Natale',
+                     'Steven Gerrard', 'Jadon Sancho', 'Harry Kane', 'Lionel Messi',
+                     'Alexandre Pato', 'Oscar', 'Mesut Özil']:
+            self.assertIn(name, {p['name'] for p in server.PLAYERS})
+        required = {'id','name','birth','league','season','goals','assists','yellow','red','team','matches','source'}
         for p in server.PLAYERS:
-            self.assertTrue(all(p.values()))
+            self.assertEqual(set(p), required)
+            self.assertTrue(all(p[k] for k in ['id','name','birth','league','season','team','matches','source']))
+            self.assertTrue(all(isinstance(p[k], int) and p[k] >= 0 for k in ['goals','assists','yellow','red']))
             server.date.fromisoformat(p['birth'])
+
+    def test_clues_have_requested_order_and_current_age(self):
+        game, cookie = self.start()
+        for _ in range(4):
+            _, game, _ = self.move(game, cookie)
+        self.assertEqual([c['label'] for c in game['clues']], [
+            'Liga e temporada', 'Gols e assistências', 'Cartões', 'Idade atual', 'Time'])
+        player = server.answer(server.today())
+        birth = server.date.fromisoformat(player['birth'])
+        expected_age = server.today().year - birth.year - ((server.today().month, server.today().day) < (birth.month, birth.day))
+        self.assertEqual(game['clues'][3]['value'], f'{expected_age} anos')
 
     def test_answer_hidden_and_private_files_blocked(self):
         game, _ = self.start()
@@ -148,6 +173,47 @@ class DailyGameTests(unittest.TestCase):
         self.assertEqual(self.move(game, None)[0], 403)
         body = dict(day=game['day'], version=0, playerId=None)
         self.assertEqual(self.request('/api/guess', body, cookie, 'https://other.example')[0], 403)
+
+    def test_health_endpoint(self):
+        status, body, _ = self.request('/api/health')
+        self.assertEqual(status, 200)
+        self.assertEqual(body['catalog'], 'career-v1')
+        self.assertEqual(body['players'], len(server.PLAYERS))
+
+    def test_vercel_without_database_uses_signed_cookie(self):
+        old_vercel = os.environ.get('VERCEL')
+        old_database = os.environ.pop('DATABASE_URL', None)
+        old_postgres = os.environ.pop('POSTGRES_URL', None)
+        os.environ['VERCEL'] = '1'
+        try:
+            status, game, cookie = self.request()
+            self.assertEqual(status, 200)
+            self.assertIn('gg_state=', cookie)
+            cookie = cookie.split(';')[0]
+            status, game, updated_cookie = self.move(game, cookie)
+            self.assertEqual(status, 200)
+            self.assertEqual(game['version'], 1)
+            reloaded = self.request(cookie=updated_cookie.split(';')[0])[1]
+            self.assertEqual(reloaded['moves'], game['moves'])
+            health = self.request('/api/health')[1]
+            self.assertEqual(health['storage'], 'signed-cookie')
+        finally:
+            if old_vercel is None:
+                os.environ.pop('VERCEL', None)
+            else:
+                os.environ['VERCEL'] = old_vercel
+            if old_database is not None:
+                os.environ['DATABASE_URL'] = old_database
+            if old_postgres is not None:
+                os.environ['POSTGRES_URL'] = old_postgres
+
+    def test_tampered_or_malformed_signed_state_is_rejected(self):
+        state = {'v': 1, 'day': str(server.today()), 'moves': [], 'played': 0,
+                 'wins': 0, 'streak': 0, 'lastWin': None}
+        signed = server.encode_state(state)
+        self.assertIsNone(server.decode_state(signed[:-1] + ('0' if signed[-1] != '0' else '1')))
+        malformed = server.encode_state({'v': 1, 'day': str(server.today()), 'moves': []})
+        self.assertIsNone(server.decode_state(malformed))
 
 
 if __name__ == '__main__':

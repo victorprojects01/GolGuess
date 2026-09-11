@@ -1,80 +1,77 @@
-﻿# GolGuess
+# GolGuess
 
-Desafio diário de futebol: entrar, ler pistas, escolher um jogador e compartilhar o placar. Interface em português, com tema esportivo escuro, verde-lima e layout responsivo.
+Desafio diário para reconhecer um jogador por uma temporada marcante da carreira. O catálogo editorial reúne 874 jogadores conhecidos que atuaram desde 2005 nas cinco principais ligas europeias, no Brasileirão Série A e na Liga Profesional da Argentina.
 
-## Executar
+## Executar localmente
 
-Requer Python 3.10 ou superior. Não há dependências de instalação ou build.
+Requer Python 3.12. Sem `DATABASE_URL`, o desenvolvimento usa SQLite automaticamente.
 
 ```powershell
+pip install -r requirements.txt
 python server.py
 ```
 
-Abra http://127.0.0.1:8000. Use este servidor: abrir o HTML diretamente ou usar `python -m http.server` não oferece a API necessária para jogar.
+Abra http://127.0.0.1:8000. O HTML depende da API; `python -m http.server` não executa o jogo.
 
-## Como funciona
+## Pistas e regras
 
-- 831 jogadores únicos convocados para a Copa masculina de 2022, incluindo reservas que não entraram em campo.
-- Todos recebem o mesmo jogador por dia. O ciclo determinístico passa pelos 831 nomes antes de repetir; não altere o catálogo ou a ordenação durante um ciclo publicado.
-- Cinco chances. A seleção aparece primeiro; erro ou passe libera posição, idade em 20/11/2022, camisa naquela Copa e iniciais.
-- Busca sem distinção de maiúsculas ou acentos, sugestões por teclado (setas e Enter) e seleção explícita antes do chute.
-- O quinto passe encerra a rodada, com texto específico avisando antes.
-- Compartilhamento nativo quando disponível, cópia e alternativa manual. O texto inclui o link e os quadrados, sem o nome do jogador.
-- Contagem regressiva e troca de desafio à meia-noite de Brasília (UTC−03), usando a data do servidor.
-- Estatísticas de partidas encerradas, percentual de vitórias e sequência de dias consecutivos.
+O jogador do dia é igual para todos. Há cinco chances, e um erro ou passe revela a próxima pista nesta ordem:
+
+1. Liga e temporada
+2. Gols e assistências naquela liga e temporada
+3. Cartões amarelos e vermelhos
+4. Idade atual, calculada pelo servidor
+5. Time daquela temporada
+
+O ciclo determinístico percorre todos os 874 jogadores antes de repetir. A busca ignora acentos e maiúsculas. O resultado pode ser compartilhado sem revelar a resposta.
+
+## Deploy no Vercel
+
+O projeto inclui `vercel.json`, funções Python em `api/` e um build que publica somente HTML, CSS, JavaScript e atribuição. O catálogo completo continua dentro da função e não é servido como arquivo estático.
+
+O SQLite não é persistente nas funções serverless do Vercel. Por isso, sem configuração adicional, a rodada e as estatísticas ficam em um cookie assinado, HttpOnly e Secure. O jogo funciona imediatamente após o deploy e mantém o limite por navegador.
+
+Para persistência centralizada e estatísticas mais robustas, conecte um banco Postgres compatível:
+
+1. No painel do projeto no Vercel, abra **Storage** e conecte um banco Neon/Postgres.
+2. Confirme que a integração criou `DATABASE_URL` ou `POSTGRES_URL` nos ambientes Production e Preview.
+3. Faça um novo deploy.
+4. Abra `/api/health`; a resposta indica `"storage":"postgres"`.
+
+O código cria as tabelas `visitors` e `career_rounds` automaticamente. Use a URL de conexão com pool quando o provedor oferecer uma. Credenciais ficam nas variáveis do Vercel e nunca devem entrar no Git.
+
+Sem banco, `/api/health` indica `"storage":"signed-cookie"`. Defina também `GOLGUESS_SECRET` com uma sequência longa e aleatória para que a assinatura seja exclusiva do projeto. Sem essa variável, o jogo usa uma chave padrão adequada apenas ao MVP casual.
+
+A interface agora mostra a mensagem devolvida pela API, em vez de atribuir todo erro à conexão do usuário.
 
 ## Uma rodada por dia sem conta
 
-Um cookie anônimo, HttpOnly e SameSite=Lax identifica o navegador. Os lances ficam no SQLite, com chave única por identificação e data. O servidor valida cada tentativa, esconde pistas futuras e a resposta, e usa transação com versão da rodada para evitar consumo duplicado em requisições simultâneas. Recarregar ou abrir outra aba recupera a mesma partida; apagar localStorage não a reinicia.
+Um cookie anônimo, HttpOnly, Secure e SameSite=Lax identifica o navegador. No modo Postgres, o servidor guarda e valida cada lance, usa versão da rodada e bloqueio transacional para impedir duas abas de consumirem a mesma chance. No modo padrão do Vercel, o próprio estado assinado fica no cookie. Recarregar ou abrir outra aba recupera a partida nos dois modos.
 
-**O limite é por identificação do navegador, não por pessoa.** Limpar cookies, usar outro navegador, janela anônima ou outro dispositivo permite outra identificação. Sem identificar o usuário, não existe garantia absoluta de uma partida por pessoa. IP e fingerprint não resolvem essa identidade com confiabilidade. Não há conta, coleta de e-mail ou fingerprint neste MVP.
+O limite é por navegador. Apagar cookies, abrir janela anônima ou usar outro dispositivo cria outra identificação. Sem conta ou identidade externa, não é tecnicamente possível garantir uma única partida por pessoa em todos os dispositivos.
 
-O relógio do dispositivo não define o desafio. As estatísticas antigas do MVP Camisa 10, armazenadas em localStorage, não são migradas para o servidor.
+## Catálogo
 
-## Arquivos
+`data/curated_names.txt` é a lista editorial. `scripts/build_career_catalog.py` cruza esses nomes com o snapshot do [transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets), agrupa as partidas por liga, temporada e clube e escolhe uma temporada representativa. O filtro exige participação relevante e um indicador de reconhecimento de carreira; assim entram estrelas e jogadores sólidos conhecidos, sem carregar elencos inteiros ou reservas obscuros.
 
-- `index.html`: interface e diálogos acessíveis.
-- `styles.css`: identidade visual e layouts mobile/desktop.
-- `app.js`: busca, interação, sincronização entre abas e compartilhamento.
-- `server.py`: HTTP/API, calendário, regras e persistência.
-- `data/players.json`: catálogo versionado, acessível apenas no servidor.
-- `data/ATTRIBUTION.md`: fonte, licença e alterações do catálogo.
-- `scripts/import_players.py`: reprodução da importação dos CSVs originais.
-- `tests/test_game.py`: testes de integração com HTTP e banco temporário.
-- `.runtime/game.sqlite3`: banco local gerado automaticamente e ignorado pelo Git.
+Os dados sul-americanos são reconstruídos a partir dos eventos de gols, assistências, cartões e substituições. Quatro ídolos anteriores à cobertura principal ficam documentados em `data/legacy_players.json`. Veja [a metodologia e a licença](data/ATTRIBUTION.md).
 
-## Publicidade
+Para refazer o arquivo, baixe os cinco CSVs compactados descritos na atribuição e execute:
 
-Há espaços reservados, sem scripts de anúncios ativos:
+```powershell
+python scripts/build_career_catalog.py players.csv.gz appearances.csv.gz games.csv.gz clubs.csv.gz game_events.csv.gz
+```
 
-- Desktop: área lateral, fora do cartão de jogo.
-- Mobile: a lateral some; permanece o espaço abaixo do jogo e da contagem regressiva.
-- Rodapé da área principal: faixa com altura reservada para evitar deslocar o conteúdo.
-
-Os blocos são demonstrativos, não uma integração AdSense. Para veicular anúncios é necessário configurar a conta, o domínio e as unidades reais. Preserve a separação dos controles; configure tamanhos compatíveis com o contêiner e revise as exigências aplicáveis de privacidade e consentimento antes de ativar scripts de terceiros. A declaração no diálogo de privacidade deve ser atualizada quando anúncios forem ativados.
-
-## Validação
+## Testes
 
 ```powershell
 python -m unittest discover -s tests -v
 node --check app.js
+python scripts/build_static.py
 ```
 
-11 testes cobrem integridade do catálogo, ciclo sem repetição, resposta e arquivos privados não expostos, vitória na primeira e quinta chances, derrota e bloqueio da sexta tentativa, retomada, concorrência, palpites inválidos/repetidos, meia-noite, sequência e busca sem acentos. Node é opcional, apenas para a checagem de sintaxe JS. A revisão visual e a interação real no navegador permanecem pendentes: a ferramenta de navegador desta sessão falhou ao conectar.
+Os testes cobrem catálogo, ordem das pistas, cálculo de idade, resposta oculta, concorrência entre abas, fim da rodada, virada do dia, estatísticas, busca sem acentos, origem das requisições e endpoint de saúde.
 
-## Publicação
+## Publicidade
 
-O servidor incluído é para desenvolvimento e validação do MVP. O projeto deixou de ser puramente estático: precisa de um processo Python e armazenamento persistente. Antes de disponibilizar publicamente, use infraestrutura HTTP apropriada para produção, HTTPS, limitação de requisições, backups e persistência do banco. Não exponha toda a pasta como arquivos estáticos: `server.py` serve apenas os arquivos públicos permitidos.
-
-Configurações por variáveis de ambiente:
-
-- `HOST`: padrão `127.0.0.1`.
-- `PORT`: padrão `8000`.
-- `GOLGUESS_DB`: caminho do SQLite (padrão `.runtime/game.sqlite3`).
-- `GOLGUESS_SECURE_COOKIE=1`: habilitar em HTTPS para enviar o cookie somente em conexões seguras.
-
-Nenhum deploy ou configuração de anúncios foi realizado.
-
-## Dados e licença
-
-Catálogo derivado da [Fjelstul World Cup Database](https://github.com/jfjelstul/worldcup), © 2023 Joshua C. Fjelstul, Ph.D., sob [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/legalcode). O catálogo adaptado mantém essa licença. Foram selecionados convocados de 2022, unidos os dados de nascimento, traduzidos países/posições e reduzidos os campos. Veja `data/ATTRIBUTION.md`.
+Os espaços laterais e após o jogo continuam reservados, sem scripts de anúncios. A lateral desaparece no celular para proteger a jogabilidade. Antes de ativar AdSense, atualize o texto de privacidade e configure consentimento conforme as regiões atendidas.

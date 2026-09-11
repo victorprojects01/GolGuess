@@ -1,0 +1,58 @@
+[
+  {
+    "id": "legacy-rogerio-ceni",
+    "name": "Rogério Ceni",
+    "birth": "1973-01-22",
+    "league": "Campeonato Brasileiro - Série A",
+    "season": "2006",
+    "goals": 8,
+    "assists": 0,
+    "yellow": 3,
+    "red": 0,
+    "team": "São Paulo",
+    "matches": 29,
+    "source": "manual-reviewed"
+  },
+  {
+    "id": "legacy-ronaldinho",
+    "name": "Ronaldinho",
+    "birth": "1980-03-21",
+    "league": "La Liga",
+    "season": "2005/06",
+    "goals": 17,
+    "assists": 18,
+    "yellow": 2,
+    "red": 0,
+    "team": "Barcelona",
+    "matches": 29,
+    "source": "manual-reviewed"
+  },
+  {
+    "id": "legacy-riquelme",
+    "name": "Juan Román Riquelme",
+    "birth": "1978-06-24",
+    "league": "Liga Profesional",
+    "season": "2011/12",
+    "goals": 4,
+    "assists": 9,
+    "yellow": 2,
+    "red": 1,
+    "team": "Boca Juniors",
+    "matches": 23,
+    "source": "manual-reviewed"
+  },
+  {
+    "id": "legacy-martin-palermo",
+    "name": "Martín Palermo",
+    "birth": "1973-11-07",
+    "league": "Liga Profesional",
+    "season": "2007/08",
+    "goals": 13,
+    "assists": 3,
+    "yellow": 4,
+    "red": 0,
+    "team": "Boca Juniors",
+    "matches": 25,
+    "source": "manual-reviewed"
+  }
+]

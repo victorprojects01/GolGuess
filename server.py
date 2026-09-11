@@ -1,5 +1,7 @@
 """Anonymous, server-owned daily rounds. Run: python server.py."""
+import base64
 import hashlib
+import hmac
 import json
 import os
 import secrets
@@ -9,14 +11,14 @@ from http.cookies import SimpleCookie, CookieError
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
-from storage import connect, StorageUnavailable
+from storage import connect, database_url, StorageUnavailable
 
 ROOT = Path(__file__).resolve().parent
 BRASILIA = timezone(timedelta(hours=-3))
 EPOCH = date(2026, 9, 11)
 PLAYERS = json.loads((ROOT / 'data/players.json').read_text(encoding='utf-8'))
 BY_ID = {p['id']: p for p in PLAYERS}
-SCHEDULE = sorted(PLAYERS, key=lambda p: hashlib.sha256(('golguess-v1:' + p['id']).encode()).digest())
+SCHEDULE = sorted(PLAYERS, key=lambda p: hashlib.sha256(('golguess-career-v1:' + p['id']).encode()).digest())
 
 def normalize(value):
     return ''.join(c for c in unicodedata.normalize('NFD', value.casefold()) if not unicodedata.combining(c))
@@ -26,6 +28,49 @@ def today():
 
 def answer(day):
     return SCHEDULE[(day - EPOCH).days % len(SCHEDULE)]
+
+def cookie_mode():
+    return os.environ.get('GOLGUESS_COOKIE_MODE') == '1' or (bool(os.environ.get('VERCEL')) and not database_url())
+
+def signing_key():
+    configured = os.environ.get('GOLGUESS_SECRET') or os.environ.get('VERCEL_PROJECT_ID')
+    return (configured or 'golguess-browser-round-v1').encode()
+
+def encode_state(state):
+    payload = base64.urlsafe_b64encode(json.dumps(state, separators=(',', ':'), ensure_ascii=False).encode()).decode().rstrip('=')
+    signature = hmac.new(signing_key(), payload.encode(), hashlib.sha256).hexdigest()
+    return f'{payload}.{signature}'
+
+def decode_state(value):
+    try:
+        payload, signature = value.rsplit('.', 1)
+        expected = hmac.new(signing_key(), payload.encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(signature, expected):
+            return None
+        raw = base64.urlsafe_b64decode(payload + '=' * (-len(payload) % 4))
+        state = json.loads(raw)
+        if not isinstance(state, dict) or state.get('v') != 1 or not isinstance(state.get('day'), str):
+            return None
+        if any(not isinstance(state.get(key), int) or state[key] < 0 for key in ('played', 'wins', 'streak')):
+            return None
+        if state['wins'] > state['played']:
+            return None
+        if state.get('lastWin') is not None:
+            date.fromisoformat(state['lastWin'])
+        moves = state.get('moves')
+        if not isinstance(moves, list) or len(moves) > 5:
+            return None
+        for move in moves:
+            if not isinstance(move, dict) or move.get('result') not in {'correct', 'wrong', 'skip'}:
+                return None
+            player_id = move.get('id')
+            if (player_id is None) != (move['result'] == 'skip') or (player_id is not None and player_id not in BY_ID):
+                return None
+            if not isinstance(move.get('name'), str) or len(move['name']) > 120:
+                return None
+        return state
+    except (AttributeError, TypeError, ValueError, UnicodeError, json.JSONDecodeError):
+        return None
 
 def initialize():
     with connect() as db:
@@ -51,27 +96,32 @@ def stats(db, visitor, day):
         expected -= timedelta(days=1)
     return dict(played=len(complete), wins=wins, streak=streak)
 
-def snapshot(db, visitor, day):
-    moves = read_moves(db, visitor, day)
+def make_snapshot(moves, player_stats, day):
     player = answer(day)
     done = finished(moves)
     birth = date.fromisoformat(player['birth'])
-    age = 2022 - birth.year - ((11, 20) < (birth.month, birth.day))
-    clues = [dict(label='Seleção', value=player['country']),
-             dict(label='Posição', value=player['position']),
-             dict(label='Idade na Copa', value=f'{age} anos'),
-             dict(label='Camisa na Copa', value=f"Nº {player['shirt']}"),
-             dict(label='Iniciais do nome', value=' · '.join(w[0].upper() for w in player['name'].split()))]
+    age = day.year - birth.year - ((day.month, day.day) < (birth.month, birth.day))
+    cards = f"{player['yellow']} amarelo{'s' if player['yellow'] != 1 else ''}"
+    if player['red']:
+        cards += f" · {player['red']} vermelho{'s' if player['red'] != 1 else ''}"
+    clues = [dict(label='Liga e temporada', value=f"{player['league']} · {player['season']}"),
+             dict(label='Gols e assistências', value=f"{player['goals']} gols · {player['assists']} assistências"),
+             dict(label='Cartões', value=cards),
+             dict(label='Idade atual', value=f'{age} anos'),
+             dict(label='Time', value=player['team'])]
     return dict(day=str(day), number=(day-EPOCH).days+1, totalPlayers=len(PLAYERS),
                 serverTime=datetime.now(BRASILIA).isoformat(),
                 nextAt=datetime.combine(day+timedelta(days=1), time(), BRASILIA).isoformat(),
                 moves=moves, version=len(moves), done=done,
                 won=any(m['result']=='correct' for m in moves),
                 clues=clues[:5 if done else min(len(moves)+1, 5)],
-                answer=player['name'] if done else None, stats=stats(db, visitor, day))
+                answer=player['name'] if done else None, stats=player_stats, catalog='career-v1')
+
+def snapshot(db, visitor, day):
+    return make_snapshot(read_moves(db, visitor, day), stats(db, visitor, day), day)
 
 class Handler(BaseHTTPRequestHandler):
-    def send(self, status, body, content_type='application/json; charset=utf-8', cookie=None):
+    def send(self, status, body, content_type='application/json; charset=utf-8', cookie=None, state_cookie=None):
         raw = body if isinstance(body, bytes) else json.dumps(body, ensure_ascii=False).encode()
         self.send_response(status)
         self.send_header('Content-Type', content_type)
@@ -83,6 +133,9 @@ class Handler(BaseHTTPRequestHandler):
         if cookie:
             secure = '; Secure' if os.environ.get('VERCEL') or os.environ.get('GOLGUESS_SECURE_COOKIE') == '1' else ''
             self.send_header('Set-Cookie', f'gg_visitor={cookie}; HttpOnly; SameSite=Lax; Path=/; Max-Age=34560000{secure}')
+        if state_cookie:
+            secure = '; Secure' if os.environ.get('VERCEL') or os.environ.get('GOLGUESS_SECURE_COOKIE') == '1' else ''
+            self.send_header('Set-Cookie', f'gg_state={state_cookie}; HttpOnly; SameSite=Lax; Path=/; Max-Age=34560000{secure}')
         self.end_headers()
         self.wfile.write(raw)
 
@@ -102,6 +155,23 @@ class Handler(BaseHTTPRequestHandler):
         db.execute('INSERT INTO visitors VALUES (?)', (token,))
         return token, token
 
+    def browser_state(self, day):
+        cookies = SimpleCookie()
+        try:
+            cookies.load(self.headers.get('Cookie', ''))
+        except CookieError:
+            pass
+        item = cookies.get('gg_state')
+        state = decode_state(item.value) if item else None
+        if not state:
+            state = {'v': 1, 'day': str(day), 'moves': [], 'played': 0, 'wins': 0, 'streak': 0, 'lastWin': None}
+        if state.get('day') != str(day):
+            state['day'], state['moves'] = str(day), []
+        return state
+
+    def browser_snapshot(self, state, day):
+        return make_snapshot(state['moves'], {'played': state['played'], 'wins': state['wins'], 'streak': state['streak']}, day)
+
     def do_GET(self):
         try:
             self.get()
@@ -111,10 +181,17 @@ class Handler(BaseHTTPRequestHandler):
     def get(self):
         url = urlsplit(self.path)
         if url.path == '/api/health':
+            if cookie_mode():
+                return self.send(200, {'status': 'ok', 'catalog': 'career-v1', 'players': len(PLAYERS), 'storage': 'signed-cookie'})
             with connect() as db:
                 db.execute('SELECT 1')
-            return self.send(200, {'status': 'ok', 'catalog': 'career-v1', 'players': len(PLAYERS)})
+            return self.send(200, {'status': 'ok', 'catalog': 'career-v1', 'players': len(PLAYERS),
+                                   'storage': 'postgres' if database_url() else 'sqlite'})
         if url.path == '/api/game':
+            if cookie_mode():
+                day = today()
+                state = self.browser_state(day)
+                return self.send(200, self.browser_snapshot(state, day), state_cookie=encode_state(state))
             with connect() as db:
                 visitor, cookie = self.visitor(db, create=True)
                 payload = snapshot(db, visitor, today())
@@ -155,6 +232,8 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError()
         except (ValueError, UnicodeError):
             return self.send(400, {'error': 'Palpite inválido.'})
+        if cookie_mode():
+            return self.post_browser(body)
         with connect() as db:
             if not db.postgres:
                 db.execute('BEGIN IMMEDIATE')
@@ -177,6 +256,31 @@ class Handler(BaseHTTPRequestHandler):
                        (visitor, str(day), json.dumps(moves)))
             payload = snapshot(db, visitor, day)
         self.send(200, payload)
+
+    def post_browser(self, body):
+        day = today()
+        state = self.browser_state(day)
+        moves = state['moves']
+        if body.get('day') != str(day) or body.get('version') != len(moves) or finished(moves):
+            return self.send(409, {'error': 'A rodada foi atualizada. Confira as pistas.',
+                                   'game': self.browser_snapshot(state, day)}, state_cookie=encode_state(state))
+        player_id = body.get('playerId')
+        if player_id is not None and (not isinstance(player_id, str) or player_id not in BY_ID):
+            return self.send(400, {'error': 'Escolha um jogador da lista.'})
+        if player_id and any(move['id'] == player_id for move in moves):
+            return self.send(400, {'error': 'Você já tentou esse jogador. Escolha outro.'})
+        result = 'skip' if player_id is None else 'correct' if player_id == answer(day)['id'] else 'wrong'
+        moves.append({'id': player_id, 'name': BY_ID[player_id]['name'] if player_id else 'Pista revelada', 'result': result})
+        if finished(moves):
+            state['played'] += 1
+            if result == 'correct':
+                state['wins'] += 1
+                yesterday = str(day - timedelta(days=1))
+                state['streak'] = state['streak'] + 1 if state.get('lastWin') == yesterday else 1
+                state['lastWin'] = str(day)
+            else:
+                state['streak'] = 0
+        return self.send(200, self.browser_snapshot(state, day), state_cookie=encode_state(state))
 
 if __name__ == '__main__':
     initialize()

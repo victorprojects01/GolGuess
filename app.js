@@ -4,7 +4,7 @@ let game, selected = null, results = [], active = -1, busy = false, loading = fa
 let queryTimer, searchController, serverOffset = 0, nextRefresh = 0;
 const input = $('guessInput');
 const channel = 'BroadcastChannel' in window ? new BroadcastChannel('golguess-round') : null;
-const labels = ['Seleção', 'Posição', 'Idade na Copa', 'Camisa na Copa', 'Iniciais do nome'];
+const labels = ['Liga e temporada', 'Gols e assistências', 'Cartões', 'Idade atual', 'Time'];
 const marks = { correct: '🟩', wrong: '🟥', skip: '🟨' };
 function feedback(message = '') { $('feedback').textContent = message; }
 function closeSearch() {
@@ -71,10 +71,11 @@ async function loadGame() {
   loading = true;
   try {
     const response = await fetch('/api/game', {cache:'no-store'});
-    if (!response.ok) throw new Error();
-    accept(await response.json()); $('retryBtn').hidden = true; feedback();
-  } catch {
-    feedback('Não conseguimos conectar ao jogo. Verifique sua conexão e tente novamente.');
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || 'O jogo não respondeu corretamente.');
+    accept(data); $('retryBtn').hidden = true; feedback();
+  } catch (error) {
+    feedback(error.message === 'Failed to fetch' ? 'Não conseguimos acessar o servidor do jogo. Tente novamente.' : error.message);
     $('retryBtn').hidden = false; $('game').setAttribute('aria-busy', 'false');
   } finally { loading = false; }
 }
@@ -107,7 +108,7 @@ input.addEventListener('input', () => {
         li.addEventListener('pointerdown', e=>e.preventDefault()); li.addEventListener('click', ()=>choose(i)); return li;
       }));
       $('suggestions').hidden = !results.length; input.setAttribute('aria-expanded', String(!!results.length));
-      feedback(results.length ? `${results.length} jogadores encontrados. Selecione um nome.` : 'Nenhum jogador encontrado. Tente outro nome da Copa de 2022.');
+      feedback(results.length ? `${results.length} jogadores encontrados. Selecione um nome.` : 'Nenhum jogador encontrado. Tente outro nome do catálogo.');
     } catch (error) { if (error.name !== 'AbortError') feedback('A busca falhou. Digite novamente para tentar.'); }
   }, 180);
 });
