@@ -129,6 +129,12 @@ const channel = 'BroadcastChannel' in window ? new BroadcastChannel('golguess-ch
 const marks = {correct:'🟩', wrong:'🟥', skip:'🟨'};
 const t = key => copy[lang][key];
 
+function trackEvent(name, params = {}) {
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', name, params);
+  }
+}
+
 function feedback(message = '', error = false) {
   $('feedback').textContent = message;
   $('feedback').classList.toggle('error', error);
@@ -172,6 +178,14 @@ function switchMode(newMode) {
     url.searchParams.delete('mode');
   }
   window.history.replaceState({}, '', url.pathname + (url.search ? url.search : ''));
+  trackEvent('select_content', { content_type: 'game_mode', item_id: mode });
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', 'page_view', {
+      page_title: mode === 'teams' ? t('pageTitleTeam') : t('pageTitle'),
+      page_location: window.location.href,
+      page_path: window.location.pathname + (window.location.search || '')
+    });
+  }
   game = null;
   resetSearch();
   applyLanguage();
@@ -397,6 +411,12 @@ async function submit(guessId) {
   if (busy || !game || game.done) return;
   busy = true; controls(); feedback(); closeSearch();
   try {
+    const wasDone = game?.done;
+    trackEvent('guess_attempt', {
+      mode,
+      guess_type: guessId === null ? 'skip' : 'guess',
+      attempt_number: (game?.moves?.length || 0) + 1
+    });
     const body = {
       day: game.day,
       version: game.version,
@@ -412,6 +432,14 @@ async function submit(guessId) {
     const data = await response.json();
     if (!response.ok) { if (data.game) accept(data.game); feedback(data.error || t('guessError'), true); return; }
     resetSearch(); accept(data); channel?.postMessage({type:'updated', mode});
+    if (!wasDone && data.done) {
+      trackEvent('game_completed', {
+        mode,
+        result: data.won ? 'win' : 'loss',
+        moves_count: data.moves?.length || 0,
+        round_number: data.number
+      });
+    }
     feedback(game.done ? '' : guessId === null ? t('newClue') : t('wrong'));
     if (game.done) { $('resultTitle').tabIndex = -1; $('resultTitle').focus({preventScroll:true}); }
   } catch { feedback(t('guessError'), true); $('retryBtn').hidden = false; }
@@ -438,11 +466,19 @@ function shareText() {
 function shareFallback(text) { $('shareText').value = text; $('copyBtn').textContent = t('copy'); $('shareDialog').showModal(); $('shareText').select(); }
 $('shareBtn').onclick = async () => {
   const text = shareText();
+  const method = navigator.share ? 'web_share' : 'clipboard';
+  trackEvent('share', { method, content_type: 'game_result', item_id: mode });
   try { if (navigator.share) { await navigator.share({text}); return; } await navigator.clipboard.writeText(text); $('shareBtn').textContent = t('copied'); }
   catch (error) { if (error.name !== 'AbortError') shareFallback(text); }
 };
-$('copyBtn').onclick = async () => { try { await navigator.clipboard.writeText($('shareText').value); $('copyBtn').textContent = t('copied'); } catch { $('shareText').focus(); $('shareText').select(); } };
-for (const name of ['help','stats','privacy','sources']) $(name + 'Btn').onclick = () => $(name + 'Dialog').showModal();
+$('copyBtn').onclick = async () => {
+  trackEvent('share', { method: 'dialog_copy', content_type: 'game_result', item_id: mode });
+  try { await navigator.clipboard.writeText($('shareText').value); $('copyBtn').textContent = t('copied'); } catch { $('shareText').focus(); $('shareText').select(); }
+};
+for (const name of ['help','stats','privacy','sources']) $(name + 'Btn').onclick = () => {
+  trackEvent('view_dialog', { dialog_name: name });
+  $(name + 'Dialog').showModal();
+};
 document.querySelectorAll('dialog').forEach(dialog => {
   dialog.querySelector('.dialog-close').onclick = () => dialog.close();
   dialog.querySelector('.dialog-done')?.addEventListener('click', () => dialog.close());
@@ -450,6 +486,7 @@ document.querySelectorAll('dialog').forEach(dialog => {
 });
 document.querySelectorAll('[data-lang]').forEach(button => button.onclick = () => {
   lang = button.dataset.lang; try { localStorage.setItem('golguess-lang', lang); } catch {}
+  trackEvent('select_content', { content_type: 'language', item_id: lang });
   $('languageMenu').open = false; applyLanguage(); feedback();
 });
 $('modePlayersBtn').onclick = () => switchMode('players');
