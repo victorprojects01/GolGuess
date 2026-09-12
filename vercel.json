@@ -16,7 +16,7 @@
       "headers": [{ "key": "Cache-Control", "value": "private, no-store" }]
     },
     {
-      "source": "/(index.html|app.js|styles.css|ads.txt)",
+      "source": "/(index.html|app.js|styles.css|ads.txt|robots.txt|sitemap.xml)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
     },
     {

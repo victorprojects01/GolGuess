@@ -1,6 +1,6 @@
 {
-  "name": "GolGuess — Jogador do dia",
-  "description": "Descubra o jogador ou o time do dia em cinco tentativas com desafios diários.",
+  "name": "GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário",
+  "description": "Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 5 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

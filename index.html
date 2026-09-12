@@ -4,9 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#122D00">
-<title>GolGuess — Jogador do dia</title>
-<meta name="description" content="Descubra o jogador ou o time do dia em cinco tentativas com desafios diários.">
+<title>GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário</title>
+<meta name="description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 5 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
+<link rel="canonical" href="https://golguess.com/">
+<meta property="og:title" content="GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário">
+<meta property="og:description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 5 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://golguess.com/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário">
+<meta name="twitter:description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 5 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
 <link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "GolGuess",
+  "headline": "Adivinhe o jogador de futebol de hoje",
+  "description": "Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 5 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!",
+  "applicationCategory": "GameApplication",
+  "inLanguage": "pt-BR"
+}
+</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6239237268971394"
      crossorigin="anonymous"></script>
 <script src="/app.js" defer></script>
@@ -35,7 +54,7 @@
 <main>
   <section class="game" aria-label="Desafio de hoje" aria-busy="true" id="game">
     <div class="round-bar">
-      <h1><span class="round-kicker" id="roundKicker" data-i18n="dailyPlayer">Jogador do dia</span> <strong id="dayNumber">#—</strong></h1>
+      <h1 class="round-heading"><span class="round-kicker" id="roundKicker" data-i18n="dailyPlayer">Adivinhe o jogador de futebol de hoje</span> <strong id="dayNumber">#—</strong></h1>
       <div id="attemptDots" class="attempt-dots" aria-label="Tentativas"></div>
     </div>
     <ol id="clues" class="clues" aria-label="Pistas"><li class="loading">Preparando…</li></ol>
@@ -55,7 +74,7 @@
     <button class="retry-button" id="retryBtn" hidden data-i18n="retry">Tentar novamente</button>
     <section id="result" class="result" aria-labelledby="resultTitle" hidden>
       <span class="result-kicker" id="resultKicker">FIM DE JOGO</span>
-      <h1 id="resultTitle"></h1>
+      <h2 id="resultTitle"></h2>
       <p id="resultText"></p>
       <div id="resultSquares" class="result-squares" aria-label="Resultado das tentativas"></div>
       <button id="shareBtn" class="primary" data-i18n="share">Compartilhar</button>
@@ -71,6 +90,9 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6239237268971394"
      crossorigin="anonymous"></script>
   </aside>
+  <section class="about-game" aria-label="Sobre o GolGuess">
+    <p id="aboutGameText" data-i18n="aboutGame">O <strong>GolGuess</strong> é um jogo diário de futebol feito para quem ama o esporte. A cada dia, um novo jogador misterioso é escolhido: use seus palpites para revelar pistas de liga, temporada, gols, assistências, cartões, idade e clubes até acertar o nome em até cinco tentativas.</p>
+  </section>
 </main>
 <footer><button id="privacyBtn" data-i18n="privacy">Privacidade</button><span aria-hidden="true">·</span><button id="sourcesBtn" data-i18n="data">Dados</button></footer>
 <dialog id="helpDialog">

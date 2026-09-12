@@ -262,6 +262,8 @@ class Handler(BaseHTTPRequestHandler):
                  '/styles.css': ('styles.css', 'text/css; charset=utf-8'),
                  '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
                  '/ads.txt': ('ads.txt', 'text/plain; charset=utf-8'),
+                 '/robots.txt': ('robots.txt', 'text/plain; charset=utf-8'),
+                 '/sitemap.xml': ('sitemap.xml', 'application/xml; charset=utf-8'),
                  '/data/ATTRIBUTION.md': ('data/ATTRIBUTION.md', 'text/plain; charset=utf-8')}
         if url.path not in files:
             return self.send(404, {'error': 'Página não encontrada.'})

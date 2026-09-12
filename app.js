@@ -3,7 +3,11 @@ const $ = id => document.getElementById(id);
 const copy = {
   pt: {
     modePlayers:'Jogadores', modeTeams:'Times',
-    dailyPlayer:'Jogador do dia', dailyTeam:'Time do dia',
+    dailyPlayer:'Adivinhe o jogador de futebol de hoje', dailyTeam:'Adivinhe o time de futebol de hoje',
+    pageTitle:'GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário',
+    pageTitleTeam:'GolGuess – Adivinhe o Time de Futebol | Desafio Diário',
+    aboutGame:'O <strong>GolGuess</strong> é um jogo diário de futebol feito para quem ama o esporte. A cada dia, um novo jogador misterioso é escolhido: use seus palpites para revelar pistas de liga, temporada, gols, assistências, cartões, idade e clubes até acertar o nome em até cinco tentativas.',
+    aboutGameTeam:'O <strong>GolGuess</strong> Times é um jogo diário de clubes de futebol. A cada rodada, descubra o clube misterioso através de pistas sobre continente, títulos de liga, país, cores e cidade sede em até cinco tentativas.',
     guess:'Chutar', retry:'Tentar novamente', share:'Compartilhar',
     nextGame:'Próximo jogador em', nextTeam:'Próximo time em',
     guesses:'Palpites', privacy:'Privacidade', data:'Dados',
@@ -35,7 +39,11 @@ const copy = {
   },
   en: {
     modePlayers:'Players', modeTeams:'Teams',
-    dailyPlayer:'Player of the day', dailyTeam:'Team of the day',
+    dailyPlayer:'Guess today’s football player', dailyTeam:'Guess today’s football club',
+    pageTitle:'GolGuess – Guess the Football Player | Daily Challenge',
+    pageTitleTeam:'GolGuess – Guess the Football Club | Daily Challenge',
+    aboutGame:'<strong>GolGuess</strong> is a daily football trivia game. Every day, a new mystery player is selected: make your guesses to reveal clues about league, season, goals, assists, cards, age, and clubs until you find the answer in up to 5 attempts.',
+    aboutGameTeam:'<strong>GolGuess</strong> Teams is a daily football club trivia challenge. Guess today\'s mystery football club with clues about continent, league titles, country, colors, and home city in up to 5 attempts.',
     guess:'Guess', retry:'Try again', share:'Share',
     nextGame:'Next player in', nextTeam:'Next team in',
     guesses:'Guesses', privacy:'Privacy', data:'Data',
@@ -67,7 +75,11 @@ const copy = {
   },
   es: {
     modePlayers:'Jugadores', modeTeams:'Times',
-    dailyPlayer:'Jugador del día', dailyTeam:'Equipo del día',
+    dailyPlayer:'Adivina el futbolista de hoy', dailyTeam:'Adivina el equipo de fútbol de hoy',
+    pageTitle:'GolGuess – Adivina el Futbolista | Desafío Diario',
+    pageTitleTeam:'GolGuess – Adivina el Equipo | Desafío Diario',
+    aboutGame:'<strong>GolGuess</strong> es un juego diario de fútbol. Cada día se selecciona un nuevo jugador misterioso: usa tus intentos para descubrir pistas sobre liga, temporada, goles, asistencias, tarjetas, edad y clubes hasta acertar en un máximo de 5 intentos.',
+    aboutGameTeam:'<strong>GolGuess</strong> Equipos es un desafío diario de clubes de fútbol. Adivina el club misterioso con pistas de continente, títulos de liga, país, colores y ciudad en hasta 5 intentos.',
     guess:'Adivinar', retry:'Intentar de nuevo', share:'Compartir',
     nextGame:'Próximo jugador en', nextTeam:'Próximo equipo en',
     guesses:'Intentos', privacy:'Privacidade', data:'Datos',
@@ -169,8 +181,11 @@ function applyLanguage() {
   document.documentElement.lang = {pt:'pt-BR',en:'en',es:'es'}[lang];
   document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
   const isTeams = mode === 'teams';
-  document.title = isTeams ? `GolGuess — ${t('dailyTeam')}` : `GolGuess — ${t('dailyPlayer')}`;
+  document.title = isTeams ? t('pageTitleTeam') : t('pageTitle');
   $('roundKicker').textContent = isTeams ? t('dailyTeam') : t('dailyPlayer');
+  if ($('aboutGameText')) {
+    $('aboutGameText').innerHTML = isTeams ? t('aboutGameTeam') : t('aboutGame');
+  }
   input.placeholder = isTeams ? t('teamPlaceholder') : t('playerPlaceholder');
   $('skipBtn').textContent = t('skip');
   if ($('nextGameLabel')) $('nextGameLabel').textContent = isTeams ? t('nextTeam') : t('nextGame');

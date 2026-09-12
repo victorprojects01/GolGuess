@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'public'
-FILES = ['index.html', 'app.js', 'styles.css', 'data/ATTRIBUTION.md', 'ads.txt']
+FILES = ['index.html', 'app.js', 'styles.css', 'data/ATTRIBUTION.md', 'ads.txt', 'robots.txt', 'sitemap.xml']
 
 def build():
     for name in FILES:
@@ -14,7 +14,7 @@ def build():
     unexpected = [p for p in PUBLIC.rglob('*') if p.is_file() and p.relative_to(PUBLIC).as_posix() not in FILES]
     if unexpected:
         raise RuntimeError('Unexpected file in public output; review before deployment.')
-    print('Static build ready: 5 public files. API handled by Vercel Python Functions.')
+    print(f'Static build ready: {len(FILES)} public files. API handled by Vercel Python Functions.')
 
 if __name__ == '__main__':
     build()
