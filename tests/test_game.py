@@ -219,6 +219,42 @@ class DailyGameTests(unittest.TestCase):
         malformed = server.encode_state({'v': 1, 'day': str(server.today()), 'moves': []})
         self.assertIsNone(server.decode_state(malformed))
 
+    def test_teams_clues_order_and_content(self):
+        status, game, cookie = self.request('/api/game?mode=teams')
+        self.assertEqual(status, 200)
+        self.assertEqual(game['mode'], 'teams')
+        self.assertGreater(game['totalTeams'], 200)
+        self.assertIsNone(game['answer'])
+        self.assertFalse(game['done'])
+        self.assertEqual(len(game['clues']), 1)
+        self.assertEqual(game['clues'][0]['key'], 'continent')
+        self.assertIn(game['clues'][0]['value'], ('Américas', 'Europa'))
+
+        # Reveal next clues by skipping
+        for step, expected_key in enumerate(['titles', 'country', 'colors', 'city'], start=1):
+            status, game, _ = self.request('/api/guess', body={'day': game['day'], 'version': game['version'],
+                                                               'mode': 'teams', 'teamId': None}, cookie=cookie)
+            self.assertEqual(status, 200)
+            self.assertEqual(len(game['clues']), step + 1)
+            self.assertEqual(game['clues'][step]['key'], expected_key)
+
+    def test_teams_search_and_win(self):
+        status, teams, _ = self.request('/api/teams?q=flamengo')
+        self.assertEqual(status, 200)
+        self.assertTrue(any('flamengo' in t['id'] for t in teams))
+
+        status, game, cookie = self.request('/api/game?mode=teams')
+        self.assertEqual(status, 200)
+        ans = server.team_answer(server.today())
+        status, game, _ = self.request('/api/guess', body={'day': game['day'], 'version': game['version'],
+                                                           'mode': 'teams', 'teamId': ans['id']}, cookie=cookie)
+        self.assertEqual(status, 200)
+        self.assertTrue(game['won'])
+        self.assertTrue(game['done'])
+        self.assertEqual(game['answer'], ans['name'])
+        self.assertEqual(len(game['clues']), 5)
+        self.assertEqual([c['key'] for c in game['clues']], ['continent', 'titles', 'country', 'colors', 'city'])
+
 
 if __name__ == '__main__':
     unittest.main()

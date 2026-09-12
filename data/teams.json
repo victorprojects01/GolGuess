@@ -1,0 +1,2692 @@
+[
+  {
+    "id": "arsenal",
+    "name": "Arsenal",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 13,
+    "colors": "Vermelho e branco",
+    "city": "Londres"
+  },
+  {
+    "id": "aston-villa",
+    "name": "Aston Villa",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 7,
+    "colors": "Vinho e azul-celeste",
+    "city": "Birmingham"
+  },
+  {
+    "id": "bournemouth",
+    "name": "Bournemouth",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e preto",
+    "city": "Bournemouth"
+  },
+  {
+    "id": "brentford",
+    "name": "Brentford",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Londres"
+  },
+  {
+    "id": "brighton",
+    "name": "Brighton & Hove Albion",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Brighton"
+  },
+  {
+    "id": "chelsea",
+    "name": "Chelsea",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 6,
+    "colors": "Azul",
+    "city": "Londres"
+  },
+  {
+    "id": "crystal-palace",
+    "name": "Crystal Palace",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e vermelho",
+    "city": "Londres"
+  },
+  {
+    "id": "everton",
+    "name": "Everton",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 9,
+    "colors": "Azul e branco",
+    "city": "Liverpool"
+  },
+  {
+    "id": "fulham",
+    "name": "Fulham",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Branco e preto",
+    "city": "Londres"
+  },
+  {
+    "id": "ipswich-town",
+    "name": "Ipswich Town",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Azul e branco",
+    "city": "Ipswich"
+  },
+  {
+    "id": "leicester-city",
+    "name": "Leicester City",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Azul e branco",
+    "city": "Leicester"
+  },
+  {
+    "id": "liverpool",
+    "name": "Liverpool",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 19,
+    "colors": "Vermelho",
+    "city": "Liverpool"
+  },
+  {
+    "id": "manchester-city",
+    "name": "Manchester City",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 10,
+    "colors": "Azul-celeste e branco",
+    "city": "Manchester"
+  },
+  {
+    "id": "manchester-united",
+    "name": "Manchester United",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 20,
+    "colors": "Vermelho e branco",
+    "city": "Manchester"
+  },
+  {
+    "id": "newcastle-united",
+    "name": "Newcastle United",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 4,
+    "colors": "Preto e branco",
+    "city": "Newcastle upon Tyne"
+  },
+  {
+    "id": "nottingham-forest",
+    "name": "Nottingham Forest",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Vermelho e branco",
+    "city": "Nottingham"
+  },
+  {
+    "id": "southampton",
+    "name": "Southampton",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Southampton"
+  },
+  {
+    "id": "tottenham",
+    "name": "Tottenham Hotspur",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 2,
+    "colors": "Branco e azul-marinho",
+    "city": "Londres"
+  },
+  {
+    "id": "west-ham",
+    "name": "West Ham United",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vinho e azul-celeste",
+    "city": "Londres"
+  },
+  {
+    "id": "wolverhampton",
+    "name": "Wolverhampton Wanderers",
+    "league": "Premier League",
+    "country": "Inglaterra",
+    "continent": "Europa",
+    "titles": 3,
+    "colors": "Dourado e preto",
+    "city": "Wolverhampton"
+  },
+  {
+    "id": "real-madrid",
+    "name": "Real Madrid",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 36,
+    "colors": "Branco",
+    "city": "Madri"
+  },
+  {
+    "id": "barcelona",
+    "name": "Barcelona",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 27,
+    "colors": "Azul e grená",
+    "city": "Barcelona"
+  },
+  {
+    "id": "atletico-de-madrid",
+    "name": "Atlético de Madrid",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 11,
+    "colors": "Vermelho e branco",
+    "city": "Madri"
+  },
+  {
+    "id": "athletic-bilbao",
+    "name": "Athletic Bilbao",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 8,
+    "colors": "Vermelho e branco",
+    "city": "Bilbao"
+  },
+  {
+    "id": "valencia",
+    "name": "Valencia",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 6,
+    "colors": "Branco e preto",
+    "city": "Valência"
+  },
+  {
+    "id": "real-sociedad",
+    "name": "Real Sociedad",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 2,
+    "colors": "Azul e branco",
+    "city": "San Sebastián"
+  },
+  {
+    "id": "sevilla",
+    "name": "Sevilla",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Branco e vermelho",
+    "city": "Sevilha"
+  },
+  {
+    "id": "real-betis",
+    "name": "Real Betis",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Verde e branco",
+    "city": "Sevilha"
+  },
+  {
+    "id": "villarreal",
+    "name": "Villarreal",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Amarelo",
+    "city": "Villarreal"
+  },
+  {
+    "id": "celta-de-vigo",
+    "name": "Celta de Vigo",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul-celeste e branco",
+    "city": "Vigo"
+  },
+  {
+    "id": "osasuna",
+    "name": "Osasuna",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e azul-marinho",
+    "city": "Pamplona"
+  },
+  {
+    "id": "getafe",
+    "name": "Getafe",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul",
+    "city": "Getafe"
+  },
+  {
+    "id": "girona",
+    "name": "Girona",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Girona"
+  },
+  {
+    "id": "mallorca",
+    "name": "Mallorca",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e preto",
+    "city": "Palma de Maiorca"
+  },
+  {
+    "id": "rayo-vallecano",
+    "name": "Rayo Vallecano",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Branco e vermelho",
+    "city": "Madri"
+  },
+  {
+    "id": "las-palmas",
+    "name": "Las Palmas",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Amarelo e azul",
+    "city": "Las Palmas"
+  },
+  {
+    "id": "alaves",
+    "name": "Alavés",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Vitoria-Gasteiz"
+  },
+  {
+    "id": "espanyol",
+    "name": "Espanyol",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Barcelona"
+  },
+  {
+    "id": "leganes",
+    "name": "Leganés",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Leganés"
+  },
+  {
+    "id": "real-valladolid",
+    "name": "Real Valladolid",
+    "league": "La Liga",
+    "country": "Espanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Roxo e branco",
+    "city": "Valladolid"
+  },
+  {
+    "id": "juventus",
+    "name": "Juventus",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 36,
+    "colors": "Preto e branco",
+    "city": "Turim"
+  },
+  {
+    "id": "inter-de-milao",
+    "name": "Inter de Milão",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 20,
+    "colors": "Azul e preto",
+    "city": "Milão"
+  },
+  {
+    "id": "milan",
+    "name": "Milan",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 19,
+    "colors": "Vermelho e preto",
+    "city": "Milão"
+  },
+  {
+    "id": "genoa",
+    "name": "Genoa",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 9,
+    "colors": "Vermelho e azul",
+    "city": "Gênova"
+  },
+  {
+    "id": "bologna",
+    "name": "Bologna",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 7,
+    "colors": "Vermelho e azul",
+    "city": "Bolonha"
+  },
+  {
+    "id": "torino",
+    "name": "Torino",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 7,
+    "colors": "Grená e branco",
+    "city": "Turim"
+  },
+  {
+    "id": "roma",
+    "name": "Roma",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 3,
+    "colors": "Amarelo e vermelho-púrpura",
+    "city": "Roma"
+  },
+  {
+    "id": "napoli",
+    "name": "Napoli",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 3,
+    "colors": "Azul-celeste e branco",
+    "city": "Nápoles"
+  },
+  {
+    "id": "lazio",
+    "name": "Lazio",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 2,
+    "colors": "Azul-celeste e branco",
+    "city": "Roma"
+  },
+  {
+    "id": "fiorentina",
+    "name": "Fiorentina",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 2,
+    "colors": "Roxo",
+    "city": "Florença"
+  },
+  {
+    "id": "cagliari",
+    "name": "Cagliari",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Vermelho e azul",
+    "city": "Cagliari"
+  },
+  {
+    "id": "hellas-verona",
+    "name": "Hellas Verona",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Amarelo e azul",
+    "city": "Verona"
+  },
+  {
+    "id": "atalanta",
+    "name": "Atalanta",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e preto",
+    "city": "Bérgamo"
+  },
+  {
+    "id": "udinese",
+    "name": "Udinese",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Preto e branco",
+    "city": "Udine"
+  },
+  {
+    "id": "parma",
+    "name": "Parma",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Amarelo e azul",
+    "city": "Parma"
+  },
+  {
+    "id": "como",
+    "name": "Como",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Como"
+  },
+  {
+    "id": "venezia",
+    "name": "Venezia",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Laranja, preto e verde",
+    "city": "Veneza"
+  },
+  {
+    "id": "monza",
+    "name": "Monza",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Monza"
+  },
+  {
+    "id": "lecce",
+    "name": "Lecce",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Amarelo e vermelho",
+    "city": "Lecce"
+  },
+  {
+    "id": "empoli",
+    "name": "Empoli",
+    "league": "Serie A",
+    "country": "Itália",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul",
+    "city": "Empoli"
+  },
+  {
+    "id": "bayern-de-munique",
+    "name": "Bayern de Munique",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 33,
+    "colors": "Vermelho e branco",
+    "city": "Munique"
+  },
+  {
+    "id": "borussia-dortmund",
+    "name": "Borussia Dortmund",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 8,
+    "colors": "Amarelo e preto",
+    "city": "Dortmund"
+  },
+  {
+    "id": "stuttgart",
+    "name": "VfB Stuttgart",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 5,
+    "colors": "Branco e vermelho",
+    "city": "Stuttgart"
+  },
+  {
+    "id": "borussia-monchengladbach",
+    "name": "Borussia Mönchengladbach",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 5,
+    "colors": "Preto, branco e verde",
+    "city": "Mönchengladbach"
+  },
+  {
+    "id": "werder-bremen",
+    "name": "Werder Bremen",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 4,
+    "colors": "Verde e branco",
+    "city": "Bremen"
+  },
+  {
+    "id": "bayer-leverkusen",
+    "name": "Bayer Leverkusen",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Vermelho e preto",
+    "city": "Leverkusen"
+  },
+  {
+    "id": "eintracht-frankfurt",
+    "name": "Eintracht Frankfurt",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Vermelho e preto",
+    "city": "Frankfurt"
+  },
+  {
+    "id": "wolfsburg",
+    "name": "Wolfsburg",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Verde e branco",
+    "city": "Wolfsburg"
+  },
+  {
+    "id": "rb-leipzig",
+    "name": "RB Leipzig",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Leipzig"
+  },
+  {
+    "id": "freiburg",
+    "name": "Freiburg",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Preto e branco",
+    "city": "Freiburg"
+  },
+  {
+    "id": "hoffenheim",
+    "name": "Hoffenheim",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Sinsheim"
+  },
+  {
+    "id": "mainz-05",
+    "name": "Mainz 05",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Mainz"
+  },
+  {
+    "id": "augsburg",
+    "name": "Augsburg",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Branco, vermelho e verde",
+    "city": "Augsburg"
+  },
+  {
+    "id": "union-berlin",
+    "name": "Union Berlin",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Berlim"
+  },
+  {
+    "id": "heidenheim",
+    "name": "Heidenheim",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e azul",
+    "city": "Heidenheim"
+  },
+  {
+    "id": "bochum",
+    "name": "Bochum",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Bochum"
+  },
+  {
+    "id": "st-pauli",
+    "name": "St. Pauli",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Marrom e branco",
+    "city": "Hamburgo"
+  },
+  {
+    "id": "holstein-kiel",
+    "name": "Holstein Kiel",
+    "league": "Bundesliga",
+    "country": "Alemanha",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul, branco e vermelho",
+    "city": "Kiel"
+  },
+  {
+    "id": "paris-saint-germain",
+    "name": "Paris Saint-Germain",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 12,
+    "colors": "Azul, vermelho e branco",
+    "city": "Paris"
+  },
+  {
+    "id": "saint-etienne",
+    "name": "Saint-Étienne",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 10,
+    "colors": "Verde e branco",
+    "city": "Saint-Étienne"
+  },
+  {
+    "id": "marseille",
+    "name": "Olympique de Marseille",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 9,
+    "colors": "Azul-celeste e branco",
+    "city": "Marselha"
+  },
+  {
+    "id": "monaco",
+    "name": "Monaco",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 8,
+    "colors": "Vermelho e branco",
+    "city": "Mônaco"
+  },
+  {
+    "id": "nantes",
+    "name": "Nantes",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 8,
+    "colors": "Amarelo e verde",
+    "city": "Nantes"
+  },
+  {
+    "id": "lyon",
+    "name": "Lyon",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 7,
+    "colors": "Branco, azul e vermelho",
+    "city": "Lyon"
+  },
+  {
+    "id": "reims",
+    "name": "Reims",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 6,
+    "colors": "Vermelho e branco",
+    "city": "Reims"
+  },
+  {
+    "id": "lille",
+    "name": "Lille",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 4,
+    "colors": "Vermelho e azul-marinho",
+    "city": "Lille"
+  },
+  {
+    "id": "nice",
+    "name": "Nice",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 4,
+    "colors": "Vermelho e preto",
+    "city": "Nice"
+  },
+  {
+    "id": "lens",
+    "name": "Lens",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Vermelho e amarelo",
+    "city": "Lens"
+  },
+  {
+    "id": "strasbourg",
+    "name": "Strasbourg",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Azul e branco",
+    "city": "Estrasburgo"
+  },
+  {
+    "id": "auxerre",
+    "name": "Auxerre",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Azul e branco",
+    "city": "Auxerre"
+  },
+  {
+    "id": "montpellier",
+    "name": "Montpellier",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Azul e laranja",
+    "city": "Montpellier"
+  },
+  {
+    "id": "rennes",
+    "name": "Rennes",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e preto",
+    "city": "Rennes"
+  },
+  {
+    "id": "toulouse",
+    "name": "Toulouse",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Roxo e branco",
+    "city": "Toulouse"
+  },
+  {
+    "id": "brest",
+    "name": "Brest",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Brest"
+  },
+  {
+    "id": "le-havre",
+    "name": "Le Havre",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul-celeste e azul-marinho",
+    "city": "Le Havre"
+  },
+  {
+    "id": "angers",
+    "name": "Angers",
+    "league": "Ligue 1",
+    "country": "França",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Preto e branco",
+    "city": "Angers"
+  },
+  {
+    "id": "palmeiras",
+    "name": "Palmeiras",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 12,
+    "colors": "Verde e branco",
+    "city": "São Paulo"
+  },
+  {
+    "id": "santos",
+    "name": "Santos",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 8,
+    "colors": "Preto e branco",
+    "city": "Santos"
+  },
+  {
+    "id": "flamengo",
+    "name": "Flamengo",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 8,
+    "colors": "Vermelho e preto",
+    "city": "Rio de Janeiro"
+  },
+  {
+    "id": "corinthians",
+    "name": "Corinthians",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 7,
+    "colors": "Preto e branco",
+    "city": "São Paulo"
+  },
+  {
+    "id": "sao-paulo",
+    "name": "São Paulo",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 6,
+    "colors": "Branco, vermelho e preto",
+    "city": "São Paulo"
+  },
+  {
+    "id": "cruzeiro",
+    "name": "Cruzeiro",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 4,
+    "colors": "Azul e branco",
+    "city": "Belo Horizonte"
+  },
+  {
+    "id": "vasco-da-gama",
+    "name": "Vasco da Gama",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 4,
+    "colors": "Preto e branco",
+    "city": "Rio de Janeiro"
+  },
+  {
+    "id": "fluminense",
+    "name": "Fluminense",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 4,
+    "colors": "Verde, branco e grená",
+    "city": "Rio de Janeiro"
+  },
+  {
+    "id": "internacional",
+    "name": "Internacional",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 3,
+    "colors": "Vermelho e branco",
+    "city": "Porto Alegre"
+  },
+  {
+    "id": "atletico-mineiro",
+    "name": "Atlético Mineiro",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 3,
+    "colors": "Preto e branco",
+    "city": "Belo Horizonte"
+  },
+  {
+    "id": "botafogo",
+    "name": "Botafogo",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 3,
+    "colors": "Preto e branco",
+    "city": "Rio de Janeiro"
+  },
+  {
+    "id": "gremio",
+    "name": "Grêmio",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 2,
+    "colors": "Azul, preto e branco",
+    "city": "Porto Alegre"
+  },
+  {
+    "id": "bahia",
+    "name": "Bahia",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 2,
+    "colors": "Azul, vermelho e branco",
+    "city": "Salvador"
+  },
+  {
+    "id": "athletico-paranaense",
+    "name": "Athletico Paranaense",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Vermelho e preto",
+    "city": "Curitiba"
+  },
+  {
+    "id": "coritiba",
+    "name": "Coritiba",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Verde e branco",
+    "city": "Curitiba"
+  },
+  {
+    "id": "sport-recife",
+    "name": "Sport Recife",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Vermelho e preto",
+    "city": "Recife"
+  },
+  {
+    "id": "fortaleza",
+    "name": "Fortaleza",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul, vermelho e branco",
+    "city": "Fortaleza"
+  },
+  {
+    "id": "red-bull-bragantino",
+    "name": "Red Bull Bragantino",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Bragança Paulista"
+  },
+  {
+    "id": "vitoria",
+    "name": "Vitória",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Vermelho e preto",
+    "city": "Salvador"
+  },
+  {
+    "id": "juventude",
+    "name": "Juventude",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Verde e branco",
+    "city": "Caxias do Sul"
+  },
+  {
+    "id": "criciuma",
+    "name": "Criciúma",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Amarelo, preto e branco",
+    "city": "Criciúma"
+  },
+  {
+    "id": "cuiaba",
+    "name": "Cuiabá",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Verde e amarelo",
+    "city": "Cuiabá"
+  },
+  {
+    "id": "ceara",
+    "name": "Ceará",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Preto e branco",
+    "city": "Fortaleza"
+  },
+  {
+    "id": "mirassol",
+    "name": "Mirassol",
+    "league": "Brasileirão",
+    "country": "Brasil",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Amarelo e verde",
+    "city": "Mirassol"
+  },
+  {
+    "id": "benfica",
+    "name": "Benfica",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 38,
+    "colors": "Vermelho e branco",
+    "city": "Lisboa"
+  },
+  {
+    "id": "porto",
+    "name": "Porto",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 30,
+    "colors": "Azul e branco",
+    "city": "Porto"
+  },
+  {
+    "id": "sporting-cp",
+    "name": "Sporting CP",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 20,
+    "colors": "Verde e branco",
+    "city": "Lisboa"
+  },
+  {
+    "id": "boavista",
+    "name": "Boavista",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Preto e branco quadriculado",
+    "city": "Porto"
+  },
+  {
+    "id": "belenenses",
+    "name": "Belenenses",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Azul e branco",
+    "city": "Lisboa"
+  },
+  {
+    "id": "braga",
+    "name": "Braga",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Braga"
+  },
+  {
+    "id": "vitoria-de-guimaraes",
+    "name": "Vitória de Guimarães",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Preto e branco",
+    "city": "Guimarães"
+  },
+  {
+    "id": "famalicao",
+    "name": "Famalicão",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Vila Nova de Famalicão"
+  },
+  {
+    "id": "rio-ave",
+    "name": "Rio Ave",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Verde e branco",
+    "city": "Vila do Conde"
+  },
+  {
+    "id": "gil-vicente",
+    "name": "Gil Vicente",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e azul",
+    "city": "Barcelos"
+  },
+  {
+    "id": "estoril-praia",
+    "name": "Estoril Praia",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Amarelo e azul",
+    "city": "Estoril"
+  },
+  {
+    "id": "arouca",
+    "name": "Arouca",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Amarelo e azul",
+    "city": "Arouca"
+  },
+  {
+    "id": "moreirense",
+    "name": "Moreirense",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Verde e branco",
+    "city": "Moreira de Cónegos"
+  },
+  {
+    "id": "casa-pia",
+    "name": "Casa Pia",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Preto e branco",
+    "city": "Lisboa"
+  },
+  {
+    "id": "farense",
+    "name": "Farense",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Preto e branco",
+    "city": "Faro"
+  },
+  {
+    "id": "santa-clara",
+    "name": "Santa Clara",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Ponta Delgada"
+  },
+  {
+    "id": "nacional-da-madeira",
+    "name": "Nacional da Madeira",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Preto e branco",
+    "city": "Funchal"
+  },
+  {
+    "id": "avs-futebol-sad",
+    "name": "AVS Futebol SAD",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Vila das Aves"
+  },
+  {
+    "id": "estrela-da-amadora",
+    "name": "Estrela da Amadora",
+    "league": "Primeira Liga",
+    "country": "Portugal",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho, verde e branco",
+    "city": "Amadora"
+  },
+  {
+    "id": "ajax",
+    "name": "Ajax",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 36,
+    "colors": "Branco e vermelho",
+    "city": "Amsterdã"
+  },
+  {
+    "id": "psv-eindhoven",
+    "name": "PSV Eindhoven",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 25,
+    "colors": "Vermelho e branco",
+    "city": "Eindhoven"
+  },
+  {
+    "id": "feyenoord",
+    "name": "Feyenoord",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 16,
+    "colors": "Vermelho e branco",
+    "city": "Roterdã"
+  },
+  {
+    "id": "sparta-rotterdam",
+    "name": "Sparta Rotterdam",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 6,
+    "colors": "Vermelho e branco",
+    "city": "Roterdã"
+  },
+  {
+    "id": "go-ahead-eagles",
+    "name": "Go Ahead Eagles",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 4,
+    "colors": "Vermelho e amarelo",
+    "city": "Deventer"
+  },
+  {
+    "id": "willem-ii",
+    "name": "Willem II",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 3,
+    "colors": "Vermelho, branco e azul",
+    "city": "Tilburg"
+  },
+  {
+    "id": "az-alkmaar",
+    "name": "AZ Alkmaar",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 2,
+    "colors": "Vermelho e branco",
+    "city": "Alkmaar"
+  },
+  {
+    "id": "heracles-almelo",
+    "name": "Heracles Almelo",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 2,
+    "colors": "Preto e branco",
+    "city": "Almelo"
+  },
+  {
+    "id": "fc-twente",
+    "name": "FC Twente",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Vermelho",
+    "city": "Enschede"
+  },
+  {
+    "id": "nac-breda",
+    "name": "NAC Breda",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 1,
+    "colors": "Amarelo e preto",
+    "city": "Breda"
+  },
+  {
+    "id": "fc-utrecht",
+    "name": "FC Utrecht",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Utrecht"
+  },
+  {
+    "id": "heerenveen",
+    "name": "Heerenveen",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Heerenveen"
+  },
+  {
+    "id": "groningen",
+    "name": "Groningen",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Verde e branco",
+    "city": "Groningen"
+  },
+  {
+    "id": "nec-nijmegen",
+    "name": "NEC Nijmegen",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e verde",
+    "city": "Nijmegen"
+  },
+  {
+    "id": "fortuna-sittard",
+    "name": "Fortuna Sittard",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Amarelo e verde",
+    "city": "Sittard"
+  },
+  {
+    "id": "pec-zwolle",
+    "name": "PEC Zwolle",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Zwolle"
+  },
+  {
+    "id": "almere-city",
+    "name": "Almere City",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Vermelho e preto",
+    "city": "Almere"
+  },
+  {
+    "id": "rkc-waalwijk",
+    "name": "RKC Waalwijk",
+    "league": "Eredivisie",
+    "country": "Países Baixos",
+    "continent": "Europa",
+    "titles": 0,
+    "colors": "Amarelo e azul",
+    "city": "Waalwijk"
+  },
+  {
+    "id": "river-plate",
+    "name": "River Plate",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 38,
+    "colors": "Branco e vermelho",
+    "city": "Buenos Aires"
+  },
+  {
+    "id": "boca-juniors",
+    "name": "Boca Juniors",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 35,
+    "colors": "Azul e ouro",
+    "city": "Buenos Aires"
+  },
+  {
+    "id": "racing-club",
+    "name": "Racing Club",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 18,
+    "colors": "Azul-celeste e branco",
+    "city": "Avellaneda"
+  },
+  {
+    "id": "independiente",
+    "name": "Independiente",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 16,
+    "colors": "Vermelho",
+    "city": "Avellaneda"
+  },
+  {
+    "id": "san-lorenzo",
+    "name": "San Lorenzo",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 15,
+    "colors": "Azul e grená",
+    "city": "Buenos Aires"
+  },
+  {
+    "id": "velez-sarsfield",
+    "name": "Vélez Sarsfield",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 11,
+    "colors": "Branco e azul",
+    "city": "Buenos Aires"
+  },
+  {
+    "id": "estudiantes-de-la-plata",
+    "name": "Estudiantes de La Plata",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 6,
+    "colors": "Vermelho e branco",
+    "city": "La Plata"
+  },
+  {
+    "id": "newells-old-boys",
+    "name": "Newell's Old Boys",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 6,
+    "colors": "Vermelho e preto",
+    "city": "Rosário"
+  },
+  {
+    "id": "huracan",
+    "name": "Huracán",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 5,
+    "colors": "Branco e vermelho",
+    "city": "Buenos Aires"
+  },
+  {
+    "id": "rosario-central",
+    "name": "Rosario Central",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 4,
+    "colors": "Azul e amarelo",
+    "city": "Rosário"
+  },
+  {
+    "id": "argentinos-juniors",
+    "name": "Argentinos Juniors",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 3,
+    "colors": "Vermelho e branco",
+    "city": "Buenos Aires"
+  },
+  {
+    "id": "lanus",
+    "name": "Lanús",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 2,
+    "colors": "Grená e branco",
+    "city": "Lanús"
+  },
+  {
+    "id": "gimnasia-la-plata",
+    "name": "Gimnasia y Esgrima La Plata",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Azul e branco",
+    "city": "La Plata"
+  },
+  {
+    "id": "banfield",
+    "name": "Banfield",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Verde e branco",
+    "city": "Banfield"
+  },
+  {
+    "id": "talleres",
+    "name": "Talleres",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul-marinho e branco",
+    "city": "Córdoba"
+  },
+  {
+    "id": "belgrano",
+    "name": "Belgrano",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul-celeste",
+    "city": "Córdoba"
+  },
+  {
+    "id": "defensa-y-justicia",
+    "name": "Defensa y Justicia",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Verde e amarelo",
+    "city": "Florencio Varela"
+  },
+  {
+    "id": "godoy-cruz",
+    "name": "Godoy Cruz",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Mendoza"
+  },
+  {
+    "id": "atletico-tucuman",
+    "name": "Atlético Tucumán",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul-celeste e branco",
+    "city": "San Miguel de Tucumán"
+  },
+  {
+    "id": "tigre",
+    "name": "Tigre",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul e vermelho",
+    "city": "Victoria"
+  },
+  {
+    "id": "platense",
+    "name": "Platense",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Marrom e branco",
+    "city": "Vicente López"
+  },
+  {
+    "id": "union-santa-fe",
+    "name": "Unión de Santa Fe",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Santa Fe"
+  },
+  {
+    "id": "instituto",
+    "name": "Instituto",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Córdoba"
+  },
+  {
+    "id": "central-cordoba",
+    "name": "Central Córdoba",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Preto e branco",
+    "city": "Santiago del Estero"
+  },
+  {
+    "id": "sarmiento",
+    "name": "Sarmiento",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Verde e branco",
+    "city": "Junín"
+  },
+  {
+    "id": "barracas-central",
+    "name": "Barracas Central",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Buenos Aires"
+  },
+  {
+    "id": "deportivo-riestra",
+    "name": "Deportivo Riestra",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Preto e branco",
+    "city": "Buenos Aires"
+  },
+  {
+    "id": "independiente-rivadavia",
+    "name": "Independiente Rivadavia",
+    "league": "Liga Argentina",
+    "country": "Argentina",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul",
+    "city": "Mendoza"
+  },
+  {
+    "id": "la-galaxy",
+    "name": "LA Galaxy",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 5,
+    "colors": "Branco, azul e dourado",
+    "city": "Los Angeles"
+  },
+  {
+    "id": "dc-united",
+    "name": "D.C. United",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 4,
+    "colors": "Preto e vermelho",
+    "city": "Washington"
+  },
+  {
+    "id": "columbus-crew",
+    "name": "Columbus Crew",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 3,
+    "colors": "Amarelo e preto",
+    "city": "Columbus"
+  },
+  {
+    "id": "seattle-sounders",
+    "name": "Seattle Sounders",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 2,
+    "colors": "Verde e azul",
+    "city": "Seattle"
+  },
+  {
+    "id": "houston-dynamo",
+    "name": "Houston Dynamo",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 2,
+    "colors": "Laranja e preto",
+    "city": "Houston"
+  },
+  {
+    "id": "sporting-kansas-city",
+    "name": "Sporting Kansas City",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 2,
+    "colors": "Azul-celeste e azul-marinho",
+    "city": "Kansas City"
+  },
+  {
+    "id": "san-jose-earthquakes",
+    "name": "San Jose Earthquakes",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 2,
+    "colors": "Azul e preto",
+    "city": "San Jose"
+  },
+  {
+    "id": "los-angeles-fc",
+    "name": "Los Angeles FC",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Preto e dourado",
+    "city": "Los Angeles"
+  },
+  {
+    "id": "atlanta-united",
+    "name": "Atlanta United",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Preto e vermelho",
+    "city": "Atlanta"
+  },
+  {
+    "id": "portland-timbers",
+    "name": "Portland Timbers",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Verde e dourado",
+    "city": "Portland"
+  },
+  {
+    "id": "new-york-city-fc",
+    "name": "New York City FC",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Azul-celeste",
+    "city": "Nova York"
+  },
+  {
+    "id": "toronto-fc",
+    "name": "Toronto FC",
+    "league": "MLS",
+    "country": "Canadá",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Vermelho e cinza",
+    "city": "Toronto"
+  },
+  {
+    "id": "real-salt-lake",
+    "name": "Real Salt Lake",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Vinho, azul e dourado",
+    "city": "Sandy"
+  },
+  {
+    "id": "colorado-rapids",
+    "name": "Colorado Rapids",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Vinho e azul-celeste",
+    "city": "Commerce City"
+  },
+  {
+    "id": "chicago-fire",
+    "name": "Chicago Fire",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Vermelho e azul",
+    "city": "Chicago"
+  },
+  {
+    "id": "inter-miami",
+    "name": "Inter Miami",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Rosa e preto",
+    "city": "Fort Lauderdale"
+  },
+  {
+    "id": "new-york-red-bulls",
+    "name": "New York Red Bulls",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Harrison"
+  },
+  {
+    "id": "philadelphia-union",
+    "name": "Philadelphia Union",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul-marinho e dourado",
+    "city": "Chester"
+  },
+  {
+    "id": "fc-dallas",
+    "name": "FC Dallas",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Vermelho e azul",
+    "city": "Frisco"
+  },
+  {
+    "id": "new-england-revolution",
+    "name": "New England Revolution",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul-marinho e vermelho",
+    "city": "Foxborough"
+  },
+  {
+    "id": "orlando-city",
+    "name": "Orlando City",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Roxo e dourado",
+    "city": "Orlando"
+  },
+  {
+    "id": "minnesota-united",
+    "name": "Minnesota United",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Cinza e azul-celeste",
+    "city": "Saint Paul"
+  },
+  {
+    "id": "nashville-sc",
+    "name": "Nashville SC",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Amarelo e azul",
+    "city": "Nashville"
+  },
+  {
+    "id": "fc-cincinnati",
+    "name": "FC Cincinnati",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Laranja e azul",
+    "city": "Cincinnati"
+  },
+  {
+    "id": "charlotte-fc",
+    "name": "Charlotte FC",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Charlotte"
+  },
+  {
+    "id": "austin-fc",
+    "name": "Austin FC",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Verde e preto",
+    "city": "Austin"
+  },
+  {
+    "id": "st-louis-city-sc",
+    "name": "St. Louis City SC",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Vermelho e azul-marinho",
+    "city": "Saint Louis"
+  },
+  {
+    "id": "vancouver-whitecaps",
+    "name": "Vancouver Whitecaps",
+    "league": "MLS",
+    "country": "Canadá",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Branco e azul-marinho",
+    "city": "Vancouver"
+  },
+  {
+    "id": "cf-montreal",
+    "name": "CF Montréal",
+    "league": "MLS",
+    "country": "Canadá",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul e preto",
+    "city": "Montreal"
+  },
+  {
+    "id": "san-diego-fc",
+    "name": "San Diego FC",
+    "league": "MLS",
+    "country": "Estados Unidos",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul-marinho e cromado",
+    "city": "San Diego"
+  },
+  {
+    "id": "atletico-nacional",
+    "name": "Atlético Nacional",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 17,
+    "colors": "Verde e branco",
+    "city": "Medellín"
+  },
+  {
+    "id": "millonarios",
+    "name": "Millonarios",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 16,
+    "colors": "Azul e branco",
+    "city": "Bogotá"
+  },
+  {
+    "id": "america-de-cali",
+    "name": "América de Cali",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 15,
+    "colors": "Vermelho e branco",
+    "city": "Cali"
+  },
+  {
+    "id": "junior-de-barranquilla",
+    "name": "Junior de Barranquilla",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 10,
+    "colors": "Vermelho e branco",
+    "city": "Barranquilla"
+  },
+  {
+    "id": "deportivo-cali",
+    "name": "Deportivo Cali",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 10,
+    "colors": "Verde e branco",
+    "city": "Cali"
+  },
+  {
+    "id": "santa-fe",
+    "name": "Santa Fe",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 9,
+    "colors": "Vermelho e branco",
+    "city": "Bogotá"
+  },
+  {
+    "id": "independiente-medellin",
+    "name": "Independiente Medellín",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 6,
+    "colors": "Vermelho e azul",
+    "city": "Medellín"
+  },
+  {
+    "id": "once-caldas",
+    "name": "Once Caldas",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 4,
+    "colors": "Branco",
+    "city": "Manizales"
+  },
+  {
+    "id": "deportes-tolima",
+    "name": "Deportes Tolima",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 3,
+    "colors": "Vinho e dourado",
+    "city": "Ibagué"
+  },
+  {
+    "id": "deportivo-pasto",
+    "name": "Deportivo Pasto",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Vermelho, azul e amarelo",
+    "city": "Pasto"
+  },
+  {
+    "id": "deportivo-pereira",
+    "name": "Deportivo Pereira",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Amarelo e vermelho",
+    "city": "Pereira"
+  },
+  {
+    "id": "atletico-bucaramanga",
+    "name": "Atlético Bucaramanga",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Amarelo e verde",
+    "city": "Bucaramanga"
+  },
+  {
+    "id": "boyaca-chico",
+    "name": "Boyacá Chicó",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Azul e branco quadriculado",
+    "city": "Tunja"
+  },
+  {
+    "id": "envigado",
+    "name": "Envigado",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Laranja e verde",
+    "city": "Envigado"
+  },
+  {
+    "id": "aguilas-doradas",
+    "name": "Águilas Doradas",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Dourado e vermelho",
+    "city": "Rionegro"
+  },
+  {
+    "id": "la-equidad",
+    "name": "La Equidad",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Verde e branco",
+    "city": "Bogotá"
+  },
+  {
+    "id": "fortaleza-ceif",
+    "name": "Fortaleza CEIF",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul e vermelho",
+    "city": "Bogotá"
+  },
+  {
+    "id": "alianza-fc",
+    "name": "Alianza FC",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Valledupar"
+  },
+  {
+    "id": "jaguares-de-cordoba",
+    "name": "Jaguares de Córdoba",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul-celeste e branco",
+    "city": "Montería"
+  },
+  {
+    "id": "patriotas-boyaca",
+    "name": "Patriotas Boyacá",
+    "league": "Categoría Primera A",
+    "country": "Colômbia",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Vermelho",
+    "city": "Tunja"
+  },
+  {
+    "id": "club-america",
+    "name": "Club América",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 15,
+    "colors": "Amarelo e azul",
+    "city": "Cidade do México"
+  },
+  {
+    "id": "chivas-guadalajara",
+    "name": "Chivas Guadalajara",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 12,
+    "colors": "Vermelho e branco",
+    "city": "Guadalajara"
+  },
+  {
+    "id": "toluca",
+    "name": "Toluca",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 10,
+    "colors": "Vermelho e branco",
+    "city": "Toluca"
+  },
+  {
+    "id": "cruz-azul",
+    "name": "Cruz Azul",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 9,
+    "colors": "Azul e branco",
+    "city": "Cidade do México"
+  },
+  {
+    "id": "club-leon",
+    "name": "León",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 8,
+    "colors": "Verde e branco",
+    "city": "León"
+  },
+  {
+    "id": "tigres-uanl",
+    "name": "Tigres UANL",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 8,
+    "colors": "Amarelo e azul",
+    "city": "Monterrey"
+  },
+  {
+    "id": "pumas-unam",
+    "name": "Pumas UNAM",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 7,
+    "colors": "Azul e dourado",
+    "city": "Cidade do México"
+  },
+  {
+    "id": "pachuca",
+    "name": "Pachuca",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 7,
+    "colors": "Azul e branco",
+    "city": "Pachuca"
+  },
+  {
+    "id": "santos-laguna",
+    "name": "Santos Laguna",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 6,
+    "colors": "Verde e branco",
+    "city": "Torreón"
+  },
+  {
+    "id": "monterrey",
+    "name": "Monterrey",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 5,
+    "colors": "Azul e branco",
+    "city": "Monterrey"
+  },
+  {
+    "id": "atlas",
+    "name": "Atlas",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 3,
+    "colors": "Vermelho e preto",
+    "city": "Guadalajara"
+  },
+  {
+    "id": "necaxa",
+    "name": "Necaxa",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 3,
+    "colors": "Vermelho e branco",
+    "city": "Aguascalientes"
+  },
+  {
+    "id": "puebla",
+    "name": "Puebla",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 2,
+    "colors": "Azul e branco",
+    "city": "Puebla"
+  },
+  {
+    "id": "tijuana",
+    "name": "Tijuana",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Vermelho e preto",
+    "city": "Tijuana"
+  },
+  {
+    "id": "queretaro",
+    "name": "Querétaro",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul e preto",
+    "city": "Querétaro"
+  },
+  {
+    "id": "mazatlan",
+    "name": "Mazatlán",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Roxo e preto",
+    "city": "Mazatlán"
+  },
+  {
+    "id": "atletico-san-luis",
+    "name": "Atlético de San Luis",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "San Luis Potosí"
+  },
+  {
+    "id": "fc-juarez",
+    "name": "FC Juárez",
+    "league": "Liga MX",
+    "country": "México",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Verde e vermelho",
+    "city": "Ciudad Juárez"
+  },
+  {
+    "id": "barcelona-sc",
+    "name": "Barcelona SC",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 16,
+    "colors": "Amarelo e preto",
+    "city": "Guayaquil"
+  },
+  {
+    "id": "emelec",
+    "name": "Emelec",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 14,
+    "colors": "Azul e cinza",
+    "city": "Guayaquil"
+  },
+  {
+    "id": "el-nacional",
+    "name": "El Nacional",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 13,
+    "colors": "Vermelho",
+    "city": "Quito"
+  },
+  {
+    "id": "ldu-quito",
+    "name": "LDU Quito",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 12,
+    "colors": "Branco",
+    "city": "Quito"
+  },
+  {
+    "id": "deportivo-cuenca",
+    "name": "Deportivo Cuenca",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Vermelho e preto",
+    "city": "Cuenca"
+  },
+  {
+    "id": "aucas",
+    "name": "Aucas",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Amarelo e vermelho",
+    "city": "Quito"
+  },
+  {
+    "id": "independiente-del-valle",
+    "name": "Independiente del Valle",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Preto e azul",
+    "city": "Sangolquí"
+  },
+  {
+    "id": "delfin",
+    "name": "Delfín",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 1,
+    "colors": "Amarelo e azul",
+    "city": "Manta"
+  },
+  {
+    "id": "universidad-catolica-ecu",
+    "name": "Universidad Católica",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul-celeste e branco",
+    "city": "Quito"
+  },
+  {
+    "id": "macara",
+    "name": "Macará",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul-celeste",
+    "city": "Ambato"
+  },
+  {
+    "id": "tecnico-universitario",
+    "name": "Técnico Universitario",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Vermelho e branco",
+    "city": "Ambato"
+  },
+  {
+    "id": "orense",
+    "name": "Orense",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Verde e amarelo",
+    "city": "Machala"
+  },
+  {
+    "id": "mushuc-runa",
+    "name": "Mushuc Runa",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Verde e branco",
+    "city": "Ambato"
+  },
+  {
+    "id": "cumbaya",
+    "name": "Cumbayá",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Quito"
+  },
+  {
+    "id": "libertad-fc",
+    "name": "Libertad FC",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Laranja e preto",
+    "city": "Loja"
+  },
+  {
+    "id": "imbabura",
+    "name": "Imbabura",
+    "league": "LigaPro Serie A",
+    "country": "Equador",
+    "continent": "Américas",
+    "titles": 0,
+    "colors": "Azul e branco",
+    "city": "Ibarra"
+  }
+]

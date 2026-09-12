@@ -6,7 +6,7 @@
   "functions": {
     "api/*.py": {
       "maxDuration": 30,
-      "includeFiles": "data/players.json",
+      "includeFiles": "data/{players.json,teams.json}",
       "excludeFiles": "{tests/**,public/**,.runtime/**,scripts/**,data/curated_names.txt,data/legacy_players.json,data/unmatched_curated.txt,README.md}"
     }
   },

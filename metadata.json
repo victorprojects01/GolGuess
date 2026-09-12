@@ -1,6 +1,6 @@
 {
   "name": "GolGuess — Jogador do dia",
-  "description": "Descubra o jogador do dia em cinco tentativas.",
+  "description": "Descubra o jogador ou o time do dia em cinco tentativas com desafios diários.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

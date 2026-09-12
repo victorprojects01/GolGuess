@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#122D00">
 <title>GolGuess — Jogador do dia</title>
-<meta name="description" content="Descubra o jogador do dia em cinco tentativas.">
+<meta name="description" content="Descubra o jogador ou o time do dia em cinco tentativas com desafios diários.">
 <link rel="stylesheet" href="/styles.css">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6239237268971394"
      crossorigin="anonymous"></script>
@@ -14,7 +14,13 @@
 <body>
 <a class="sr-only skip-link" href="#guessInput">Pular para o palpite</a>
 <header class="site-header">
-  <a class="brand" href="/" aria-label="GolGuess início"><span class="ball-mark" aria-hidden="true"></span><span>golguess</span><b>.</b></a>
+  <div class="header-left">
+    <a class="brand" href="/" aria-label="GolGuess início"><span class="ball-mark" aria-hidden="true"></span><span>golguess</span><b>.</b></a>
+    <div class="mode-switch" role="tablist" aria-label="Modo de jogo">
+      <button class="mode-btn active" id="modePlayersBtn" role="tab" aria-selected="true" data-mode="players" data-i18n="modePlayers">Jogadores</button>
+      <button class="mode-btn" id="modeTeamsBtn" role="tab" aria-selected="false" data-mode="teams" data-i18n="modeTeams">Times</button>
+    </div>
+  </div>
   <nav aria-label="Menu">
     <button class="icon-button" id="statsBtn" aria-label="Estatísticas" title="Estatísticas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V13M12 20V5M19 20V9"/></svg></button>
     <button class="icon-button help-button" id="helpBtn" aria-label="Como jogar" title="Como jogar">?</button>
@@ -31,7 +37,7 @@
 <main>
   <section class="game" aria-label="Desafio de hoje" aria-busy="true" id="game">
     <div class="round-bar">
-      <h1><span class="round-kicker" data-i18n="dailyPlayer">Jogador do dia</span> <strong id="dayNumber">#—</strong></h1>
+      <h1><span class="round-kicker" id="roundKicker" data-i18n="dailyPlayer">Jogador do dia</span> <strong id="dayNumber">#—</strong></h1>
       <div id="attemptDots" class="attempt-dots" aria-label="Tentativas"></div>
     </div>
     <ol id="clues" class="clues" aria-label="Pistas"><li class="loading">Preparando…</li></ol>
@@ -55,7 +61,7 @@
       <p id="resultText"></p>
       <div id="resultSquares" class="result-squares" aria-label="Resultado das tentativas"></div>
       <button id="shareBtn" class="primary" data-i18n="share">Compartilhar</button>
-      <div class="next-game"><span data-i18n="nextGame">Próximo jogador em</span><strong class="countdown">--:--:--</strong></div>
+      <div class="next-game"><span id="nextGameLabel" data-i18n="nextGame">Próximo jogador em</span><strong class="countdown">--:--:--</strong></div>
     </section>
     <section class="history-area" id="historyArea" hidden aria-labelledby="historyTitle">
       <h2 id="historyTitle" data-i18n="guesses">Palpites</h2>
@@ -70,8 +76,8 @@
 </main>
 <footer><button id="privacyBtn" data-i18n="privacy">Privacidade</button><span aria-hidden="true">·</span><button id="sourcesBtn" data-i18n="data">Dados</button></footer>
 <dialog id="helpDialog">
-  <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="howTitle">Como jogar</h2>
-  <ol class="help-list"><li><b>1</b><span data-i18n="help1">Leia a primeira pista.</span></li><li><b>2</b><span data-i18n="help2">Escolha um jogador ou revele outra pista.</span></li><li><b>3</b><span data-i18n="help3">Acerte em até cinco tentativas.</span></li></ol>
+  <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="howTitle" id="helpTitle">Como jogar</h2>
+  <ol class="help-list"><li><b>1</b><span id="helpStep1" data-i18n="help1">Leia a primeira pista.</span></li><li><b>2</b><span id="helpStep2" data-i18n="help2">Escolha um jogador ou revele outra pista.</span></li><li><b>3</b><span id="helpStep3" data-i18n="help3">Acerte em até cinco tentativas.</span></li></ol>
   <button class="primary dialog-done" data-i18n="play">Jogar</button>
 </dialog>
 <dialog id="statsDialog">
@@ -82,7 +88,7 @@
   <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="privacy">Privacidade</h2><p data-i18n="privacyText">Um cookie anônimo mantém sua rodada neste navegador. Não pedimos nome ou e-mail.</p>
 </dialog>
 <dialog id="sourcesDialog">
-  <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="data">Dados</h2><p><strong id="catalogCount">365+</strong> <span data-i18n="catalogText">jogadores conhecidos de sete grandes ligas.</span></p><p><a href="/data/ATTRIBUTION.md" target="_blank" data-i18n="methodology">Créditos e metodologia ↗</a></p>
+  <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="data">Dados</h2><p><strong id="catalogCount">365+</strong> <span id="catalogLabel" data-i18n="catalogText">jogadores conhecidos de sete grandes ligas.</span></p><p><a href="/data/ATTRIBUTION.md" target="_blank" data-i18n="methodology">Créditos e metodologia ↗</a></p>
 </dialog>
 <dialog id="shareDialog">
   <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="share">Compartilhar</h2><textarea id="shareText" readonly aria-label="Resultado para copiar" rows="4"></textarea><button class="primary" id="copyBtn" data-i18n="copy">Copiar resultado</button>
