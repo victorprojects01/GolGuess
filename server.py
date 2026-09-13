@@ -78,8 +78,10 @@ def decode_state(value, mode='players'):
             if len(moves) > 20:
                 return None
             for move in moves:
-                if not isinstance(move, dict) or move.get('result') not in {'correct', 'wrong_pos', 'incorrect'}:
+                if not isinstance(move, dict) or move.get('result') not in {'correct', 'wrong_pos', 'incorrect', 'giveup'}:
                     return None
+                if move.get('result') == 'giveup':
+                    continue
                 item_id = move.get('id')
                 if not item_id or item_id not in BY_ID:
                     return None
@@ -114,7 +116,7 @@ def read_moves(db, visitor, day, mode='players'):
 def finished(moves, mode='players'):
     if mode == 'top10':
         correct_positions = {m['position'] for m in moves if m.get('result') == 'correct'}
-        return len(correct_positions) == 10
+        return len(correct_positions) == 10 or any(m.get('result') == 'giveup' for m in moves)
     return len(moves) >= 5 or any(m['result'] == 'correct' for m in moves)
 
 def stats(db, visitor, day, mode='players'):
@@ -122,13 +124,13 @@ def stats(db, visitor, day, mode='players'):
     rows = db.execute(f'SELECT day, moves FROM {table} WHERE visitor=? AND day<=? ORDER BY day DESC', (visitor, str(day))).fetchall()
     complete = [(date.fromisoformat(r['day']), json.loads(r['moves'])) for r in rows if finished(json.loads(r['moves']), mode=mode)]
     if mode == 'top10':
-        wins = sum(1 for _, m in complete if len({x['position'] for x in m if x.get('result') == 'correct'}) == 10)
+        wins = sum(1 for _, m in complete if len({x['position'] for x in m if x.get('result') == 'correct'}) == 10 and not any(x.get('result') == 'giveup' for x in m))
     else:
         wins = sum(any(x['result'] == 'correct' for x in m) for _, m in complete)
     expected = day if complete and complete[0][0] == day else day - timedelta(days=1)
     streak = 0
     for d, m in complete:
-        is_win = (len({x['position'] for x in m if x.get('result') == 'correct'}) == 10) if mode == 'top10' else any(x['result'] == 'correct' for x in m)
+        is_win = (len({x['position'] for x in m if x.get('result') == 'correct'}) == 10 and not any(x.get('result') == 'giveup' for x in m)) if mode == 'top10' else any(x['result'] == 'correct' for x in m)
         if d != expected or not is_win:
             break
         streak += 1
@@ -183,7 +185,9 @@ def make_top10_snapshot(moves, top10_stats, day):
     challenge = top10_answer(day)
     ranking = challenge['ranking']
     correct_map = {m['position']: m for m in moves if m.get('result') == 'correct'}
-    done = len(correct_map) == 10
+    has_giveup = any(m.get('result') == 'giveup' for m in moves)
+    done = len(correct_map) == 10 or has_giveup
+    won = len(correct_map) == 10 and not has_giveup
     solved_count = len(correct_map)
     slots = []
     for item in ranking:
@@ -204,7 +208,7 @@ def make_top10_snapshot(moves, top10_stats, day):
                 serverTime=datetime.now(BRASILIA).isoformat(),
                 nextAt=datetime.combine(day+timedelta(days=1), time(), BRASILIA).isoformat(),
                 moves=moves, version=len(moves), done=done,
-                won=done, solvedCount=solved_count, totalPositions=10,
+                won=won, solvedCount=solved_count, totalPositions=10,
                 challenge=dict(id=challenge['id'], title=challenge['title'], source=challenge['source']),
                 slots=slots, stats=top10_stats, catalog='top10-v1')
 
@@ -356,7 +360,7 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(length))
             if not isinstance(body, dict):
                 raise ValueError()
-            if 'playerId' not in body and 'teamId' not in body and 'guessId' not in body:
+            if 'playerId' not in body and 'teamId' not in body and 'guessId' not in body and not body.get('giveup'):
                 raise ValueError()
         except (ValueError, UnicodeError):
             return self.send(400, {'error': 'Palpite inválido.'})
@@ -379,6 +383,12 @@ class Handler(BaseHTTPRequestHandler):
             if body.get('day') != str(day) or body.get('version') != len(moves) or finished(moves, mode=mode):
                 return self.send(409, {'error': 'A rodada foi atualizada.', 'game': snapshot(db, visitor, day, mode=mode)})
             if mode == 'top10':
+                if body.get('giveup'):
+                    moves.append(dict(id=None, name='Desistência', position=None, result='giveup'))
+                    db.execute('INSERT INTO top10_rounds VALUES (?, ?, ?) ON CONFLICT(visitor, day) DO UPDATE SET moves=excluded.moves',
+                               (visitor, str(day), json.dumps(moves)))
+                    payload = snapshot(db, visitor, day, mode='top10')
+                    return self.send(200, payload)
                 pos = body.get('position')
                 guess_id = body.get('playerId') or body.get('guessId')
                 if not isinstance(pos, int) or not (1 <= pos <= 10):
@@ -441,6 +451,14 @@ class Handler(BaseHTTPRequestHandler):
             return self.send(409, {'error': 'A rodada foi atualizada. Confira as pistas.', 'game': snap}, state_cookie=enc)
         
         if mode == 'top10':
+            if body.get('giveup'):
+                moves.append(dict(id=None, name='Desistência', position=None, result='giveup'))
+                state['played'] += 1
+                state['streak'] = 0
+                state['moves'] = moves
+                snap = self.browser_snapshot(state, day, mode='top10')
+                enc = encode_state(state)
+                return self.send(200, snap, state_cookie_top10=enc)
             pos = body.get('position')
             guess_id = body.get('playerId') or body.get('guessId')
             if not isinstance(pos, int) or not (1 <= pos <= 10):
@@ -466,10 +484,13 @@ class Handler(BaseHTTPRequestHandler):
             moves.append(dict(id=guess_id, name=BY_ID[guess_id]['name'], position=pos, result=res))
             if finished(moves, mode='top10'):
                 state['played'] += 1
-                state['wins'] += 1
-                yesterday = str(day - timedelta(days=1))
-                state['streak'] = state['streak'] + 1 if state.get('lastWin') == yesterday else 1
-                state['lastWin'] = str(day)
+                if not any(m.get('result') == 'giveup' for m in moves):
+                    state['wins'] += 1
+                    yesterday = str(day - timedelta(days=1))
+                    state['streak'] = state['streak'] + 1 if state.get('lastWin') == yesterday else 1
+                    state['lastWin'] = str(day)
+                else:
+                    state['streak'] = 0
             snap = self.browser_snapshot(state, day, mode='top10')
             enc = encode_state(state)
             return self.send(200, snap, state_cookie_top10=enc)

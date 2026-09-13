@@ -73,6 +73,9 @@
     </div>
     <div id="top10Notice" class="top10-notice" role="alert" hidden></div>
     <ol id="clues" class="clues" aria-label="Pistas"><li class="loading">Preparando…</li></ol>
+    <div id="top10Actions" class="top10-actions" hidden>
+      <button type="button" id="top10GiveUpBtn" class="top10-giveup-btn" data-i18n="giveUpBtn">Desistir e revelar</button>
+    </div>
     <div id="playArea" class="play-area">
       <form id="guessForm">
         <div class="input-container">
@@ -127,6 +130,15 @@
 </dialog>
 <dialog id="shareDialog">
   <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="share">Compartilhar</h2><textarea id="shareText" readonly aria-label="Resultado para copiar" rows="4"></textarea><button class="primary" id="copyBtn" data-i18n="copy">Copiar resultado</button>
+</dialog>
+<dialog id="giveUpDialog" class="giveup-dialog">
+  <button class="dialog-close" aria-label="Fechar">×</button>
+  <h2 id="giveUpDialogTitle" data-i18n="giveUpConfirmTitle">Desistir do Top 10?</h2>
+  <p id="giveUpDialogText" data-i18n="giveUpConfirmText">Tem certeza? Todas as posições restantes serão reveladas e o desafio de hoje será encerrado.</p>
+  <div class="giveup-dialog-buttons">
+    <button type="button" class="primary" id="giveUpCancelBtn" data-i18n="giveUpConfirmCancel">Continuar jogando</button>
+    <button type="button" class="giveup-confirm-btn" id="giveUpConfirmBtn" data-i18n="giveUpConfirmYes">Desistir e revelar</button>
+  </div>
 </dialog>
 <noscript><p class="noscript">Ative o JavaScript para jogar.</p></noscript>
 </body>

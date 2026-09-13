@@ -40,8 +40,13 @@ const copy = {
     loadError:'Não conseguimos acessar o jogo. Tente novamente.',
     guessError:'Não foi possível registrar o palpite.', searchError:'A busca falhou. Tente novamente.',
     goal:n=>`Golaço! ${n}/5`, top10Win:n=>`Parabéns! Ranking concluído em ${n} palpites!`,
+    top10Loss:(solved, tot)=>`Fim de jogo · ${solved}/${tot} acertos`,
+    top10LossText:'Todas as posições foram reveladas. Amanhã tem um novo Top 10!',
     loss:name=>`Era ${name}.`, lossText:'Hoje não deu. Amanhã tem mais.',
     gameOver:'FIM DE JOGO', shareLine:'Você conhece esse jogador?', shareLineTeams:'Você conhece esse time?', shareLineTop10:'Consegue completar este Top 10?',
+    giveUpBtn:'Desistir e revelar', giveUpConfirmTitle:'Desistir do Top 10?',
+    giveUpConfirmText:'Tem certeza? Todas as posições restantes serão reveladas e a rodada de hoje será finalizada.',
+    giveUpConfirmYes:'Desistir e revelar', giveUpConfirmCancel:'Continuar jogando', giveUpName:'Desistência',
     copied:'Resultado copiado ✓', yellow:'cartões amarelos', red:'cartões vermelhos', years:'anos',
     goals:'gols', assists:'assist.', titleSingular:'título', titlePlural:'títulos',
     attempt:'Tentativa', available:'disponível', wrongAttempt:'incorreta', skippedAttempt:'pulada',
@@ -88,8 +93,13 @@ const copy = {
     loadError:'We could not reach the game. Try again.',
     guessError:'We could not save your guess.', searchError:'Search failed. Try again.',
     goal:n=>`Goal! ${n}/5`, top10Win:n=>`Congratulations! Completed in ${n} guesses!`,
+    top10Loss:(solved, tot)=>`Game over · ${solved}/${tot} solved`,
+    top10LossText:'All positions have been revealed. A new Top 10 arrives tomorrow!',
     loss:name=>`It was ${name}.`, lossText:'Not today. Come back tomorrow.',
     gameOver:'FULL TIME', shareLine:'Do you know this player?', shareLineTeams:'Do you know this team?', shareLineTop10:'Can you complete this Top 10?',
+    giveUpBtn:'Give up & reveal', giveUpConfirmTitle:'Give up on this Top 10?',
+    giveUpConfirmText:'Are you sure? All remaining positions will be revealed and today’s round will end.',
+    giveUpConfirmYes:'Give up & reveal', giveUpConfirmCancel:'Keep playing', giveUpName:'Gave up',
     copied:'Result copied ✓', yellow:'yellow cards', red:'red cards', years:'years',
     goals:'goals', assists:'assists', titleSingular:'title', titlePlural:'titles',
     attempt:'Attempt', available:'available', wrongAttempt:'wrong', skippedAttempt:'skipped',
@@ -136,8 +146,13 @@ const copy = {
     loadError:'No pudimos acceder al juego. Inténtalo de nuevo.',
     guessError:'No pudimos guardar tu intento.', searchError:'La búsqueda falló. Inténtalo de nuevo.',
     goal:n=>`¡Golazo! ${n}/5`, top10Win:n=>`¡Felicidades! ¡Completado en ${n} intentos!`,
+    top10Loss:(solved, tot)=>`Fin de la partida · ${solved}/${tot} aciertos`,
+    top10LossText:'¡Todas las posiciones han sido reveladas! Mañana habrá un nuevo Top 10.',
     loss:name=>`Era ${name}.`, lossText:'Hoy no pudo ser. Mañana hay otra.',
     gameOver:'FINAL', shareLine:'¿Conoces a este jugador?', shareLineTeams:'¿Conoces a este equipo?', shareLineTop10:'¿Puedes completar este Top 10?',
+    giveUpBtn:'Rendirse y revelar', giveUpConfirmTitle:'¿Rendirse del Top 10?',
+    giveUpConfirmText:'¿Estás seguro? Se revelarán todas las posiciones restantes y finalizará la ronda de hoy.',
+    giveUpConfirmYes:'Rendirse y revelar', giveUpConfirmCancel:'Seguir jugando', giveUpName:'Rendición',
     copied:'Resultado copiado ✓', yellow:'tarjetas amarillas', red:'tarjetas rojas', years:'años',
     goals:'goles', assists:'asist.', titleSingular:'título', titlePlural:'títulos',
     attempt:'Intento', available:'disponible', wrongAttempt:'incorrecto', skippedAttempt:'saltado',
@@ -165,7 +180,7 @@ let currentPos = 1;
 let queryTimer, searchController, blurTimer, serverOffset = 0, nextRefresh = 0;
 const input = $('guessInput');
 const channel = 'BroadcastChannel' in window ? new BroadcastChannel('golguess-channel') : null;
-const marks = {correct:'🟩', wrong:'🟥', skip:'🟨', wrong_pos:'🟨', incorrect:'🟥'};
+const marks = {correct:'🟩', wrong:'🟥', skip:'🟨', wrong_pos:'🟨', incorrect:'🟥', giveup:'🏳️'};
 const t = key => copy[lang][key];
 
 function trackEvent(name, params = {}) {
@@ -225,6 +240,8 @@ function controls() {
   $('skipBtn').hidden = isTop10 || (!!game && (game.done || game.clues?.length >= 5));
   $('clearBtn').disabled = busy;
   $('top10Header').hidden = !isTop10;
+  if ($('top10Actions')) $('top10Actions').hidden = !isTop10 || !game || game.done;
+  if ($('top10GiveUpBtn')) $('top10GiveUpBtn').disabled = busy || !game || game.done;
   if (!isTop10 || game?.done) hideTop10Notice();
   document.querySelectorAll('input.slot-input').forEach(inp => {
     inp.disabled = busy || !game || game.done;
@@ -303,8 +320,8 @@ function applyLanguage() {
   if (game) render();
 }
 function accept(data) {
-  if (game && (data.day < game.day || (data.day === game.day && data.version < game.version))) return;
-  const changed = game && (game.day !== data.day || game.version !== data.version);
+  if (game && game.mode === data.mode && (data.day < game.day || (data.day === game.day && data.version < game.version))) return;
+  const changed = game && (game.day !== data.day || game.version !== data.version || game.mode !== data.mode);
   if (changed) resetSearch();
   game = data;
   serverOffset = Date.parse(data.serverTime) - Date.now();
@@ -642,11 +659,15 @@ function render() {
   $('history').replaceChildren(...game.moves.map(move => {
     const li = document.createElement('li'); li.className = move.result;
     const mark = document.createElement('b'); mark.setAttribute('aria-hidden', 'true');
-    mark.textContent = {wrong:'×',correct:'✓',skip:'—',wrong_pos:'↔',incorrect:'×'}[move.result] || '•';
+    mark.textContent = {wrong:'×',correct:'✓',skip:'—',wrong_pos:'↔',incorrect:'×',giveup:'🏳️'}[move.result] || '•';
     const name = document.createElement('span');
     if (mode === 'top10') {
-      const posBadge = `[${move.position}º] `;
-      name.textContent = posBadge + move.name;
+      if (move.result === 'giveup') {
+        name.textContent = t('giveUpName');
+      } else {
+        const posBadge = `[${move.position}º] `;
+        name.textContent = posBadge + move.name;
+      }
     } else {
       name.textContent = move.result === 'skip' ? t('skipName') : move.name;
     }
@@ -661,8 +682,11 @@ function render() {
     $('resultKicker').textContent = t('gameOver');
     if (mode === 'top10') {
       const title = game.challenge?.title?.[lang] || game.challenge?.title?.pt || 'Top 10';
-      $('resultTitle').textContent = t('top10Win')(game.moves.length);
-      $('resultText').textContent = title;
+      const actualGuesses = game.moves.filter(m => m.result !== 'giveup').length;
+      $('resultTitle').textContent = game.won
+        ? t('top10Win')(actualGuesses)
+        : t('top10Loss')(game.solvedCount || 0, 10);
+      $('resultText').textContent = game.won ? title : `${title} · ${t('top10LossText')}`;
     } else {
       $('resultTitle').textContent = game.won ? t('goal')(game.moves.length) : t('loss')(game.answer);
       $('resultText').textContent = game.won ? game.answer : t('lossText');
@@ -856,6 +880,67 @@ $('guessForm').onsubmit = event => { event.preventDefault(); if (selected) submi
 $('skipBtn').onclick = () => submit(null);
 $('retryBtn').onclick = loadGame;
 
+async function submitGiveUp() {
+  if (busy || !game || game.done || mode !== 'top10') return;
+  busy = true; controls(); feedback(); closeSearch();
+  try {
+    trackEvent('give_up', { mode, round_number: game.number });
+    const response = await fetch('/api/guess', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        day: game.day,
+        version: game.version,
+        mode: 'top10',
+        giveup: true
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      if (data.game) accept(data.game);
+      feedback(data.error || t('guessError'), true);
+      return;
+    }
+    resetSearch();
+    accept(data);
+    channel?.postMessage({ type: 'updated', mode });
+    trackEvent('game_completed', {
+      mode: 'top10',
+      result: 'giveup',
+      moves_count: data.moves?.length || 0,
+      round_number: data.number
+    });
+    feedback(t('top10LossText'));
+    $('resultTitle').tabIndex = -1;
+    $('resultTitle').focus({ preventScroll: true });
+  } catch {
+    feedback(t('guessError'), true);
+    $('retryBtn').hidden = false;
+  } finally {
+    busy = false;
+    controls();
+  }
+}
+
+if ($('top10GiveUpBtn')) {
+  $('top10GiveUpBtn').onclick = () => {
+    if (busy || !game || game.done || mode !== 'top10') return;
+    $('giveUpDialog').showModal();
+    $('giveUpCancelBtn')?.focus();
+  };
+}
+if ($('giveUpCancelBtn')) {
+  $('giveUpCancelBtn').onclick = () => {
+    $('giveUpDialog').close();
+  };
+}
+if ($('giveUpConfirmBtn')) {
+  $('giveUpConfirmBtn').onclick = () => {
+    $('giveUpDialog').close();
+    submitGiveUp();
+  };
+}
+
 function tick() {
   if (!game) return;
   const remaining = Math.max(0, Math.ceil((Date.parse(game.nextAt) - Date.now() - serverOffset) / 1000));
@@ -871,11 +956,13 @@ function squares() {
 }
 function shareText() {
   if (mode === 'top10') {
-    const tag = `GolGuess Top 10 #${String(game.number).padStart(3,'0')} 🏆`;
+    const tag = `GolGuess Top 10 #${String(game.number).padStart(3,'0')} ${game.won ? '🏆' : '⚽'}`;
     const title = game.challenge?.title?.[lang] || game.challenge?.title?.pt || 'Top 10';
     const url = `${location.origin}/?jogo=top10`;
     const line = t('shareLineTop10');
-    return `${tag}\n${title}\n${squares()} (${game.moves.length} palpites)\n${line}\n${url}`;
+    const guessCount = game.moves.filter(m => m.result !== 'giveup').length;
+    const scoreStr = game.won ? `${guessCount} palpites` : `${game.solvedCount || 0}/10 acertados`;
+    return `${tag}\n${title}\n${squares()} (${scoreStr})\n${line}\n${url}`;
   }
   const isTeams = mode === 'teams';
   const tag = isTeams ? `GolGuess Times #${String(game.number).padStart(3,'0')} 🛡️` : `GolGuess #${String(game.number).padStart(3,'0')} ⚽`;

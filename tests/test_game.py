@@ -294,6 +294,61 @@ class DailyGameTests(unittest.TestCase):
         self.assertTrue(all(s['revealed'] for s in game['slots']))
         self.assertTrue(all(s['status'] == 'correct' for s in game['slots']))
 
+    def test_top10_give_up_and_reveal(self):
+        status, game, cookie = self.request('/api/game?mode=top10')
+        self.assertEqual(status, 200)
+        self.assertFalse(game['done'])
+        self.assertFalse(game['won'])
+
+        challenge = server.top10_answer(server.today())
+        ranking = challenge['ranking']
+
+        # Guess 1 player correctly
+        p1 = ranking[0]
+        status, game, new_cookie = self.request('/api/guess', body={'day': game['day'], 'version': game['version'],
+                                                                    'mode': 'top10', 'playerId': p1['player_id'],
+                                                                    'position': p1['position']}, cookie=cookie)
+        self.assertEqual(status, 200)
+        self.assertEqual(game['solvedCount'], 1)
+        self.assertFalse(game['done'])
+        if new_cookie:
+            cookie = new_cookie.split(';')[0]
+
+        # Give up
+        status, game, new_cookie = self.request('/api/guess', body={'day': game['day'], 'version': game['version'],
+                                                                    'mode': 'top10', 'giveup': True}, cookie=cookie)
+        self.assertEqual(status, 200)
+        self.assertTrue(game['done'])
+        self.assertFalse(game['won'])
+        self.assertEqual(game['solvedCount'], 1)
+        self.assertEqual(game['moves'][-1]['result'], 'giveup')
+        # All slots must be revealed
+        self.assertTrue(all(s['revealed'] for s in game['slots']))
+        self.assertEqual(game['slots'][0]['status'], 'correct')
+        self.assertTrue(all(s['status'] == 'missed' for s in game['slots'][1:]))
+        self.assertTrue(all(s['player_id'] and s['name'] for s in game['slots']))
+
+        # Further attempts should be rejected with 409
+        status, err, _ = self.request('/api/guess', body={'day': game['day'], 'version': game['version'],
+                                                          'mode': 'top10', 'giveup': True}, cookie=cookie)
+        self.assertEqual(status, 409)
+
+    def test_top10_give_up_in_cookie_mode(self):
+        with patch.dict(os.environ, {'GOLGUESS_COOKIE_MODE': '1'}):
+            status, game, cookie = self.request('/api/game?mode=top10')
+            self.assertEqual(status, 200)
+            self.assertFalse(game['done'])
+
+            status, game, new_cookie = self.request('/api/guess', body={'day': game['day'], 'version': game['version'],
+                                                                        'mode': 'top10', 'giveup': True}, cookie=cookie)
+            self.assertEqual(status, 200)
+            self.assertTrue(game['done'])
+            self.assertFalse(game['won'])
+            self.assertEqual(game['solvedCount'], 0)
+            self.assertTrue(all(s['revealed'] for s in game['slots']))
+            self.assertTrue(all(s['status'] == 'missed' for s in game['slots']))
+            self.assertIn('gg_state_top10', new_cookie)
+
 
 if __name__ == '__main__':
     unittest.main()
