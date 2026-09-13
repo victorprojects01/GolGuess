@@ -46,6 +46,7 @@
   <div class="mode-switch" role="tablist" aria-label="Modo de jogo">
     <button class="mode-btn active" id="modePlayersBtn" role="tab" aria-selected="true" data-mode="players" data-i18n="modePlayers">Jogadores</button>
     <button class="mode-btn" id="modeTeamsBtn" role="tab" aria-selected="false" data-mode="teams" data-i18n="modeTeams">Times</button>
+    <button class="mode-btn" id="modeTop10Btn" role="tab" aria-selected="false" data-mode="top10" data-i18n="modeTop10">Top 10</button>
   </div>
   <nav aria-label="Menu">
     <button class="icon-button" id="statsBtn" aria-label="Estatísticas" title="Estatísticas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V13M12 20V5M19 20V9"/></svg></button>
@@ -65,6 +66,10 @@
     <div class="round-bar">
       <h1 class="round-heading"><span class="round-kicker" id="roundKicker" data-i18n="dailyPlayer">Adivinhe o jogador de futebol de hoje</span> <strong id="dayNumber">#—</strong></h1>
       <div id="attemptDots" class="attempt-dots" aria-label="Tentativas"></div>
+    </div>
+    <div id="top10Header" class="top10-header" hidden>
+      <h2 id="top10Title" class="top10-title"></h2>
+      <span id="top10Progress" class="top10-progress"></span>
     </div>
     <ol id="clues" class="clues" aria-label="Pistas"><li class="loading">Preparando…</li></ol>
     <div id="playArea" class="play-area">

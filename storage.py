@@ -58,6 +58,7 @@ def connect():
                 db.execute('CREATE TABLE IF NOT EXISTS visitors (id TEXT PRIMARY KEY)')
                 db.execute('CREATE TABLE IF NOT EXISTS career_rounds (visitor TEXT, day TEXT, moves TEXT NOT NULL, PRIMARY KEY(visitor, day))')
                 db.execute('CREATE TABLE IF NOT EXISTS team_rounds (visitor TEXT, day TEXT, moves TEXT NOT NULL, PRIMARY KEY(visitor, day))')
+                db.execute('CREATE TABLE IF NOT EXISTS top10_rounds (visitor TEXT, day TEXT, moves TEXT NOT NULL, PRIMARY KEY(visitor, day))')
                 conn.commit()
                 _initialized.add(identity)
         with conn:

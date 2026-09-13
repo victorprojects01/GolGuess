@@ -24,6 +24,10 @@ TEAMS = json.loads((ROOT / 'data/teams.json').read_text(encoding='utf-8'))
 TEAMS_BY_ID = {t['id']: t for t in TEAMS}
 TEAMS_SCHEDULE = sorted(TEAMS, key=lambda t: hashlib.sha256(('golguess-teams-v1:' + t['id']).encode()).digest())
 
+TOP10 = json.loads((ROOT / 'data/top10.json').read_text(encoding='utf-8'))
+TOP10_BY_ID = {c['id']: c for c in TOP10}
+TOP10_SCHEDULE = sorted(TOP10, key=lambda c: hashlib.sha256(('golguess-top10-v1:' + c['id']).encode()).digest())
+
 def normalize(value):
     return ''.join(c for c in unicodedata.normalize('NFD', value.casefold()) if not unicodedata.combining(c))
 
@@ -35,6 +39,9 @@ def answer(day):
 
 def team_answer(day):
     return TEAMS_SCHEDULE[(day - EPOCH).days % len(TEAMS_SCHEDULE)]
+
+def top10_answer(day):
+    return TOP10_SCHEDULE[(day - EPOCH).days % len(TOP10_SCHEDULE)]
 
 def cookie_mode():
     return os.environ.get('GOLGUESS_COOKIE_MODE') == '1' or (bool(os.environ.get('VERCEL')) and not database_url())
@@ -65,17 +72,32 @@ def decode_state(value, mode='players'):
         if state.get('lastWin') is not None:
             date.fromisoformat(state['lastWin'])
         moves = state.get('moves')
-        if not isinstance(moves, list) or len(moves) > 5:
+        if not isinstance(moves, list):
             return None
-        catalog_by_id = TEAMS_BY_ID if mode == 'teams' else BY_ID
-        for move in moves:
-            if not isinstance(move, dict) or move.get('result') not in {'correct', 'wrong', 'skip'}:
+        if mode == 'top10':
+            if len(moves) > 20:
                 return None
-            item_id = move.get('id')
-            if (item_id is None) != (move['result'] == 'skip') or (item_id is not None and item_id not in catalog_by_id):
+            for move in moves:
+                if not isinstance(move, dict) or move.get('result') not in {'correct', 'wrong_pos', 'incorrect'}:
+                    return None
+                item_id = move.get('id')
+                if not item_id or item_id not in BY_ID:
+                    return None
+                pos = move.get('position')
+                if not isinstance(pos, int) or not (1 <= pos <= 10):
+                    return None
+        else:
+            if len(moves) > 5:
                 return None
-            if not isinstance(move.get('name'), str) or len(move['name']) > 120:
-                return None
+            catalog_by_id = TEAMS_BY_ID if mode == 'teams' else BY_ID
+            for move in moves:
+                if not isinstance(move, dict) or move.get('result') not in {'correct', 'wrong', 'skip'}:
+                    return None
+                item_id = move.get('id')
+                if (item_id is None) != (move['result'] == 'skip') or (item_id is not None and item_id not in catalog_by_id):
+                    return None
+                if not isinstance(move.get('name'), str) or len(move['name']) > 120:
+                    return None
         return state
     except (AttributeError, TypeError, ValueError, UnicodeError, json.JSONDecodeError):
         return None
@@ -85,22 +107,29 @@ def initialize():
         db.execute('SELECT 1')
 
 def read_moves(db, visitor, day, mode='players'):
-    table = 'team_rounds' if mode == 'teams' else 'career_rounds'
+    table = 'top10_rounds' if mode == 'top10' else 'team_rounds' if mode == 'teams' else 'career_rounds'
     row = db.execute(f'SELECT moves FROM {table} WHERE visitor=? AND day=?', (visitor, str(day))).fetchone()
     return json.loads(row['moves']) if row else []
 
-def finished(moves):
+def finished(moves, mode='players'):
+    if mode == 'top10':
+        correct_positions = {m['position'] for m in moves if m.get('result') == 'correct'}
+        return len(correct_positions) == 10
     return len(moves) >= 5 or any(m['result'] == 'correct' for m in moves)
 
 def stats(db, visitor, day, mode='players'):
-    table = 'team_rounds' if mode == 'teams' else 'career_rounds'
+    table = 'top10_rounds' if mode == 'top10' else 'team_rounds' if mode == 'teams' else 'career_rounds'
     rows = db.execute(f'SELECT day, moves FROM {table} WHERE visitor=? AND day<=? ORDER BY day DESC', (visitor, str(day))).fetchall()
-    complete = [(date.fromisoformat(r['day']), json.loads(r['moves'])) for r in rows if finished(json.loads(r['moves']))]
-    wins = sum(any(x['result'] == 'correct' for x in m) for _, m in complete)
+    complete = [(date.fromisoformat(r['day']), json.loads(r['moves'])) for r in rows if finished(json.loads(r['moves']), mode=mode)]
+    if mode == 'top10':
+        wins = sum(1 for _, m in complete if len({x['position'] for x in m if x.get('result') == 'correct'}) == 10)
+    else:
+        wins = sum(any(x['result'] == 'correct' for x in m) for _, m in complete)
     expected = day if complete and complete[0][0] == day else day - timedelta(days=1)
     streak = 0
     for d, m in complete:
-        if d != expected or not any(x['result'] == 'correct' for x in m):
+        is_win = (len({x['position'] for x in m if x.get('result') == 'correct'}) == 10) if mode == 'top10' else any(x['result'] == 'correct' for x in m)
+        if d != expected or not is_win:
             break
         streak += 1
         expected -= timedelta(days=1)
@@ -108,7 +137,7 @@ def stats(db, visitor, day, mode='players'):
 
 def make_snapshot(moves, player_stats, day):
     player = answer(day)
-    done = finished(moves)
+    done = finished(moves, mode='players')
     birth = date.fromisoformat(player['birth'])
     age = day.year - birth.year - ((day.month, day.day) < (birth.month, birth.day))
     cards = f"{player['yellow']} amarelo{'s' if player['yellow'] != 1 else ''}"
@@ -132,7 +161,7 @@ def make_snapshot(moves, player_stats, day):
 
 def make_team_snapshot(moves, team_stats, day):
     team = team_answer(day)
-    done = finished(moves)
+    done = finished(moves, mode='teams')
     titles_count = team['titles']
     titles_str = f"{titles_count} título{'s' if titles_count != 1 else ''}"
     clues = [
@@ -150,13 +179,44 @@ def make_team_snapshot(moves, team_stats, day):
                 clues=clues[:5 if done else min(len(moves)+1, 5)],
                 answer=team['name'] if done else None, stats=team_stats, catalog='teams-v1')
 
+def make_top10_snapshot(moves, top10_stats, day):
+    challenge = top10_answer(day)
+    ranking = challenge['ranking']
+    correct_map = {m['position']: m for m in moves if m.get('result') == 'correct'}
+    done = len(correct_map) == 10
+    solved_count = len(correct_map)
+    slots = []
+    for item in ranking:
+        pos = item['position']
+        is_solved = pos in correct_map
+        slots.append(dict(
+            position=pos,
+            flag=item['flag'],
+            country_code=item['country_code'],
+            country=item['country'],
+            revealed=is_solved or done,
+            player_id=item['player_id'] if (is_solved or done) else None,
+            name=item['name'] if (is_solved or done) else None,
+            value=item['value'] if (is_solved or done) else None,
+            status='correct' if is_solved else ('missed' if done else 'empty')
+        ))
+    return dict(mode='top10', day=str(day), number=(day-EPOCH).days+1, totalChallenges=len(TOP10),
+                serverTime=datetime.now(BRASILIA).isoformat(),
+                nextAt=datetime.combine(day+timedelta(days=1), time(), BRASILIA).isoformat(),
+                moves=moves, version=len(moves), done=done,
+                won=done, solvedCount=solved_count, totalPositions=10,
+                challenge=dict(id=challenge['id'], title=challenge['title'], source=challenge['source']),
+                slots=slots, stats=top10_stats, catalog='top10-v1')
+
 def snapshot(db, visitor, day, mode='players'):
+    if mode == 'top10':
+        return make_top10_snapshot(read_moves(db, visitor, day, 'top10'), stats(db, visitor, day, 'top10'), day)
     if mode == 'teams':
         return make_team_snapshot(read_moves(db, visitor, day, 'teams'), stats(db, visitor, day, 'teams'), day)
     return make_snapshot(read_moves(db, visitor, day, 'players'), stats(db, visitor, day, 'players'), day)
 
 class Handler(BaseHTTPRequestHandler):
-    def send(self, status, body, content_type='application/json; charset=utf-8', cookie=None, state_cookie=None, state_cookie_teams=None):
+    def send(self, status, body, content_type='application/json; charset=utf-8', cookie=None, state_cookie=None, state_cookie_teams=None, state_cookie_top10=None):
         raw = body if isinstance(body, bytes) else json.dumps(body, ensure_ascii=False).encode()
         self.send_response(status)
         self.send_header('Content-Type', content_type)
@@ -175,6 +235,9 @@ class Handler(BaseHTTPRequestHandler):
         if state_cookie_teams:
             secure = '; Secure' if os.environ.get('VERCEL') or os.environ.get('GOLGUESS_SECURE_COOKIE') == '1' else ''
             self.send_header('Set-Cookie', f'gg_state_teams={state_cookie_teams}; HttpOnly; SameSite=Lax; Path=/; Max-Age=34560000{secure}')
+        if state_cookie_top10:
+            secure = '; Secure' if os.environ.get('VERCEL') or os.environ.get('GOLGUESS_SECURE_COOKIE') == '1' else ''
+            self.send_header('Set-Cookie', f'gg_state_top10={state_cookie_top10}; HttpOnly; SameSite=Lax; Path=/; Max-Age=34560000{secure}')
         self.end_headers()
         self.wfile.write(raw)
 
@@ -200,7 +263,7 @@ class Handler(BaseHTTPRequestHandler):
             cookies.load(self.headers.get('Cookie', ''))
         except CookieError:
             pass
-        cookie_name = 'gg_state_teams' if mode == 'teams' else 'gg_state'
+        cookie_name = 'gg_state_top10' if mode == 'top10' else 'gg_state_teams' if mode == 'teams' else 'gg_state'
         item = cookies.get(cookie_name)
         state = decode_state(item.value, mode=mode) if item else None
         if not state:
@@ -211,6 +274,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def browser_snapshot(self, state, day, mode='players'):
         s = {'played': state['played'], 'wins': state['wins'], 'streak': state['streak']}
+        if mode == 'top10':
+            return make_top10_snapshot(state['moves'], s, day)
         if mode == 'teams':
             return make_team_snapshot(state['moves'], s, day)
         return make_snapshot(state['moves'], s, day)
@@ -226,19 +291,21 @@ class Handler(BaseHTTPRequestHandler):
         if url.path == '/api/health':
             if cookie_mode():
                 return self.send(200, {'status': 'ok', 'catalog': 'career-v1', 'players': len(PLAYERS),
-                                       'teams': len(TEAMS), 'storage': 'signed-cookie'})
+                                       'teams': len(TEAMS), 'top10': len(TOP10), 'storage': 'signed-cookie'})
             with connect() as db:
                 db.execute('SELECT 1')
             return self.send(200, {'status': 'ok', 'catalog': 'career-v1', 'players': len(PLAYERS),
-                                   'teams': len(TEAMS), 'storage': 'postgres' if database_url() else 'sqlite'})
+                                   'teams': len(TEAMS), 'top10': len(TOP10), 'storage': 'postgres' if database_url() else 'sqlite'})
         if url.path == '/api/game':
             mode = parse_qs(url.query).get('mode', ['players'])[0].lower()
-            if mode not in ('players', 'teams'):
+            if mode not in ('players', 'teams', 'top10'):
                 mode = 'players'
             if cookie_mode():
                 day = today()
                 state = self.browser_state(day, mode=mode)
                 encoded = encode_state(state)
+                if mode == 'top10':
+                    return self.send(200, self.browser_snapshot(state, day, mode='top10'), state_cookie_top10=encoded)
                 if mode == 'teams':
                     return self.send(200, self.browser_snapshot(state, day, mode='teams'), state_cookie_teams=encoded)
                 return self.send(200, self.browser_snapshot(state, day, mode='players'), state_cookie=encoded)
@@ -296,7 +363,7 @@ class Handler(BaseHTTPRequestHandler):
         mode = body.get('mode')
         if not mode:
             mode = 'teams' if 'teamId' in body else 'players'
-        if mode not in ('players', 'teams'):
+        if mode not in ('players', 'teams', 'top10'):
             mode = 'players'
         if cookie_mode():
             return self.post_browser(body, mode=mode)
@@ -309,8 +376,37 @@ class Handler(BaseHTTPRequestHandler):
             db.lock_visitor(visitor)
             day = today()
             moves = read_moves(db, visitor, day, mode=mode)
-            if body.get('day') != str(day) or body.get('version') != len(moves) or finished(moves):
-                return self.send(409, {'error': 'A rodada foi atualizada. Confira as pistas.', 'game': snapshot(db, visitor, day, mode=mode)})
+            if body.get('day') != str(day) or body.get('version') != len(moves) or finished(moves, mode=mode):
+                return self.send(409, {'error': 'A rodada foi atualizada.', 'game': snapshot(db, visitor, day, mode=mode)})
+            if mode == 'top10':
+                pos = body.get('position')
+                guess_id = body.get('playerId') or body.get('guessId')
+                if not isinstance(pos, int) or not (1 <= pos <= 10):
+                    return self.send(400, {'error': 'Posição inválida. Escolha entre 1 e 10.'})
+                if any(m['position'] == pos and m['result'] == 'correct' for m in moves):
+                    return self.send(400, {'error': 'Esta posição já foi completada.'})
+                if not guess_id or not isinstance(guess_id, str) or guess_id not in BY_ID:
+                    return self.send(400, {'error': 'Escolha um jogador da lista.'})
+                if any(m['result'] == 'correct' and m['id'] == guess_id for m in moves):
+                    return self.send(400, {'error': 'Este jogador já foi posicionado corretamente.'})
+                
+                ch = top10_answer(day)
+                ranking = ch['ranking']
+                item_at_pos = next(x for x in ranking if x['position'] == pos)
+                in_ranking_item = next((x for x in ranking if x['player_id'] == guess_id), None)
+                if guess_id == item_at_pos['player_id']:
+                    res = 'correct'
+                elif in_ranking_item is not None:
+                    res = 'wrong_pos'
+                else:
+                    res = 'incorrect'
+                
+                moves.append(dict(id=guess_id, name=BY_ID[guess_id]['name'], position=pos, result=res))
+                db.execute('INSERT INTO top10_rounds VALUES (?, ?, ?) ON CONFLICT(visitor, day) DO UPDATE SET moves=excluded.moves',
+                           (visitor, str(day), json.dumps(moves)))
+                payload = snapshot(db, visitor, day, mode='top10')
+                return self.send(200, payload)
+
             guess_id = body.get('teamId' if mode == 'teams' else 'playerId')
             if guess_id is None and 'guessId' in body:
                 guess_id = body.get('guessId')
@@ -335,12 +431,49 @@ class Handler(BaseHTTPRequestHandler):
         day = today()
         state = self.browser_state(day, mode=mode)
         moves = state['moves']
-        if body.get('day') != str(day) or body.get('version') != len(moves) or finished(moves):
+        if body.get('day') != str(day) or body.get('version') != len(moves) or finished(moves, mode=mode):
             snap = self.browser_snapshot(state, day, mode=mode)
             enc = encode_state(state)
+            if mode == 'top10':
+                return self.send(409, {'error': 'A rodada foi atualizada.', 'game': snap}, state_cookie_top10=enc)
             if mode == 'teams':
                 return self.send(409, {'error': 'A rodada foi atualizada. Confira as pistas.', 'game': snap}, state_cookie_teams=enc)
             return self.send(409, {'error': 'A rodada foi atualizada. Confira as pistas.', 'game': snap}, state_cookie=enc)
+        
+        if mode == 'top10':
+            pos = body.get('position')
+            guess_id = body.get('playerId') or body.get('guessId')
+            if not isinstance(pos, int) or not (1 <= pos <= 10):
+                return self.send(400, {'error': 'Posição inválida. Escolha entre 1 e 10.'})
+            if any(m['position'] == pos and m['result'] == 'correct' for m in moves):
+                return self.send(400, {'error': 'Esta posição já foi completada.'})
+            if not guess_id or not isinstance(guess_id, str) or guess_id not in BY_ID:
+                return self.send(400, {'error': 'Escolha um jogador da lista.'})
+            if any(m['result'] == 'correct' and m['id'] == guess_id for m in moves):
+                return self.send(400, {'error': 'Este jogador já foi posicionado corretamente.'})
+            
+            ch = top10_answer(day)
+            ranking = ch['ranking']
+            item_at_pos = next(x for x in ranking if x['position'] == pos)
+            in_ranking_item = next((x for x in ranking if x['player_id'] == guess_id), None)
+            if guess_id == item_at_pos['player_id']:
+                res = 'correct'
+            elif in_ranking_item is not None:
+                res = 'wrong_pos'
+            else:
+                res = 'incorrect'
+            
+            moves.append(dict(id=guess_id, name=BY_ID[guess_id]['name'], position=pos, result=res))
+            if finished(moves, mode='top10'):
+                state['played'] += 1
+                state['wins'] += 1
+                yesterday = str(day - timedelta(days=1))
+                state['streak'] = state['streak'] + 1 if state.get('lastWin') == yesterday else 1
+                state['lastWin'] = str(day)
+            snap = self.browser_snapshot(state, day, mode='top10')
+            enc = encode_state(state)
+            return self.send(200, snap, state_cookie_top10=enc)
+
         guess_id = body.get('teamId' if mode == 'teams' else 'playerId')
         if guess_id is None and 'guessId' in body:
             guess_id = body.get('guessId')
@@ -355,7 +488,7 @@ class Handler(BaseHTTPRequestHandler):
         correct_id = team_answer(day)['id'] if mode == 'teams' else answer(day)['id']
         result = 'skip' if guess_id is None else 'correct' if guess_id == correct_id else 'wrong'
         moves.append({'id': guess_id, 'name': catalog_by_id[guess_id]['name'] if guess_id else 'Pista revelada', 'result': result})
-        if finished(moves):
+        if finished(moves, mode=mode):
             state['played'] += 1
             if result == 'correct':
                 state['wins'] += 1

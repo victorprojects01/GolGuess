@@ -2,112 +2,142 @@
 const $ = id => document.getElementById(id);
 const copy = {
   pt: {
-    modePlayers:'Jogadores', modeTeams:'Times',
-    dailyPlayer:'Adivinhe o jogador de futebol de hoje', dailyTeam:'Adivinhe o time de futebol de hoje',
+    modePlayers:'Jogadores', modeTeams:'Times', modeTop10:'Top 10',
+    dailyPlayer:'Adivinhe o jogador de futebol de hoje', dailyTeam:'Adivinhe o time de futebol de hoje', dailyTop10:'Complete o ranking Top 10 de hoje',
     pageTitle:'GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário',
     pageTitleTeam:'GolGuess – Adivinhe o Time de Futebol | Desafio Diário',
+    pageTitleTop10:'GolGuess – Top 10 Desafio Diário de Futebol',
     aboutGame:'O <strong>GolGuess</strong> é um jogo diário de futebol feito para quem ama o esporte. A cada dia, um novo jogador misterioso é escolhido: use seus palpites para revelar pistas de liga, temporada, gols, assistências, cartões, idade e clubes até acertar o nome em até cinco tentativas.',
     aboutGameTeam:'O <strong>GolGuess</strong> Times é um jogo diário de clubes de futebol. A cada rodada, descubra o clube misterioso através de pistas sobre continente, títulos de liga, país, cores e cidade sede em até cinco tentativas.',
+    aboutGameTop10:'O <strong>GolGuess</strong> Top 10 é um desafio diário de rankings históricos e estatísticos do futebol. Em cada rodada, posicione corretamente os 10 jogadores no ranking selecionando a posição e buscando o jogador.',
     guess:'Chutar', retry:'Tentar novamente', share:'Compartilhar',
-    nextGame:'Próximo jogador em', nextTeam:'Próximo time em',
+    nextGame:'Próximo jogador em', nextTeam:'Próximo time em', nextTop10:'Próximo Top 10 em',
     guesses:'Palpites', privacy:'Privacidade', data:'Dados',
     howTitle:'Como jogar',
     help1:'Leia a primeira pista.', help2:'Escolha um jogador ou revele outra pista.', help3:'Acerte em até cinco tentativas.',
     help1Team:'Leia a primeira pista sobre o time.', help2Team:'Escolha um time ou revele outra pista.', help3Team:'Acerte o time em até cinco tentativas.',
+    help1Top10:'Digite o jogador diretamente no slot da posição.',
+    help2Top10:'Escolha o nome na lista de sugestões para enviar o palpite.',
+    help3Top10:'Verde = jogador correto na posição. Amarelo = jogador está no Top 10, mas em outra posição. Vermelho = não faz parte do Top 10.',
     play:'Jogar', statsTitle:'Estatísticas', played:'Partidas', winRate:'Vitórias', streak:'Sequência',
     privacyText:'Um cookie anônimo mantém sua rodada neste navegador. Não pedimos nome ou e-mail.',
     catalogText:'jogadores conhecidos de sete grandes ligas.',
     catalogTeamsText:'times das 13 principais ligas das Américas e Europa.',
+    catalogTop10Text:'rankings históricos verificados com estatísticas e prêmios do futebol.',
     methodology:'Créditos e metodologia ↗', copy:'Copiar resultado',
     labels:['Liga e temporada','Gols e assistências','Cartões','Idade atual','Time da temporada'],
     teamLabels:['Continente','Títulos de liga','País','Cores','Cidade'],
-    locked:'Bloqueada', playerPlaceholder:'Qual jogador?', teamPlaceholder:'Qual time?',
+    locked:'Bloqueada', playerPlaceholder:'Qual jogador?', teamPlaceholder:'Qual time?', slotPlaceholder:'Buscar jogador…',
+    posLabel:'Posição:', posOption: n => `${n}º lugar`,
     skip:'Pular · revelar pista', skipName:'Pista revelada',
     noResults:'Nenhum jogador encontrado', noTeamsResults:'Nenhum time encontrado',
     selected:'Jogador selecionado.', selectedTeam:'Time selecionado.',
     pick:'Selecione um nome da lista.', pickTeam:'Selecione um time da lista.',
     newClue:'Nova pista revelada.', wrong:'Não foi dessa vez. Nova pista revelada.',
+    top10Correct:'Na mosca! Posição correta.', top10WrongPos:'Está no Top 10, mas em outra posição!', top10Incorrect:'Não está neste Top 10.',
     loadError:'Não conseguimos acessar o jogo. Tente novamente.',
     guessError:'Não foi possível registrar o palpite.', searchError:'A busca falhou. Tente novamente.',
-    goal:n=>`Golaço! ${n}/5`, loss:name=>`Era ${name}.`, lossText:'Hoje não deu. Amanhã tem mais.',
-    gameOver:'FIM DE JOGO', shareLine:'Você conhece esse jogador?', shareLineTeams:'Você conhece esse time?',
+    goal:n=>`Golaço! ${n}/5`, top10Win:n=>`Parabéns! Ranking concluído em ${n} palpites!`,
+    loss:name=>`Era ${name}.`, lossText:'Hoje não deu. Amanhã tem mais.',
+    gameOver:'FIM DE JOGO', shareLine:'Você conhece esse jogador?', shareLineTeams:'Você conhece esse time?', shareLineTop10:'Consegue completar este Top 10?',
     copied:'Resultado copiado ✓', yellow:'cartões amarelos', red:'cartões vermelhos', years:'anos',
     goals:'gols', assists:'assist.', titleSingular:'título', titlePlural:'títulos',
     attempt:'Tentativa', available:'disponível', wrongAttempt:'incorreta', skippedAttempt:'pulada',
     correctAttempt:'correta', close:'Fechar', stats:'Estatísticas', help:'Como jogar',
-    language:'Selecionar idioma', searchLabel:'Jogadores encontrados', searchTeamsLabel:'Times encontrados'
+    language:'Selecionar idioma', searchLabel:'Jogadores encontrados', searchTeamsLabel:'Times encontrados',
+    solvedProgress:(n, tot)=>`${n}/${tot} posições acertadas`
   },
   en: {
-    modePlayers:'Players', modeTeams:'Teams',
-    dailyPlayer:'Guess today’s football player', dailyTeam:'Guess today’s football club',
+    modePlayers:'Players', modeTeams:'Teams', modeTop10:'Top 10',
+    dailyPlayer:'Guess today’s football player', dailyTeam:'Guess today’s football club', dailyTop10:'Complete today’s Top 10 ranking',
     pageTitle:'GolGuess – Guess the Football Player | Daily Challenge',
     pageTitleTeam:'GolGuess – Guess the Football Club | Daily Challenge',
+    pageTitleTop10:'GolGuess – Top 10 Daily Football Challenge',
     aboutGame:'<strong>GolGuess</strong> is a daily football trivia game. Every day, a new mystery player is selected: make your guesses to reveal clues about league, season, goals, assists, cards, age, and clubs until you find the answer in up to 5 attempts.',
     aboutGameTeam:'<strong>GolGuess</strong> Teams is a daily football club trivia challenge. Guess today\'s mystery football club with clues about continent, league titles, country, colors, and home city in up to 5 attempts.',
+    aboutGameTop10:'<strong>GolGuess</strong> Top 10 is a daily challenge of football history and statistics. In each round, correctly position 10 players in the ranking by picking a position and searching for the player.',
     guess:'Guess', retry:'Try again', share:'Share',
-    nextGame:'Next player in', nextTeam:'Next team in',
+    nextGame:'Next player in', nextTeam:'Next team in', nextTop10:'Next Top 10 in',
     guesses:'Guesses', privacy:'Privacy', data:'Data',
     howTitle:'How to play',
     help1:'Read the first clue.', help2:'Pick a player or reveal another clue.', help3:'Find the player in five tries.',
     help1Team:'Read the first clue about the club.', help2Team:'Pick a team or reveal another clue.', help3Team:'Find the team in five tries.',
+    help1Top10:'Type the player name directly in the position slot.',
+    help2Top10:'Select the player from the suggestions to submit your guess.',
+    help3Top10:'Green = correct player in this position. Yellow = player is in the Top 10, but in a different position. Red = not in this Top 10.',
     play:'Play', statsTitle:'Statistics', played:'Played', winRate:'Win rate', streak:'Streak',
     privacyText:'An anonymous cookie keeps your round in this browser. We do not ask for your name or email.',
     catalogText:'well-known players from seven major leagues.',
     catalogTeamsText:'teams from 13 top leagues across the Americas and Europe.',
+    catalogTop10Text:'verified historical rankings with football awards and records.',
     methodology:'Credits and methodology ↗', copy:'Copy result',
     labels:['League and season','Goals and assists','Cards','Current age','Season club'],
     teamLabels:['Continent','League titles','Country','Colors','City'],
-    locked:'Locked', playerPlaceholder:'Which player?', teamPlaceholder:'Which team?',
+    locked:'Locked', playerPlaceholder:'Which player?', teamPlaceholder:'Which team?', slotPlaceholder:'Search player…',
+    posLabel:'Position:', posOption: n => `${n}${n===1?'st':n===2?'nd':n===3?'rd':'th'} place`,
     skip:'Skip · reveal clue', skipName:'Clue revealed',
     noResults:'No players found', noTeamsResults:'No teams found',
     selected:'Player selected.', selectedTeam:'Team selected.',
     pick:'Choose a name from the list.', pickTeam:'Choose a team from the list.',
     newClue:'New clue revealed.', wrong:'Not this time. New clue revealed.',
+    top10Correct:'Bullseye! Correct position.', top10WrongPos:'In the Top 10, but at another position!', top10Incorrect:'Not in this Top 10.',
     loadError:'We could not reach the game. Try again.',
     guessError:'We could not save your guess.', searchError:'Search failed. Try again.',
-    goal:n=>`Goal! ${n}/5`, loss:name=>`It was ${name}.`, lossText:'Not today. Come back tomorrow.',
-    gameOver:'FULL TIME', shareLine:'Do you know this player?', shareLineTeams:'Do you know this team?',
+    goal:n=>`Goal! ${n}/5`, top10Win:n=>`Congratulations! Completed in ${n} guesses!`,
+    loss:name=>`It was ${name}.`, lossText:'Not today. Come back tomorrow.',
+    gameOver:'FULL TIME', shareLine:'Do you know this player?', shareLineTeams:'Do you know this team?', shareLineTop10:'Can you complete this Top 10?',
     copied:'Result copied ✓', yellow:'yellow cards', red:'red cards', years:'years',
     goals:'goals', assists:'assists', titleSingular:'title', titlePlural:'titles',
     attempt:'Attempt', available:'available', wrongAttempt:'wrong', skippedAttempt:'skipped',
     correctAttempt:'correct', close:'Close', stats:'Statistics', help:'How to play',
-    language:'Select language', searchLabel:'Players found', searchTeamsLabel:'Teams found'
+    language:'Select language', searchLabel:'Players found', searchTeamsLabel:'Teams found',
+    solvedProgress:(n, tot)=>`${n}/${tot} positions solved`
   },
   es: {
-    modePlayers:'Jugadores', modeTeams:'Times',
-    dailyPlayer:'Adivina el futbolista de hoy', dailyTeam:'Adivina el equipo de fútbol de hoy',
+    modePlayers:'Jugadores', modeTeams:'Times', modeTop10:'Top 10',
+    dailyPlayer:'Adivina el futbolista de hoy', dailyTeam:'Adivina el equipo de fútbol de hoy', dailyTop10:'Completa el ranking Top 10 de hoy',
     pageTitle:'GolGuess – Adivina el Futbolista | Desafío Diario',
     pageTitleTeam:'GolGuess – Adivina el Equipo | Desafío Diario',
+    pageTitleTop10:'GolGuess – Top 10 Desafío Diario de Fútbol',
     aboutGame:'<strong>GolGuess</strong> es un juego diario de fútbol. Cada día se selecciona un nuevo jugador misterioso: usa tus intentos para descubrir pistas sobre liga, temporada, goles, asistencias, tarjetas, edad y clubes hasta acertar en un máximo de 5 intentos.',
     aboutGameTeam:'<strong>GolGuess</strong> Equipos es un desafío diario de clubes de fútbol. Adivina el club misterioso con pistas de continente, títulos de liga, país, colores y ciudad en hasta 5 intentos.',
+    aboutGameTop10:'<strong>GolGuess</strong> Top 10 es un desafío diario de clasificaciones históricas de fútbol. En cada ronda, ubica a los 10 futbolistas exactamente en su posición del ranking.',
     guess:'Adivinar', retry:'Intentar de nuevo', share:'Compartir',
-    nextGame:'Próximo jugador en', nextTeam:'Próximo equipo en',
+    nextGame:'Próximo jugador en', nextTeam:'Próximo equipo en', nextTop10:'Próximo Top 10 en',
     guesses:'Intentos', privacy:'Privacidade', data:'Datos',
     howTitle:'Cómo jugar',
     help1:'Lee la primera pista.', help2:'Elige un jugador o revela otra pista.', help3:'Acierta en cinco intentos.',
     help1Team:'Lee la primera pista sobre el club.', help2Team:'Elige un equipo o revela otra pista.', help3Team:'Acierta el equipo en cinco intentos.',
+    help1Top10:'Escribe el futbolista directamente en la casilla de la posición.',
+    help2Top10:'Selecciona el futbolista de la lista de sugerencias para enviar tu pronóstico.',
+    help3Top10:'Verde = jugador correcto en esa posición. Amarillo = está en el Top 10, pero en otra posición. Rojo = no pertenece a este Top 10.',
     play:'Jugar', statsTitle:'Estadísticas', played:'Partidas', winRate:'Victorias', streak:'Racha',
     privacyText:'Una cookie anónima guarda tu partida en este navegador. No pedimos nombre ni correo.',
     catalogText:'jugadores conocidos de siete grandes ligas.',
     catalogTeamsText:'equipos de las 13 principales ligas de América y Europa.',
-    methodology:'Créditos y metodología ↗', copy:'Copiar resultado',
+    catalogTop10Text:'rankings históricos verificados con premios y estadísticas del fútbol.',
+    methodology:'Créditos e metodología ↗', copy:'Copiar resultado',
     labels:['Liga y temporada','Goles y asistencias','Tarjetas','Edad actual','Club de la temporada'],
     teamLabels:['Continente','Títulos de liga','País','Colores','Ciudad'],
-    locked:'Bloqueada', playerPlaceholder:'¿Qué jugador?', teamPlaceholder:'¿Qué equipo?',
+    locked:'Bloqueada', playerPlaceholder:'¿Qué jugador?', teamPlaceholder:'¿Qué equipo?', slotPlaceholder:'Buscar futbolista…',
+    posLabel:'Posición:', posOption: n => `${n}º puesto`,
     skip:'Saltar · revelar pista', skipName:'Pista revelada',
     noResults:'No se encontraron jugadores', noTeamsResults:'No se encontraron equipos',
     selected:'Jugador seleccionado.', selectedTeam:'Equipo seleccionado.',
     pick:'Elige un nombre de la lista.', pickTeam:'Elige un equipo de la lista.',
     newClue:'Nueva pista revelada.', wrong:'No fue esta vez. Nueva pista revelada.',
+    top10Correct:'¡En el blanco! Posición correcta.', top10WrongPos:'¡Está en el Top 10, pero en otra posición!', top10Incorrect:'No está en este Top 10.',
     loadError:'No pudimos acceder al juego. Inténtalo de nuevo.',
     guessError:'No pudimos guardar tu intento.', searchError:'La búsqueda falló. Inténtalo de nuevo.',
-    goal:n=>`¡Golazo! ${n}/5`, loss:name=>`Era ${name}.`, lossText:'Hoy no pudo ser. Mañana hay otra.',
-    gameOver:'FINAL', shareLine:'¿Conoces a este jugador?', shareLineTeams:'¿Conoces a este equipo?',
+    goal:n=>`¡Golazo! ${n}/5`, top10Win:n=>`¡Felicidades! ¡Completado en ${n} intentos!`,
+    loss:name=>`Era ${name}.`, lossText:'Hoy no pudo ser. Mañana hay otra.',
+    gameOver:'FINAL', shareLine:'¿Conoces a este jugador?', shareLineTeams:'¿Conoces a este equipo?', shareLineTop10:'¿Puedes completar este Top 10?',
     copied:'Resultado copiado ✓', yellow:'tarjetas amarillas', red:'tarjetas rojas', years:'años',
     goals:'goles', assists:'asist.', titleSingular:'título', titlePlural:'títulos',
     attempt:'Intento', available:'disponible', wrongAttempt:'incorrecto', skippedAttempt:'saltado',
     correctAttempt:'correcto', close:'Cerrar', stats:'Estadísticas', help:'Cómo jugar',
-    language:'Seleccionar idioma', searchLabel:'Jugadores encontrados', searchTeamsLabel:'Equipos encontrados'
+    language:'Seleccionar idioma', searchLabel:'Jugadores encontrados', searchTeamsLabel:'Equipos encontrados',
+    solvedProgress:(n, tot)=>`${n}/${tot} posiciones acertadas`
   }
 };
 let lang = (() => { try { return localStorage.getItem('golguess-lang') || 'pt'; } catch { return 'pt'; } })();
@@ -116,17 +146,20 @@ let mode = (() => {
   try {
     const p = new URLSearchParams(window.location.search);
     const m = p.get('jogo') || p.get('mode');
+    if (m === 'top10' || m === 'top-10') return 'top10';
     if (m === 'times' || m === 'teams') return 'teams';
-    return localStorage.getItem('golguess-mode') === 'teams' ? 'teams' : 'players';
+    const saved = localStorage.getItem('golguess-mode');
+    return (saved === 'teams' || saved === 'top10') ? saved : 'players';
   } catch {
     return 'players';
   }
 })();
 let game, selected = null, results = [], active = -1, busy = false, loading = false;
+let currentPos = 1;
 let queryTimer, searchController, blurTimer, serverOffset = 0, nextRefresh = 0;
 const input = $('guessInput');
 const channel = 'BroadcastChannel' in window ? new BroadcastChannel('golguess-channel') : null;
-const marks = {correct:'🟩', wrong:'🟥', skip:'🟨'};
+const marks = {correct:'🟩', wrong:'🟥', skip:'🟨', wrong_pos:'🟨', incorrect:'🟥'};
 const t = key => copy[lang][key];
 
 function trackEvent(name, params = {}) {
@@ -154,23 +187,32 @@ function resetSearch() {
 function controls() {
   input.disabled = busy || !game || game.done;
   $('guessBtn').disabled = input.disabled || !selected;
-  $('skipBtn').disabled = input.disabled || game?.clues.length >= 5;
-  $('skipBtn').hidden = !!game && (game.done || game.clues.length >= 5);
+  const isTop10 = mode === 'top10';
+  $('skipBtn').disabled = input.disabled || isTop10 || game?.clues?.length >= 5;
+  $('skipBtn').hidden = isTop10 || (!!game && (game.done || game.clues?.length >= 5));
   $('clearBtn').disabled = busy;
+  $('top10Header').hidden = !isTop10;
+  document.querySelectorAll('input.slot-input').forEach(inp => {
+    inp.disabled = busy || !game || game.done;
+  });
 }
 function updateModeButtons() {
-  const isTeams = mode === 'teams';
-  $('modePlayersBtn')?.classList.toggle('active', !isTeams);
-  $('modePlayersBtn')?.setAttribute('aria-selected', String(!isTeams));
-  $('modeTeamsBtn')?.classList.toggle('active', isTeams);
-  $('modeTeamsBtn')?.setAttribute('aria-selected', String(isTeams));
+  $('modePlayersBtn')?.classList.toggle('active', mode === 'players');
+  $('modePlayersBtn')?.setAttribute('aria-selected', String(mode === 'players'));
+  $('modeTeamsBtn')?.classList.toggle('active', mode === 'teams');
+  $('modeTeamsBtn')?.setAttribute('aria-selected', String(mode === 'teams'));
+  $('modeTop10Btn')?.classList.toggle('active', mode === 'top10');
+  $('modeTop10Btn')?.setAttribute('aria-selected', String(mode === 'top10'));
 }
 function switchMode(newMode) {
   if (mode === newMode && game) return;
   mode = newMode;
   try { localStorage.setItem('golguess-mode', mode); } catch {}
   const url = new URL(window.location.href);
-  if (mode === 'teams') {
+  if (mode === 'top10') {
+    url.searchParams.set('jogo', 'top10');
+    url.searchParams.delete('mode');
+  } else if (mode === 'teams') {
     url.searchParams.set('jogo', 'times');
     url.searchParams.delete('mode');
   } else {
@@ -180,8 +222,9 @@ function switchMode(newMode) {
   window.history.replaceState({}, '', url.pathname + (url.search ? url.search : ''));
   trackEvent('select_content', { content_type: 'game_mode', item_id: mode });
   if (typeof window.gtag === 'function') {
+    const pageTitles = {players: t('pageTitle'), teams: t('pageTitleTeam'), top10: t('pageTitleTop10')};
     window.gtag('event', 'page_view', {
-      page_title: mode === 'teams' ? t('pageTitleTeam') : t('pageTitle'),
+      page_title: pageTitles[mode] || t('pageTitle'),
       page_location: window.location.href,
       page_path: window.location.pathname + (window.location.search || '')
     });
@@ -194,26 +237,32 @@ function switchMode(newMode) {
 function applyLanguage() {
   document.documentElement.lang = {pt:'pt-BR',en:'en',es:'es'}[lang];
   document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
-  const isTeams = mode === 'teams';
-  document.title = isTeams ? t('pageTitleTeam') : t('pageTitle');
-  $('roundKicker').textContent = isTeams ? t('dailyTeam') : t('dailyPlayer');
+  
+  const titles = {players: t('pageTitle'), teams: t('pageTitleTeam'), top10: t('pageTitleTop10')};
+  const kickers = {players: t('dailyPlayer'), teams: t('dailyTeam'), top10: t('dailyTop10')};
+  const abouts = {players: t('aboutGame'), teams: t('aboutGameTeam'), top10: t('aboutGameTop10')};
+  const nextLabels = {players: t('nextGame'), teams: t('nextTeam'), top10: t('nextTop10')};
+  const catalogs = {players: t('catalogText'), teams: t('catalogTeamsText'), top10: t('catalogTop10Text')};
+
+  document.title = titles[mode] || t('pageTitle');
+  $('roundKicker').textContent = kickers[mode] || t('dailyPlayer');
   if ($('aboutGameText')) {
-    $('aboutGameText').innerHTML = isTeams ? t('aboutGameTeam') : t('aboutGame');
+    $('aboutGameText').innerHTML = abouts[mode] || t('aboutGame');
   }
-  input.placeholder = isTeams ? t('teamPlaceholder') : t('playerPlaceholder');
+  input.placeholder = mode === 'teams' ? t('teamPlaceholder') : t('playerPlaceholder');
   $('skipBtn').textContent = t('skip');
-  if ($('nextGameLabel')) $('nextGameLabel').textContent = isTeams ? t('nextTeam') : t('nextGame');
+  if ($('nextGameLabel')) $('nextGameLabel').textContent = nextLabels[mode] || t('nextGame');
   $('statsBtn').setAttribute('aria-label', t('stats')); $('statsBtn').title = t('stats');
   $('helpBtn').setAttribute('aria-label', t('help')); $('helpBtn').title = t('help');
   $('languageMenu').querySelector('summary').setAttribute('aria-label', t('language'));
-  $('suggestions').setAttribute('aria-label', isTeams ? t('searchTeamsLabel') : t('searchLabel'));
+  $('suggestions').setAttribute('aria-label', mode === 'teams' ? t('searchTeamsLabel') : t('searchLabel'));
   document.querySelectorAll('.dialog-close').forEach(button => button.setAttribute('aria-label', t('close')));
   document.querySelectorAll('[data-lang]').forEach(button => button.setAttribute('aria-checked', String(button.dataset.lang === lang)));
 
-  if ($('helpStep1')) $('helpStep1').textContent = isTeams ? t('help1Team') : t('help1');
-  if ($('helpStep2')) $('helpStep2').textContent = isTeams ? t('help2Team') : t('help2');
-  if ($('helpStep3')) $('helpStep3').textContent = isTeams ? t('help3Team') : t('help3');
-  if ($('catalogLabel')) $('catalogLabel').textContent = isTeams ? t('catalogTeamsText') : t('catalogText');
+  if ($('helpStep1')) $('helpStep1').textContent = mode === 'top10' ? t('help1Top10') : mode === 'teams' ? t('help1Team') : t('help1');
+  if ($('helpStep2')) $('helpStep2').textContent = mode === 'top10' ? t('help2Top10') : mode === 'teams' ? t('help2Team') : t('help2');
+  if ($('helpStep3')) $('helpStep3').textContent = mode === 'top10' ? t('help3Top10') : mode === 'teams' ? t('help3Team') : t('help3');
+  if ($('catalogLabel')) $('catalogLabel').textContent = catalogs[mode] || t('catalogText');
 
   updateModeButtons();
   if (game) render();
@@ -286,7 +335,229 @@ function clueContent(clue, index) {
   } else value.textContent = clue.value;
   return value;
 }
+function selectPosition(pos) {
+  currentPos = pos;
+  const target = document.querySelector(`input.slot-input[data-position="${pos}"]`);
+  target?.focus();
+}
+
+function attachSlotAutocomplete(li, slotInput, clearBtn, suggestionsUl, slot) {
+  let slotResults = [];
+  let slotActiveIndex = -1;
+  let slotTimer = null;
+  let slotSearchController = null;
+  let slotBlurTimer = null;
+
+  function closeSlotSearch() {
+    clearTimeout(slotBlurTimer);
+    clearTimeout(slotTimer);
+    slotSearchController?.abort();
+    suggestionsUl.hidden = true;
+    slotInput.setAttribute('aria-expanded', 'false');
+    li.classList.remove('active-slot');
+    slotActiveIndex = -1;
+  }
+
+  function highlightSlotSuggestion(index) {
+    slotActiveIndex = index;
+    [...suggestionsUl.children].forEach((el, i) => {
+      el.setAttribute('aria-selected', String(i === slotActiveIndex));
+    });
+    if (slotActiveIndex >= 0 && suggestionsUl.children[slotActiveIndex]) {
+      suggestionsUl.children[slotActiveIndex].scrollIntoView({ block: 'nearest' });
+      slotInput.setAttribute('aria-activedescendant', `slot-${slot.position}-opt-${slotActiveIndex}`);
+    }
+  }
+
+  slotInput.addEventListener('input', () => {
+    const query = slotInput.value.trim().toLowerCase();
+    clearBtn.hidden = !slotInput.value;
+    clearTimeout(slotTimer);
+    slotSearchController?.abort();
+
+    if (!query) {
+      closeSlotSearch();
+      return;
+    }
+
+    slotTimer = setTimeout(async () => {
+      slotSearchController = new AbortController();
+      try {
+        const resp = await fetch(`/api/players?q=${encodeURIComponent(query)}`, { signal: slotSearchController.signal });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        if (slotSearchController.signal.aborted || slotInput.value.trim().toLowerCase() !== query) return;
+
+        const solvedPlayerIds = new Set((game?.slots || []).filter(s => s.status === 'correct').map(s => s.player_id));
+        slotResults = data.filter(p => !solvedPlayerIds.has(p.id));
+
+        slotActiveIndex = -1;
+        if (!slotResults.length) {
+          const empty = document.createElement('li');
+          empty.className = 'empty';
+          empty.setAttribute('role', 'status');
+          empty.textContent = t('noResults');
+          suggestionsUl.replaceChildren(empty);
+        } else {
+          suggestionsUl.replaceChildren(...slotResults.map((item, idx) => {
+            const itemLi = document.createElement('li');
+            itemLi.id = `slot-${slot.position}-opt-${idx}`;
+            itemLi.setAttribute('role', 'option');
+            itemLi.setAttribute('aria-selected', 'false');
+            itemLi.textContent = item.name;
+            itemLi.addEventListener('pointerdown', (e) => {
+              e.preventDefault();
+              closeSlotSearch();
+              currentPos = slot.position;
+              submit(item.id, slot.position);
+            });
+            return itemLi;
+          }));
+        }
+        suggestionsUl.hidden = false;
+        slotInput.setAttribute('aria-expanded', 'true');
+        li.classList.add('active-slot');
+      } catch (e) {
+        if (e.name !== 'AbortError') feedback(t('searchError'), true);
+      }
+    }, 180);
+  });
+
+  slotInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeSlotSearch();
+      return;
+    }
+    if (!suggestionsUl.hidden && slotResults.length) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        highlightSlotSuggestion((slotActiveIndex + 1) % slotResults.length);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        highlightSlotSuggestion((slotActiveIndex - 1 + slotResults.length) % slotResults.length);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const chosen = (slotActiveIndex >= 0 && slotResults[slotActiveIndex]) ? slotResults[slotActiveIndex] : (slotResults.length >= 1 ? slotResults[0] : null);
+        if (chosen) {
+          closeSlotSearch();
+          currentPos = slot.position;
+          submit(chosen.id, slot.position);
+        }
+      }
+    }
+  });
+
+  slotInput.addEventListener('focus', () => {
+    clearTimeout(slotBlurTimer);
+    currentPos = slot.position;
+    li.classList.add('active-slot');
+    if (slotInput.value.trim() && suggestionsUl.hidden) {
+      slotInput.dispatchEvent(new Event('input'));
+    }
+  });
+
+  slotInput.addEventListener('blur', () => {
+    slotBlurTimer = setTimeout(() => {
+      closeSlotSearch();
+    }, 200);
+  });
+
+  suggestionsUl.addEventListener('pointerdown', () => {
+    clearTimeout(slotBlurTimer);
+  });
+
+  clearBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    slotInput.value = '';
+    clearBtn.hidden = true;
+    closeSlotSearch();
+    slotInput.focus();
+  });
+}
+
+function renderTop10Slots() {
+  const challengeTitle = game.challenge?.title?.[lang] || game.challenge?.title?.pt || 'Top 10';
+  $('top10Title').textContent = challengeTitle;
+  $('top10Progress').textContent = t('solvedProgress')(game.solvedCount || 0, 10);
+
+  $('clues').replaceChildren(...game.slots.map(slot => {
+    const li = document.createElement('li');
+    li.dataset.position = String(slot.position);
+    li.className = `clue top10-slot ${slot.status || ''}`;
+
+    const number = document.createElement('span');
+    number.className = 'clue-index';
+    number.textContent = slot.position;
+
+    const flag = document.createElement('span');
+    flag.className = 'slot-flag';
+    flag.textContent = slot.flag || '⚽';
+    flag.title = slot.country || '';
+
+    li.append(number, flag);
+
+    if (slot.revealed) {
+      const solvedDiv = document.createElement('div');
+      solvedDiv.className = 'slot-solved-row';
+      const name = document.createElement('span');
+      name.className = 'slot-name';
+      name.textContent = slot.name;
+      solvedDiv.append(name);
+      if (slot.value) {
+        const metric = document.createElement('span');
+        metric.className = 'slot-metric';
+        metric.textContent = slot.value;
+        solvedDiv.append(metric);
+      }
+      li.append(solvedDiv);
+    } else if (!game.done) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'slot-input-wrapper';
+
+      const slotInput = document.createElement('input');
+      slotInput.type = 'text';
+      slotInput.className = 'slot-input';
+      slotInput.dataset.position = String(slot.position);
+      slotInput.placeholder = t('slotPlaceholder');
+      slotInput.autocomplete = 'off';
+      slotInput.spellcheck = false;
+      slotInput.disabled = busy;
+      slotInput.setAttribute('role', 'combobox');
+      slotInput.setAttribute('aria-autocomplete', 'list');
+      slotInput.setAttribute('aria-expanded', 'false');
+
+      const clearBtn = document.createElement('button');
+      clearBtn.type = 'button';
+      clearBtn.className = 'slot-clear-btn';
+      clearBtn.setAttribute('aria-label', t('close') || 'Limpar');
+      clearBtn.textContent = '×';
+      clearBtn.hidden = true;
+
+      const suggestionsUl = document.createElement('ul');
+      suggestionsUl.className = 'slot-suggestions';
+      suggestionsUl.setAttribute('role', 'listbox');
+      suggestionsUl.setAttribute('aria-label', t('searchLabel'));
+      suggestionsUl.hidden = true;
+
+      wrapper.append(slotInput, clearBtn);
+      li.append(wrapper, suggestionsUl);
+
+      attachSlotAutocomplete(li, slotInput, clearBtn, suggestionsUl, slot);
+    } else {
+      const unsolvedDiv = document.createElement('div');
+      unsolvedDiv.className = 'slot-unsolved-row';
+      unsolvedDiv.textContent = '—';
+      li.append(unsolvedDiv);
+    }
+
+    return li;
+  }));
+}
 function renderClues() {
+  if (mode === 'top10') {
+    renderTop10Slots();
+    return;
+  }
   const labels = mode === 'teams' ? t('teamLabels') : t('labels');
   $('clues').replaceChildren(...labels.map((label, index) => {
     const clue = game.clues[index];
@@ -300,6 +571,19 @@ function renderClues() {
   }));
 }
 function renderAttempts() {
+  if (mode === 'top10') {
+    // Show green indicators for solved positions out of 10
+    $('attemptDots').replaceChildren(...Array.from({length:10}, (_, index) => {
+      const pos = index + 1;
+      const solved = game.slots?.some(s => s.position === pos && s.status === 'correct');
+      const marker = document.createElement('span');
+      marker.className = `attempt-marker ${solved ? 'correct' : ''}`;
+      marker.textContent = solved ? '✓' : pos;
+      marker.setAttribute('aria-label', `${t('attempt')} ${pos}: ${solved ? t('correctAttempt') : t('available')}`);
+      return marker;
+    }));
+    return;
+  }
   $('attemptDots').replaceChildren(...Array.from({length:5}, (_, index) => {
     const move = game.moves[index];
     const marker = document.createElement('span'); marker.className = `attempt-marker ${move?.result || ''}`;
@@ -312,23 +596,36 @@ function render() {
   $('game').setAttribute('aria-busy', 'false');
   $('dayNumber').textContent = '#' + String(game.number).padStart(3, '0');
   renderClues(); renderAttempts();
-  $('playArea').hidden = game.done; $('result').hidden = !game.done;
+  $('playArea').hidden = game.done || mode === 'top10'; $('result').hidden = !game.done;
   $('historyArea').hidden = !game.moves.length;
   $('history').replaceChildren(...game.moves.map(move => {
     const li = document.createElement('li'); li.className = move.result;
-    const mark = document.createElement('b'); mark.setAttribute('aria-hidden', 'true'); mark.textContent = {wrong:'×',correct:'✓',skip:'—'}[move.result];
-    const name = document.createElement('span'); name.textContent = move.result === 'skip' ? t('skipName') : move.name;
+    const mark = document.createElement('b'); mark.setAttribute('aria-hidden', 'true');
+    mark.textContent = {wrong:'×',correct:'✓',skip:'—',wrong_pos:'↔',incorrect:'×'}[move.result] || '•';
+    const name = document.createElement('span');
+    if (mode === 'top10') {
+      const posBadge = `[${move.position}º] `;
+      name.textContent = posBadge + move.name;
+    } else {
+      name.textContent = move.result === 'skip' ? t('skipName') : move.name;
+    }
     li.append(mark, name); return li;
   }));
   $('played').textContent = game.stats.played;
   $('wins').textContent = (game.stats.played ? Math.round(game.stats.wins / game.stats.played * 100) : 0) + '%';
   $('streak').textContent = game.stats.streak;
-  $('catalogCount').textContent = mode === 'teams' ? (game.totalTeams || 269) : game.totalPlayers;
+  $('catalogCount').textContent = mode === 'top10' ? (game.totalChallenges || 18) : mode === 'teams' ? (game.totalTeams || 269) : game.totalPlayers;
   if (game.done) {
     $('result').classList.toggle('lost', !game.won);
     $('resultKicker').textContent = t('gameOver');
-    $('resultTitle').textContent = game.won ? t('goal')(game.moves.length) : t('loss')(game.answer);
-    $('resultText').textContent = game.won ? game.answer : t('lossText');
+    if (mode === 'top10') {
+      const title = game.challenge?.title?.[lang] || game.challenge?.title?.pt || 'Top 10';
+      $('resultTitle').textContent = t('top10Win')(game.moves.length);
+      $('resultText').textContent = title;
+    } else {
+      $('resultTitle').textContent = game.won ? t('goal')(game.moves.length) : t('loss')(game.answer);
+      $('resultText').textContent = game.won ? game.answer : t('lossText');
+    }
     $('resultSquares').textContent = squares();
   }
   controls(); tick();
@@ -392,7 +689,13 @@ input.addEventListener('input', () => {
       if (!response.ok) throw new Error();
       const data = await response.json();
       if (input.value.trim() !== query || controller.signal.aborted) return;
-      results = data.filter(item => !game.moves.some(move => move.id === item.id)); showResults();
+      if (mode === 'top10') {
+        const solvedIds = new Set(game.slots?.filter(s => s.status === 'correct').map(s => s.player_id));
+        results = data.filter(item => !solvedIds.has(item.id));
+      } else {
+        results = data.filter(item => !game.moves.some(move => move.id === item.id));
+      }
+      showResults();
     } catch (error) { if (error.name !== 'AbortError') feedback(t('searchError'), true); }
   }, 180);
 });
@@ -407,8 +710,10 @@ input.addEventListener('blur', () => { blurTimer = setTimeout(closeSearch, 200);
 input.addEventListener('focus', () => clearTimeout(blurTimer));
 $('suggestions').addEventListener('pointerdown', () => clearTimeout(blurTimer));
 $('clearBtn').onclick = () => { resetSearch(); controls(); feedback(); input.focus(); };
-async function submit(guessId) {
+
+async function submit(guessId, slotPos = null) {
   if (busy || !game || game.done) return;
+  const targetPos = slotPos !== null ? slotPos : currentPos;
   busy = true; controls(); feedback(); closeSearch();
   try {
     const wasDone = game?.done;
@@ -421,8 +726,9 @@ async function submit(guessId) {
       day: game.day,
       version: game.version,
       mode,
-      playerId: mode === 'players' ? guessId : undefined,
-      teamId: mode === 'teams' ? guessId : undefined
+      playerId: (mode === 'players' || mode === 'top10') ? guessId : undefined,
+      teamId: mode === 'teams' ? guessId : undefined,
+      position: mode === 'top10' ? targetPos : undefined
     };
     const response = await fetch('/api/guess', {
       method:'POST',
@@ -440,7 +746,34 @@ async function submit(guessId) {
         round_number: data.number
       });
     }
-    feedback(game.done ? '' : guessId === null ? t('newClue') : t('wrong'));
+    if (mode === 'top10') {
+      const lastMove = data.moves?.[data.moves.length - 1];
+      if (lastMove?.result === 'correct') {
+        feedback(t('top10Correct'));
+        if (!data.done) {
+          const nextSlot = data.slots?.find(s => !s.revealed);
+          if (nextSlot) {
+            setTimeout(() => {
+              document.querySelector(`input.slot-input[data-position="${nextSlot.position}"]`)?.focus();
+            }, 60);
+          }
+        }
+      } else if (lastMove?.result === 'wrong_pos') {
+        feedback(t('top10WrongPos'));
+        setTimeout(() => {
+          const inputEl = document.querySelector(`input.slot-input[data-position="${targetPos}"]`);
+          if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+        }, 60);
+      } else {
+        feedback(t('top10Incorrect'), true);
+        setTimeout(() => {
+          const inputEl = document.querySelector(`input.slot-input[data-position="${targetPos}"]`);
+          if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+        }, 60);
+      }
+    } else {
+      feedback(game.done ? '' : guessId === null ? t('newClue') : t('wrong'));
+    }
     if (game.done) { $('resultTitle').tabIndex = -1; $('resultTitle').focus({preventScroll:true}); }
   } catch { feedback(t('guessError'), true); $('retryBtn').hidden = false; }
   finally { busy = false; controls(); }
@@ -448,6 +781,7 @@ async function submit(guessId) {
 $('guessForm').onsubmit = event => { event.preventDefault(); if (selected) submit(selected.id); else feedback(mode === 'teams' ? t('pickTeam') : t('pick')); };
 $('skipBtn').onclick = () => submit(null);
 $('retryBtn').onclick = loadGame;
+
 function tick() {
   if (!game) return;
   const remaining = Math.max(0, Math.ceil((Date.parse(game.nextAt) - Date.now() - serverOffset) / 1000));
@@ -455,8 +789,20 @@ function tick() {
   document.querySelectorAll('.countdown').forEach(element => element.textContent = text);
   if (!remaining && Date.now() > nextRefresh) { nextRefresh = Date.now() + 10000; loadGame(); }
 }
-function squares() { return Array.from({length:5}, (_, index) => marks[game.moves[index]?.result] || '⬜').join(''); }
+function squares() {
+  if (mode === 'top10') {
+    return game.moves.map(m => marks[m.result] || '⬜').join('');
+  }
+  return Array.from({length:5}, (_, index) => marks[game.moves[index]?.result] || '⬜').join('');
+}
 function shareText() {
+  if (mode === 'top10') {
+    const tag = `GolGuess Top 10 #${String(game.number).padStart(3,'0')} 🏆`;
+    const title = game.challenge?.title?.[lang] || game.challenge?.title?.pt || 'Top 10';
+    const url = `${location.origin}/?jogo=top10`;
+    const line = t('shareLineTop10');
+    return `${tag}\n${title}\n${squares()} (${game.moves.length} palpites)\n${line}\n${url}`;
+  }
   const isTeams = mode === 'teams';
   const tag = isTeams ? `GolGuess Times #${String(game.number).padStart(3,'0')} 🛡️` : `GolGuess #${String(game.number).padStart(3,'0')} ⚽`;
   const url = isTeams ? `${location.origin}/?jogo=times` : `${location.origin}/`;
@@ -491,10 +837,11 @@ document.querySelectorAll('[data-lang]').forEach(button => button.onclick = () =
 });
 $('modePlayersBtn').onclick = () => switchMode('players');
 $('modeTeamsBtn').onclick = () => switchMode('teams');
+$('modeTop10Btn').onclick = () => switchMode('top10');
 window.addEventListener('popstate', () => {
   const p = new URLSearchParams(window.location.search);
   const m = p.get('jogo') || p.get('mode');
-  const target = (m === 'times' || m === 'teams') ? 'teams' : 'players';
+  const target = (m === 'top10' || m === 'top-10') ? 'top10' : (m === 'times' || m === 'teams') ? 'teams' : 'players';
   if (target !== mode) switchMode(target);
 });
 channel?.addEventListener('message', event => {
@@ -503,3 +850,4 @@ channel?.addEventListener('message', event => {
 setInterval(tick, 1000);
 applyLanguage();
 loadGame();
+

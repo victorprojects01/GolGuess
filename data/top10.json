@@ -1,0 +1,1880 @@
+[
+  {
+    "id": "ballon-dor-2009",
+    "category": "ballon_dor",
+    "year": 2009,
+    "metric": "points",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2009",
+      "en": "Top 10 Ballon d'Or 2009",
+      "es": "Top 10 del Balón de Oro 2009"
+    },
+    "source": "France Football / Rec.Sport.Soccer Statistics Foundation (RSSSF)",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "473 pts"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "233 pts"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-7607",
+        "name": "Xavi",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "170 pts"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-7600",
+        "name": "Andrés Iniesta",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "149 pts"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-4257",
+        "name": "Samuel Eto'o",
+        "country_code": "CM",
+        "flag": "🇨🇲",
+        "country": "Camarões",
+        "value": "75 pts"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-3366",
+        "name": "Kaká",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "58 pts"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-3455",
+        "name": "Zlatan Ibrahimović",
+        "country_code": "SE",
+        "flag": "🇸🇪",
+        "country": "Suécia",
+        "value": "50 pts"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-3332",
+        "name": "Wayne Rooney",
+        "country_code": "GB-ENG",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country": "Inglaterra",
+        "value": "35 pts"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-3924",
+        "name": "Didier Drogba",
+        "country_code": "CI",
+        "flag": "🇨🇮",
+        "country": "Costa do Marfim",
+        "value": "33 pts"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-3109",
+        "name": "Steven Gerrard",
+        "country_code": "GB-ENG",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country": "Inglaterra",
+        "value": "32 pts"
+      }
+    ]
+  },
+  {
+    "id": "ballon-dor-2012",
+    "category": "ballon_dor",
+    "year": 2012,
+    "metric": "votes",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2012",
+      "en": "Top 10 FIFA Ballon d'Or 2012",
+      "es": "Top 10 del Balón de Oro 2012"
+    },
+    "source": "FIFA / France Football",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "41,60% dos votos"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "23,68% dos votos"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-7600",
+        "name": "Andrés Iniesta",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "10,91% dos votos"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-7607",
+        "name": "Xavi",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "4,08% dos votos"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-39152",
+        "name": "Radamel Falcao",
+        "country_code": "CO",
+        "flag": "🇨🇴",
+        "country": "Colômbia",
+        "value": "3,67% dos votos"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-3979",
+        "name": "Iker Casillas",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "3,18% dos votos"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-5817",
+        "name": "Andrea Pirlo",
+        "country_code": "IT",
+        "flag": "🇮🇹",
+        "country": "Itália",
+        "value": "2,66% dos votos"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-3924",
+        "name": "Didier Drogba",
+        "country_code": "CI",
+        "flag": "🇨🇮",
+        "country": "Costa do Marfim",
+        "value": "2,60% dos votos"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-4380",
+        "name": "Robin van Persie",
+        "country_code": "NL",
+        "flag": "🇳🇱",
+        "country": "Países Baixos",
+        "value": "1,45% dos votos"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-3455",
+        "name": "Zlatan Ibrahimović",
+        "country_code": "SE",
+        "flag": "🇸🇪",
+        "country": "Suécia",
+        "value": "1,24% dos votos"
+      }
+    ]
+  },
+  {
+    "id": "ballon-dor-2013",
+    "category": "ballon_dor",
+    "year": 2013,
+    "metric": "votes",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2013",
+      "en": "Top 10 FIFA Ballon d'Or 2013",
+      "es": "Top 10 del Balón de Oro 2013"
+    },
+    "source": "FIFA / France Football",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "27,99% dos votos"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "24,72% dos votos"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-22068",
+        "name": "Franck Ribéry",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "23,36% dos votos"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-3455",
+        "name": "Zlatan Ibrahimović",
+        "country_code": "SE",
+        "flag": "🇸🇪",
+        "country": "Suécia",
+        "value": "5,29% dos votos"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-68290",
+        "name": "Neymar",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "3,17% dos votos"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-7600",
+        "name": "Andrés Iniesta",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "2,08% dos votos"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-4380",
+        "name": "Robin van Persie",
+        "country_code": "NL",
+        "flag": "🇳🇱",
+        "country": "Países Baixos",
+        "value": "1,79% dos votos"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-4360",
+        "name": "Arjen Robben",
+        "country_code": "NL",
+        "flag": "🇳🇱",
+        "country": "Países Baixos",
+        "value": "1,77% dos votos"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-39381",
+        "name": "Gareth Bale",
+        "country_code": "GB-WLS",
+        "flag": "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
+        "country": "País de Gales",
+        "value": "1,32% dos votos"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-5817",
+        "name": "Andrea Pirlo",
+        "country_code": "IT",
+        "flag": "🇮🇹",
+        "country": "Itália",
+        "value": "1,11% dos votos"
+      }
+    ]
+  },
+  {
+    "id": "ballon-dor-2014",
+    "category": "ballon_dor",
+    "year": 2014,
+    "metric": "votes",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2014",
+      "en": "Top 10 FIFA Ballon d'Or 2014",
+      "es": "Top 10 del Balón de Oro 2014"
+    },
+    "source": "FIFA / France Football",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "37,66% dos votos"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "15,76% dos votos"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-17259",
+        "name": "Manuel Neuer",
+        "country_code": "DE",
+        "flag": "🇩🇪",
+        "country": "Alemanha",
+        "value": "15,72% dos votos"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-4360",
+        "name": "Arjen Robben",
+        "country_code": "NL",
+        "flag": "🇳🇱",
+        "country": "Países Baixos",
+        "value": "7,17% dos votos"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-58358",
+        "name": "Thomas Müller",
+        "country_code": "DE",
+        "flag": "🇩🇪",
+        "country": "Alemanha",
+        "value": "5,42% dos votos"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-2219",
+        "name": "Philipp Lahm",
+        "country_code": "DE",
+        "flag": "🇩🇪",
+        "country": "Alemanha",
+        "value": "2,90% dos votos"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-68290",
+        "name": "Neymar",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "2,21% dos votos"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-88103",
+        "name": "James Rodríguez",
+        "country_code": "CO",
+        "flag": "🇨🇴",
+        "country": "Colômbia",
+        "value": "1,47% dos votos"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-31909",
+        "name": "Toni Kroos",
+        "country_code": "DE",
+        "flag": "🇩🇪",
+        "country": "Alemanha",
+        "value": "1,43% dos votos"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-45320",
+        "name": "Ángel Di María",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "1,29% dos votos"
+      }
+    ]
+  },
+  {
+    "id": "ballon-dor-2015",
+    "category": "ballon_dor",
+    "year": 2015,
+    "metric": "votes",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2015",
+      "en": "Top 10 FIFA Ballon d'Or 2015",
+      "es": "Top 10 del Balón de Oro 2015"
+    },
+    "source": "FIFA / France Football",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "41,33% dos votos"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "27,76% dos votos"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-68290",
+        "name": "Neymar",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "7,86% dos votos"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-38253",
+        "name": "Robert Lewandowski",
+        "country_code": "PL",
+        "flag": "🇵🇱",
+        "country": "Polônia",
+        "value": "4,17% dos votos"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-44352",
+        "name": "Luis Suárez",
+        "country_code": "UY",
+        "flag": "🇺🇾",
+        "country": "Uruguai",
+        "value": "3,38% dos votos"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-58358",
+        "name": "Thomas Müller",
+        "country_code": "DE",
+        "flag": "🇩🇪",
+        "country": "Alemanha",
+        "value": "2,21% dos votos"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-17259",
+        "name": "Manuel Neuer",
+        "country_code": "DE",
+        "flag": "🇩🇪",
+        "country": "Alemanha",
+        "value": "1,97% dos votos"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-50202",
+        "name": "Eden Hazard",
+        "country_code": "BE",
+        "flag": "🇧🇪",
+        "country": "Bélgica",
+        "value": "1,33% dos votos"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-7600",
+        "name": "Andrés Iniesta",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "1,24% dos votos"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-40433",
+        "name": "Alexis Sánchez",
+        "country_code": "CL",
+        "flag": "🇨🇱",
+        "country": "Chile",
+        "value": "1,18% dos votos"
+      }
+    ]
+  },
+  {
+    "id": "ballon-dor-2016",
+    "category": "ballon_dor",
+    "year": 2016,
+    "metric": "points",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2016",
+      "en": "Top 10 Ballon d'Or 2016",
+      "es": "Top 10 del Balón de Oro 2016"
+    },
+    "source": "France Football",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "745 pts"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "316 pts"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-125781",
+        "name": "Antoine Griezmann",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "198 pts"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-44352",
+        "name": "Luis Suárez",
+        "country_code": "UY",
+        "flag": "🇺🇾",
+        "country": "Uruguai",
+        "value": "91 pts"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-68290",
+        "name": "Neymar",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "68 pts"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-39381",
+        "name": "Gareth Bale",
+        "country_code": "GB-WLS",
+        "flag": "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
+        "country": "País de Gales",
+        "value": "60 pts"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-171424",
+        "name": "Riyad Mahrez",
+        "country_code": "DZ",
+        "flag": "🇩🇿",
+        "country": "Argélia",
+        "value": "20 pts"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-197838",
+        "name": "Jamie Vardy",
+        "country_code": "GB-ENG",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country": "Inglaterra",
+        "value": "11 pts"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-5023",
+        "name": "Gianluigi Buffon",
+        "country_code": "IT",
+        "flag": "🇮🇹",
+        "country": "Itália",
+        "value": "8 pts"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-14132",
+        "name": "Pepe",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "8 pts"
+      }
+    ]
+  },
+  {
+    "id": "ballon-dor-2017",
+    "category": "ballon_dor",
+    "year": 2017,
+    "metric": "points",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2017",
+      "en": "Top 10 Ballon d'Or 2017",
+      "es": "Top 10 del Balón de Oro 2017"
+    },
+    "source": "France Football",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "946 pts"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "670 pts"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-68290",
+        "name": "Neymar",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "361 pts"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-5023",
+        "name": "Gianluigi Buffon",
+        "country_code": "IT",
+        "flag": "🇮🇹",
+        "country": "Itália",
+        "value": "221 pts"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-27992",
+        "name": "Luka Modrić",
+        "country_code": "HR",
+        "flag": "🇭🇷",
+        "country": "Croácia",
+        "value": "84 pts"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-25557",
+        "name": "Sergio Ramos",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "71 pts"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-342229",
+        "name": "Kylian Mbappé",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "48 pts"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-225083",
+        "name": "N'Golo Kanté",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "47 pts"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-38253",
+        "name": "Robert Lewandowski",
+        "country_code": "PL",
+        "flag": "🇵🇱",
+        "country": "Polônia",
+        "value": "45 pts"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-132098",
+        "name": "Harry Kane",
+        "country_code": "GB-ENG",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country": "Inglaterra",
+        "value": "36 pts"
+      }
+    ]
+  },
+  {
+    "id": "ballon-dor-2018",
+    "category": "ballon_dor",
+    "year": 2018,
+    "metric": "points",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2018",
+      "en": "Top 10 Ballon d'Or 2018",
+      "es": "Top 10 del Balón de Oro 2018"
+    },
+    "source": "France Football",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-27992",
+        "name": "Luka Modrić",
+        "country_code": "HR",
+        "flag": "🇭🇷",
+        "country": "Croácia",
+        "value": "753 pts"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "476 pts"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-125781",
+        "name": "Antoine Griezmann",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "414 pts"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-342229",
+        "name": "Kylian Mbappé",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "347 pts"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "280 pts"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-148455",
+        "name": "Mohamed Salah",
+        "country_code": "EG",
+        "flag": "🇪🇬",
+        "country": "Egito",
+        "value": "188 pts"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-164770",
+        "name": "Raphaël Varane",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "121 pts"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-50202",
+        "name": "Eden Hazard",
+        "country_code": "BE",
+        "flag": "🇧🇪",
+        "country": "Bélgica",
+        "value": "119 pts"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-88755",
+        "name": "Kevin De Bruyne",
+        "country_code": "BE",
+        "flag": "🇧🇪",
+        "country": "Bélgica",
+        "value": "29 pts"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-132098",
+        "name": "Harry Kane",
+        "country_code": "GB-ENG",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country": "Inglaterra",
+        "value": "25 pts"
+      }
+    ]
+  },
+  {
+    "id": "ballon-dor-2019",
+    "category": "ballon_dor",
+    "year": 2019,
+    "metric": "points",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2019",
+      "en": "Top 10 Ballon d'Or 2019",
+      "es": "Top 10 del Balón de Oro 2019"
+    },
+    "source": "France Football",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "686 pts"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-139208",
+        "name": "Virgil van Dijk",
+        "country_code": "NL",
+        "flag": "🇳🇱",
+        "country": "Países Baixos",
+        "value": "679 pts"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "476 pts"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-200512",
+        "name": "Sadio Mané",
+        "country_code": "SN",
+        "flag": "🇸🇳",
+        "country": "Senegal",
+        "value": "347 pts"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-148455",
+        "name": "Mohamed Salah",
+        "country_code": "EG",
+        "flag": "🇪🇬",
+        "country": "Egito",
+        "value": "178 pts"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-342229",
+        "name": "Kylian Mbappé",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "89 pts"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-105470",
+        "name": "Alisson",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "67 pts"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-38253",
+        "name": "Robert Lewandowski",
+        "country_code": "PL",
+        "flag": "🇵🇱",
+        "country": "Polônia",
+        "value": "44 pts"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-241641",
+        "name": "Bernardo Silva",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "41 pts"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-171424",
+        "name": "Riyad Mahrez",
+        "country_code": "DZ",
+        "flag": "🇩🇿",
+        "country": "Argélia",
+        "value": "33 pts"
+      }
+    ]
+  },
+  {
+    "id": "ballon-dor-2021",
+    "category": "ballon_dor",
+    "year": 2021,
+    "metric": "points",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2021",
+      "en": "Top 10 Ballon d'Or 2021",
+      "es": "Top 10 del Balón de Oro 2021"
+    },
+    "source": "France Football",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "613 pts"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-38253",
+        "name": "Robert Lewandowski",
+        "country_code": "PL",
+        "flag": "🇵🇱",
+        "country": "Polônia",
+        "value": "580 pts"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-102017",
+        "name": "Jorginho",
+        "country_code": "IT",
+        "flag": "🇮🇹",
+        "country": "Itália",
+        "value": "460 pts"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-18922",
+        "name": "Karim Benzema",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "239 pts"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-225083",
+        "name": "N'Golo Kanté",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "186 pts"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "178 pts"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-148455",
+        "name": "Mohamed Salah",
+        "country_code": "EG",
+        "flag": "🇪🇬",
+        "country": "Egito",
+        "value": "121 pts"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-88755",
+        "name": "Kevin De Bruyne",
+        "country_code": "BE",
+        "flag": "🇧🇪",
+        "country": "Bélgica",
+        "value": "73 pts"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-342229",
+        "name": "Kylian Mbappé",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "58 pts"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-315858",
+        "name": "Gianluigi Donnarumma",
+        "country_code": "IT",
+        "flag": "🇮🇹",
+        "country": "Itália",
+        "value": "36 pts"
+      }
+    ]
+  },
+  {
+    "id": "ballon-dor-2022",
+    "category": "ballon_dor",
+    "year": 2022,
+    "metric": "points",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2022",
+      "en": "Top 10 Ballon d'Or 2022",
+      "es": "Top 10 del Balón de Oro 2022"
+    },
+    "source": "France Football",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-18922",
+        "name": "Karim Benzema",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "549 pts"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-200512",
+        "name": "Sadio Mané",
+        "country_code": "SN",
+        "flag": "🇸🇳",
+        "country": "Senegal",
+        "value": "193 pts"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-88755",
+        "name": "Kevin De Bruyne",
+        "country_code": "BE",
+        "flag": "🇧🇪",
+        "country": "Bélgica",
+        "value": "175 pts"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-38253",
+        "name": "Robert Lewandowski",
+        "country_code": "PL",
+        "flag": "🇵🇱",
+        "country": "Polônia",
+        "value": "170 pts"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-148455",
+        "name": "Mohamed Salah",
+        "country_code": "EG",
+        "flag": "🇪🇬",
+        "country": "Egito",
+        "value": "116 pts"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-342229",
+        "name": "Kylian Mbappé",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "85 pts"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-108390",
+        "name": "Thibaut Courtois",
+        "country_code": "BE",
+        "flag": "🇧🇪",
+        "country": "Bélgica",
+        "value": "82 pts"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-371998",
+        "name": "Vinicius Junior",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "61 pts"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-27992",
+        "name": "Luka Modrić",
+        "country_code": "HR",
+        "flag": "🇭🇷",
+        "country": "Croácia",
+        "value": "20 pts"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-418560",
+        "name": "Erling Haaland",
+        "country_code": "NO",
+        "flag": "🇳🇴",
+        "country": "Noruega",
+        "value": "18 pts"
+      }
+    ]
+  },
+  {
+    "id": "ballon-dor-2023",
+    "category": "ballon_dor",
+    "year": 2023,
+    "metric": "points",
+    "title": {
+      "pt": "Top 10 da Bola de Ouro de 2023",
+      "en": "Top 10 Ballon d'Or 2023",
+      "es": "Top 10 del Balón de Oro 2023"
+    },
+    "source": "France Football",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "462 pts"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-418560",
+        "name": "Erling Haaland",
+        "country_code": "NO",
+        "flag": "🇳🇴",
+        "country": "Noruega",
+        "value": "357 pts"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-342229",
+        "name": "Kylian Mbappé",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "270 pts"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-88755",
+        "name": "Kevin De Bruyne",
+        "country_code": "BE",
+        "flag": "🇧🇪",
+        "country": "Bélgica",
+        "value": "100 pts"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-357565",
+        "name": "Rodri",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "57 pts"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-371998",
+        "name": "Vinicius Junior",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "49 pts"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-576024",
+        "name": "Julián Alvarez",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "28 pts"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-401923",
+        "name": "Victor Osimhen",
+        "country_code": "NG",
+        "flag": "🇳🇬",
+        "country": "Nigéria",
+        "value": "24 pts"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-241641",
+        "name": "Bernardo Silva",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "20 pts"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-27992",
+        "name": "Luka Modrić",
+        "country_code": "HR",
+        "flag": "🇭🇷",
+        "country": "Croácia",
+        "value": "19 pts"
+      }
+    ]
+  },
+  {
+    "id": "ucl-2013-14-top-scorers",
+    "category": "season_scorers",
+    "competition": "champions_league",
+    "season": "2013/14",
+    "metric": "goals",
+    "title": {
+      "pt": "Top 10 artilheiros da Champions League 2013/14",
+      "en": "Top 10 UEFA Champions League scorers 2013/14",
+      "es": "Top 10 goleadores de la Champions League 2013/14"
+    },
+    "source": "UEFA Champions League Official Statistics",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "17 gols"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-3455",
+        "name": "Zlatan Ibrahimović",
+        "country_code": "SE",
+        "flag": "🇸🇪",
+        "country": "Suécia",
+        "value": "10 gols"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-44779",
+        "name": "Diego Costa",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "8 gols"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "8 gols"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-26399",
+        "name": "Sergio Agüero",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "6 gols"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-38253",
+        "name": "Robert Lewandowski",
+        "country_code": "PL",
+        "flag": "🇵🇱",
+        "country": "Polônia",
+        "value": "6 gols"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-39381",
+        "name": "Gareth Bale",
+        "country_code": "GB-WLS",
+        "flag": "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
+        "country": "País de Gales",
+        "value": "6 gols"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-35207",
+        "name": "Marco Reus",
+        "country_code": "DE",
+        "flag": "🇩🇪",
+        "country": "Alemanha",
+        "value": "5 gols"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-58358",
+        "name": "Thomas Müller",
+        "country_code": "DE",
+        "flag": "🇩🇪",
+        "country": "Alemanha",
+        "value": "5 gols"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-37666",
+        "name": "Arturo Vidal",
+        "country_code": "CL",
+        "flag": "🇨🇱",
+        "country": "Chile",
+        "value": "5 gols"
+      }
+    ]
+  },
+  {
+    "id": "ucl-2016-17-top-scorers",
+    "category": "season_scorers",
+    "competition": "champions_league",
+    "season": "2016/17",
+    "metric": "goals",
+    "title": {
+      "pt": "Top 10 artilheiros da Champions League 2016/17",
+      "en": "Top 10 UEFA Champions League scorers 2016/17",
+      "es": "Top 10 goleadores de la Champions League 2016/17"
+    },
+    "source": "UEFA Champions League Official Statistics",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "12 gols"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "11 gols"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-48280",
+        "name": "Edinson Cavani",
+        "country_code": "UY",
+        "flag": "🇺🇾",
+        "country": "Uruguai",
+        "value": "8 gols"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-38253",
+        "name": "Robert Lewandowski",
+        "country_code": "PL",
+        "flag": "🇵🇱",
+        "country": "Polônia",
+        "value": "8 gols"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-58864",
+        "name": "Pierre-Emerick Aubameyang",
+        "country_code": "GA",
+        "flag": "🇬🇦",
+        "country": "Gabão",
+        "value": "7 gols"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-342229",
+        "name": "Kylian Mbappé",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "6 gols"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-125781",
+        "name": "Antoine Griezmann",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "6 gols"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-56416",
+        "name": "Dries Mertens",
+        "country_code": "BE",
+        "flag": "🇧🇪",
+        "country": "Bélgica",
+        "value": "5 gols"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-26399",
+        "name": "Sergio Agüero",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "5 gols"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-18922",
+        "name": "Karim Benzema",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "5 gols"
+      }
+    ]
+  },
+  {
+    "id": "ucl-2017-18-top-scorers",
+    "category": "season_scorers",
+    "competition": "champions_league",
+    "season": "2017/18",
+    "metric": "goals",
+    "title": {
+      "pt": "Top 10 artilheiros da Champions League 2017/18",
+      "en": "Top 10 UEFA Champions League scorers 2017/18",
+      "es": "Top 10 goleadores de la Champions League 2017/18"
+    },
+    "source": "UEFA Champions League Official Statistics",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-8198",
+        "name": "Cristiano Ronaldo",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "15 gols"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-148455",
+        "name": "Mohamed Salah",
+        "country_code": "EG",
+        "flag": "🇪🇬",
+        "country": "Egito",
+        "value": "10 gols"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-200512",
+        "name": "Sadio Mané",
+        "country_code": "SN",
+        "flag": "🇸🇳",
+        "country": "Senegal",
+        "value": "10 gols"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-131789",
+        "name": "Roberto Firmino",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "10 gols"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-28396",
+        "name": "Edin Dzeko",
+        "country_code": "BA",
+        "flag": "🇧🇦",
+        "country": "Bósnia e Herzegovina",
+        "value": "8 gols"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-146854",
+        "name": "Wissam Ben Yedder",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "8 gols"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-48280",
+        "name": "Edinson Cavani",
+        "country_code": "UY",
+        "flag": "🇺🇾",
+        "country": "Uruguai",
+        "value": "7 gols"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-132098",
+        "name": "Harry Kane",
+        "country_code": "GB-ENG",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country": "Inglaterra",
+        "value": "7 gols"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "6 gols"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-68290",
+        "name": "Neymar",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "6 gols"
+      }
+    ]
+  },
+  {
+    "id": "ucl-2019-20-top-scorers",
+    "category": "season_scorers",
+    "competition": "champions_league",
+    "season": "2019/20",
+    "metric": "goals",
+    "title": {
+      "pt": "Top 10 artilheiros da Champions League 2019/20",
+      "en": "Top 10 UEFA Champions League scorers 2019/20",
+      "es": "Top 10 goleadores de la Champions League 2019/20"
+    },
+    "source": "UEFA Champions League Official Statistics",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-38253",
+        "name": "Robert Lewandowski",
+        "country_code": "PL",
+        "flag": "🇵🇱",
+        "country": "Polônia",
+        "value": "15 gols"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-418560",
+        "name": "Erling Haaland",
+        "country_code": "NO",
+        "flag": "🇳🇴",
+        "country": "Noruega",
+        "value": "10 gols"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-159471",
+        "name": "Serge Gnabry",
+        "country_code": "DE",
+        "flag": "🇩🇪",
+        "country": "Alemanha",
+        "value": "9 gols"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-363205",
+        "name": "Gabriel Jesus",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "6 gols"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-134425",
+        "name": "Raheem Sterling",
+        "country_code": "GB-ENG",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country": "Inglaterra",
+        "value": "6 gols"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-56416",
+        "name": "Dries Mertens",
+        "country_code": "BE",
+        "flag": "🇧🇪",
+        "country": "Bélgica",
+        "value": "6 gols"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-132098",
+        "name": "Harry Kane",
+        "country_code": "GB-ENG",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country": "Inglaterra",
+        "value": "6 gols"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-167850",
+        "name": "Memphis Depay",
+        "country_code": "NL",
+        "flag": "🇳🇱",
+        "country": "Países Baixos",
+        "value": "6 gols"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-91845",
+        "name": "Heung-min Son",
+        "country_code": "KR",
+        "flag": "🇰🇷",
+        "country": "Coreia do Sul",
+        "value": "5 gols"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-68863",
+        "name": "Mauro Icardi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "5 gols"
+      }
+    ]
+  },
+  {
+    "id": "ucl-2020-21-top-scorers",
+    "category": "season_scorers",
+    "competition": "champions_league",
+    "season": "2020/21",
+    "metric": "goals",
+    "title": {
+      "pt": "Top 10 artilheiros da Champions League 2020/21",
+      "en": "Top 10 UEFA Champions League scorers 2020/21",
+      "es": "Top 10 goleadores de la Champions League 2020/21"
+    },
+    "source": "UEFA Champions League Official Statistics",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-418560",
+        "name": "Erling Haaland",
+        "country_code": "NO",
+        "flag": "🇳🇴",
+        "country": "Noruega",
+        "value": "10 gols"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-342229",
+        "name": "Kylian Mbappé",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "8 gols"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-128223",
+        "name": "Álvaro Morata",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "6 gols"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-433049",
+        "name": "Youssef En-Nesyri",
+        "country_code": "MA",
+        "flag": "🇲🇦",
+        "country": "Marrocos",
+        "value": "6 gols"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-82442",
+        "name": "Olivier Giroud",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "6 gols"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-68290",
+        "name": "Neymar",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "6 gols"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-258923",
+        "name": "Marcus Rashford",
+        "country_code": "GB-ENG",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country": "Inglaterra",
+        "value": "6 gols"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-148455",
+        "name": "Mohamed Salah",
+        "country_code": "EG",
+        "flag": "🇪🇬",
+        "country": "Egito",
+        "value": "6 gols"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-18922",
+        "name": "Karim Benzema",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "6 gols"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-167329",
+        "name": "Alassane Pléa",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "5 gols"
+      }
+    ]
+  },
+  {
+    "id": "fifa-world-cup-2022-top-scorers",
+    "category": "season_scorers",
+    "competition": "world_cup",
+    "season": "2022",
+    "metric": "goals",
+    "title": {
+      "pt": "Top 10 artilheiros da Copa do Mundo 2022",
+      "en": "Top 10 FIFA World Cup scorers 2022",
+      "es": "Top 10 goleadores de la Copa Mundial 2022"
+    },
+    "source": "FIFA World Cup Official Technical Report 2022",
+    "ranking": [
+      {
+        "position": 1,
+        "player_id": "tm-342229",
+        "name": "Kylian Mbappé",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "8 gols"
+      },
+      {
+        "position": 2,
+        "player_id": "tm-28003",
+        "name": "Lionel Messi",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "7 gols"
+      },
+      {
+        "position": 3,
+        "player_id": "tm-576024",
+        "name": "Julián Alvarez",
+        "country_code": "AR",
+        "flag": "🇦🇷",
+        "country": "Argentina",
+        "value": "4 gols"
+      },
+      {
+        "position": 4,
+        "player_id": "tm-82442",
+        "name": "Olivier Giroud",
+        "country_code": "FR",
+        "flag": "🇫🇷",
+        "country": "França",
+        "value": "4 gols"
+      },
+      {
+        "position": 5,
+        "player_id": "tm-128223",
+        "name": "Álvaro Morata",
+        "country_code": "ES",
+        "flag": "🇪🇸",
+        "country": "Espanha",
+        "value": "3 gols"
+      },
+      {
+        "position": 6,
+        "player_id": "tm-433177",
+        "name": "Bukayo Saka",
+        "country_code": "GB-ENG",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country": "Inglaterra",
+        "value": "3 gols"
+      },
+      {
+        "position": 7,
+        "player_id": "tm-434675",
+        "name": "Cody Gakpo",
+        "country_code": "NL",
+        "flag": "🇳🇱",
+        "country": "Países Baixos",
+        "value": "3 gols"
+      },
+      {
+        "position": 8,
+        "player_id": "tm-550550",
+        "name": "Gonçalo Ramos",
+        "country_code": "PT",
+        "flag": "🇵🇹",
+        "country": "Portugal",
+        "value": "3 gols"
+      },
+      {
+        "position": 9,
+        "player_id": "tm-258923",
+        "name": "Marcus Rashford",
+        "country_code": "GB-ENG",
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country": "Inglaterra",
+        "value": "3 gols"
+      },
+      {
+        "position": 10,
+        "player_id": "tm-378710",
+        "name": "Richarlison",
+        "country_code": "BR",
+        "flag": "🇧🇷",
+        "country": "Brasil",
+        "value": "3 gols"
+      }
+    ]
+  }
+]

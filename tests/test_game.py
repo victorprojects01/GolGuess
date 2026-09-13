@@ -255,6 +255,46 @@ class DailyGameTests(unittest.TestCase):
         self.assertEqual(len(game['clues']), 5)
         self.assertEqual([c['key'] for c in game['clues']], ['continent', 'titles', 'country', 'colors', 'city'])
 
+    def test_top10_game_flow_and_win(self):
+        status, game, cookie = self.request('/api/game?mode=top10')
+        self.assertEqual(status, 200)
+        self.assertEqual(game['mode'], 'top10')
+        self.assertEqual(len(game['slots']), 10)
+        self.assertFalse(game['done'])
+        self.assertFalse(game['won'])
+        self.assertEqual(game['solvedCount'], 0)
+        self.assertIn('title', game['challenge'])
+
+        challenge = server.top10_answer(server.today())
+        ranking = challenge['ranking']
+
+        # Guess player 1 in wrong position (e.g. at position 2)
+        p1 = ranking[0]
+        status, game, new_cookie = self.request('/api/guess', body={'day': game['day'], 'version': game['version'],
+                                                                    'mode': 'top10', 'playerId': p1['player_id'],
+                                                                    'position': 2}, cookie=cookie)
+        self.assertEqual(status, 200)
+        self.assertEqual(game['moves'][-1]['result'], 'wrong_pos')
+        self.assertEqual(game['solvedCount'], 0)
+        if new_cookie:
+            cookie = new_cookie.split(';')[0]
+
+        # Guess all 10 correctly
+        for item in ranking:
+            status, game, new_cookie = self.request('/api/guess', body={'day': game['day'], 'version': game['version'],
+                                                                        'mode': 'top10', 'playerId': item['player_id'],
+                                                                        'position': item['position']}, cookie=cookie)
+            self.assertEqual(status, 200)
+            if new_cookie:
+                cookie = new_cookie.split(';')[0]
+
+        self.assertTrue(game['done'])
+        self.assertTrue(game['won'])
+        self.assertEqual(game['solvedCount'], 10)
+        self.assertTrue(all(s['revealed'] for s in game['slots']))
+        self.assertTrue(all(s['status'] == 'correct' for s in game['slots']))
+
 
 if __name__ == '__main__':
     unittest.main()
+
