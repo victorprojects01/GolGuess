@@ -35,6 +35,8 @@ const copy = {
     pick:'Selecione um nome da lista.', pickTeam:'Selecione um time da lista.',
     newClue:'Nova pista revelada.', wrong:'Não foi dessa vez. Nova pista revelada.',
     top10Correct:'Na mosca! Posição correta.', top10WrongPos:'Está no Top 10, mas em outra posição!', top10Incorrect:'Não está neste Top 10.',
+    top10WrongPosNamed: name => `${name} está no Top 10, mas em outra posição!`,
+    top10IncorrectNamed: name => `${name} não está neste Top 10.`,
     loadError:'Não conseguimos acessar o jogo. Tente novamente.',
     guessError:'Não foi possível registrar o palpite.', searchError:'A busca falhou. Tente novamente.',
     goal:n=>`Golaço! ${n}/5`, top10Win:n=>`Parabéns! Ranking concluído em ${n} palpites!`,
@@ -81,6 +83,8 @@ const copy = {
     pick:'Choose a name from the list.', pickTeam:'Choose a team from the list.',
     newClue:'New clue revealed.', wrong:'Not this time. New clue revealed.',
     top10Correct:'Bullseye! Correct position.', top10WrongPos:'In the Top 10, but at another position!', top10Incorrect:'Not in this Top 10.',
+    top10WrongPosNamed: name => `${name} is in the Top 10, but at another position!`,
+    top10IncorrectNamed: name => `${name} is not in this Top 10.`,
     loadError:'We could not reach the game. Try again.',
     guessError:'We could not save your guess.', searchError:'Search failed. Try again.',
     goal:n=>`Goal! ${n}/5`, top10Win:n=>`Congratulations! Completed in ${n} guesses!`,
@@ -127,6 +131,8 @@ const copy = {
     pick:'Elige un nombre de la lista.', pickTeam:'Elige un equipo de la lista.',
     newClue:'Nueva pista revelada.', wrong:'No fue esta vez. Nueva pista revelada.',
     top10Correct:'¡En el blanco! Posición correcta.', top10WrongPos:'¡Está en el Top 10, pero en otra posición!', top10Incorrect:'No está en este Top 10.',
+    top10WrongPosNamed: name => `¡${name} está en el Top 10, pero en otra posición!`,
+    top10IncorrectNamed: name => `¡${name} no está en este Top 10!`,
     loadError:'No pudimos acceder al juego. Inténtalo de nuevo.',
     guessError:'No pudimos guardar tu intento.', searchError:'La búsqueda falló. Inténtalo de nuevo.',
     goal:n=>`¡Golazo! ${n}/5`, top10Win:n=>`¡Felicidades! ¡Completado en ${n} intentos!`,
@@ -172,6 +178,33 @@ function feedback(message = '', error = false) {
   $('feedback').textContent = message;
   $('feedback').classList.toggle('error', error);
 }
+
+let top10NoticeTimer = null;
+function showTop10Notice(text, type = 'warning') {
+  const notice = $('top10Notice');
+  if (!notice) return;
+  clearTimeout(top10NoticeTimer);
+  notice.className = `top10-notice top10-notice-${type}`;
+  const icon = type === 'warning' ? '⚠️' : '✕';
+  notice.innerHTML = `<span class="notice-icon" aria-hidden="true">${icon}</span><span class="notice-text">${text}</span>`;
+  notice.hidden = false;
+  top10NoticeTimer = setTimeout(() => {
+    notice.classList.add('fade-out');
+    setTimeout(() => {
+      notice.hidden = true;
+      notice.classList.remove('fade-out');
+    }, 220);
+  }, 4500);
+}
+
+function hideTop10Notice() {
+  clearTimeout(top10NoticeTimer);
+  const notice = $('top10Notice');
+  if (notice) {
+    notice.hidden = true;
+    notice.classList.remove('fade-out');
+  }
+}
 function closeSearch() {
   clearTimeout(blurTimer);
   $('suggestions').hidden = true;
@@ -192,6 +225,7 @@ function controls() {
   $('skipBtn').hidden = isTop10 || (!!game && (game.done || game.clues?.length >= 5));
   $('clearBtn').disabled = busy;
   $('top10Header').hidden = !isTop10;
+  if (!isTop10 || game?.done) hideTop10Notice();
   document.querySelectorAll('input.slot-input').forEach(inp => {
     inp.disabled = busy || !game || game.done;
   });
@@ -206,6 +240,7 @@ function updateModeButtons() {
 }
 function switchMode(newMode) {
   if (mode === newMode && game) return;
+  hideTop10Notice();
   mode = newMode;
   try { localStorage.setItem('golguess-mode', mode); } catch {}
   const url = new URL(window.location.href);
@@ -451,6 +486,9 @@ function attachSlotAutocomplete(li, slotInput, clearBtn, suggestionsUl, slot) {
     clearTimeout(slotBlurTimer);
     currentPos = slot.position;
     li.classList.add('active-slot');
+    try {
+      li.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } catch {}
     if (slotInput.value.trim() && suggestionsUl.hidden) {
       slotInput.dispatchEvent(new Event('input'));
     }
@@ -459,7 +497,7 @@ function attachSlotAutocomplete(li, slotInput, clearBtn, suggestionsUl, slot) {
   slotInput.addEventListener('blur', () => {
     slotBlurTimer = setTimeout(() => {
       closeSlotSearch();
-    }, 200);
+    }, 220);
   });
 
   suggestionsUl.addEventListener('pointerdown', () => {
@@ -472,6 +510,9 @@ function attachSlotAutocomplete(li, slotInput, clearBtn, suggestionsUl, slot) {
     clearBtn.hidden = true;
     closeSlotSearch();
     slotInput.focus();
+    try {
+      li.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } catch {}
   });
 }
 
@@ -749,27 +790,60 @@ async function submit(guessId, slotPos = null) {
     if (mode === 'top10') {
       const lastMove = data.moves?.[data.moves.length - 1];
       if (lastMove?.result === 'correct') {
+        hideTop10Notice();
         feedback(t('top10Correct'));
         if (!data.done) {
           const nextSlot = data.slots?.find(s => !s.revealed);
           if (nextSlot) {
             setTimeout(() => {
-              document.querySelector(`input.slot-input[data-position="${nextSlot.position}"]`)?.focus();
-            }, 60);
+              const nextInput = document.querySelector(`input.slot-input[data-position="${nextSlot.position}"]`);
+              if (nextInput) {
+                nextInput.focus();
+                try { nextInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch {}
+              }
+            }, 80);
           }
         }
       } else if (lastMove?.result === 'wrong_pos') {
-        feedback(t('top10WrongPos'));
+        const playerName = lastMove?.name || '';
+        const msg = t('top10WrongPosNamed')(playerName);
+        feedback(msg);
+        showTop10Notice(msg, 'warning');
         setTimeout(() => {
+          const slotEl = document.querySelector(`.clue.top10-slot[data-position="${targetPos}"]`);
+          if (slotEl) {
+            slotEl.classList.remove('flash-red', 'flash-yellow');
+            void slotEl.offsetWidth;
+            slotEl.classList.add('flash-yellow');
+            setTimeout(() => slotEl?.classList.remove('flash-yellow'), 1200);
+          }
           const inputEl = document.querySelector(`input.slot-input[data-position="${targetPos}"]`);
-          if (inputEl) { inputEl.value = ''; inputEl.focus(); }
-        }, 60);
+          if (inputEl) {
+            inputEl.value = '';
+            inputEl.focus();
+            try { inputEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch {}
+          }
+        }, 50);
       } else {
-        feedback(t('top10Incorrect'), true);
+        const playerName = lastMove?.name || '';
+        const msg = t('top10IncorrectNamed')(playerName);
+        feedback(msg, true);
+        showTop10Notice(msg, 'error');
         setTimeout(() => {
+          const slotEl = document.querySelector(`.clue.top10-slot[data-position="${targetPos}"]`);
+          if (slotEl) {
+            slotEl.classList.remove('flash-red', 'flash-yellow');
+            void slotEl.offsetWidth;
+            slotEl.classList.add('flash-red');
+            setTimeout(() => slotEl?.classList.remove('flash-red'), 1200);
+          }
           const inputEl = document.querySelector(`input.slot-input[data-position="${targetPos}"]`);
-          if (inputEl) { inputEl.value = ''; inputEl.focus(); }
-        }, 60);
+          if (inputEl) {
+            inputEl.value = '';
+            inputEl.focus();
+            try { inputEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch {}
+          }
+        }, 50);
       }
     } else {
       feedback(game.done ? '' : guessId === null ? t('newClue') : t('wrong'));
@@ -846,6 +920,13 @@ window.addEventListener('popstate', () => {
 });
 channel?.addEventListener('message', event => {
   if (!event.data || event.data.mode === mode) loadGame();
+});
+document.addEventListener('pointerdown', (e) => {
+  if (!e.target.closest('.top10-slot')) {
+    document.querySelectorAll('.slot-suggestions').forEach(ul => { ul.hidden = true; });
+    document.querySelectorAll('.clue.top10-slot.active-slot').forEach(el => { el.classList.remove('active-slot'); });
+    document.querySelectorAll('.slot-input').forEach(inp => { inp.setAttribute('aria-expanded', 'false'); });
+  }
 });
 setInterval(tick, 1000);
 applyLanguage();
