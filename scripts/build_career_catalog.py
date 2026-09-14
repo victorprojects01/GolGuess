@@ -9,6 +9,8 @@ from collections import defaultdict
 from datetime import date
 from pathlib import Path
 
+from player_metadata import profile_fields
+
 ROOT = Path(__file__).resolve().parents[1]
 COMPETITIONS = {
     'GB1': 'Premier League', 'ES1': 'La Liga', 'IT1': 'Serie A',
@@ -137,6 +139,7 @@ def main(players_path, appearances_path, games_path, clubs_path, events_path):
             continue
         catalog.append({
             'id': f"tm-{person['player_id']}", 'name': person['name'], 'birth': birth,
+            **profile_fields(person),
             'league': COMPETITIONS[competition], 'season': season_label(competition, season),
             'goals': total['goals'], 'assists': total['assists'],
             'yellow': total['yellow'], 'red': total['red'],

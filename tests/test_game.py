@@ -11,6 +11,7 @@ from unittest.mock import patch
 
 import server
 import storage
+from scripts.player_metadata import position_code
 
 
 class DailyGameTests(unittest.TestCase):
@@ -71,24 +72,42 @@ class DailyGameTests(unittest.TestCase):
                      'Steven Gerrard', 'Jadon Sancho', 'Harry Kane', 'Lionel Messi',
                      'Alexandre Pato', 'Oscar', 'Mesut Özil']:
             self.assertIn(name, {p['name'] for p in server.PLAYERS})
-        required = {'id','name','birth','league','season','goals','assists','yellow','red','team','matches','source'}
+        required = {'id','name','birth','position','nationality','nationalityCode',
+                    'league','season','goals','assists','yellow','red','team','matches','source'}
+        self.assertEqual({p['position'] for p in server.PLAYERS}, {'ATA','MEI','ZAG','LAT','GOL'})
         for p in server.PLAYERS:
             self.assertEqual(set(p), required)
-            self.assertTrue(all(p[k] for k in ['id','name','birth','league','season','team','matches','source']))
+            self.assertTrue(all(p[k] for k in ['id','name','birth','position','nationality','nationalityCode',
+                                               'league','season','team','matches','source']))
+            self.assertIn(p['position'], {'ATA','MEI','ZAG','LAT','GOL'})
             self.assertTrue(all(isinstance(p[k], int) and p[k] >= 0 for k in ['goals','assists','yellow','red']))
             server.date.fromisoformat(p['birth'])
+        supplements = json.loads((Path(server.ROOT) / 'data/legacy_players.json').read_text(encoding='utf-8'))
+        self.assertEqual(len(supplements), 4)
+        self.assertTrue(all(p['position'] and p['nationality'] and p['nationalityCode'] for p in supplements))
+
+    def test_position_mapping_keeps_goalkeepers_and_full_backs_distinct(self):
+        self.assertEqual(position_code('Goalkeeper', 'Goalkeeper'), 'GOL')
+        self.assertEqual(position_code('Defender', 'Centre-Back'), 'ZAG')
+        self.assertEqual(position_code('Defender', 'Right-Back'), 'LAT')
+        self.assertEqual(position_code('Attack', 'Right Winger'), 'ATA')
 
     def test_clues_have_requested_order_and_current_age(self):
         game, cookie = self.start()
-        for _ in range(4):
+        for expected_count in (2, 3, 4, 6):
             _, game, _ = self.move(game, cookie)
+            self.assertEqual(len(game['clues']), expected_count)
         self.assertEqual([c['label'] for c in game['clues']], [
-            'Liga e temporada', 'Gols e assistências', 'Cartões', 'Idade atual', 'Time'])
+            'Liga e temporada', 'Gols e assistências', 'Posição', 'Idade atual',
+            'Nacionalidade', 'Time da temporada'])
         self.assertEqual([c['key'] for c in game['clues']], [
-            'leagueSeason', 'goalsAssists', 'cards', 'age', 'team'])
+            'leagueSeason', 'goalsAssists', 'position', 'age', 'nationality', 'team'])
         self.assertTrue(all(key in game['clues'][1] for key in ('goals', 'assists')))
-        self.assertTrue(all(key in game['clues'][2] for key in ('yellow', 'red')))
         player = server.answer(server.today())
+        self.assertEqual(game['clues'][2]['position'], player['position'])
+        self.assertEqual(game['clues'][4]['nationality'], player['nationality'])
+        self.assertEqual(game['clues'][4]['nationalityCode'], player['nationalityCode'])
+        self.assertEqual(game['clues'][5]['team'], player['team'])
         birth = server.date.fromisoformat(player['birth'])
         expected_age = server.today().year - birth.year - ((server.today().month, server.today().day) < (birth.month, birth.day))
         self.assertEqual(game['clues'][3]['value'], f'{expected_age} anos')
@@ -234,7 +253,7 @@ class DailyGameTests(unittest.TestCase):
     def test_health_endpoint(self):
         status, body, _ = self.request('/api/health')
         self.assertEqual(status, 200)
-        self.assertEqual(body['catalog'], 'career-v1')
+        self.assertEqual(body['catalog'], 'career-v2')
         self.assertEqual(body['players'], len(server.PLAYERS))
 
     def test_vercel_without_database_uses_signed_cookie(self):

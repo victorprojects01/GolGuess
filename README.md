@@ -19,15 +19,18 @@ O jogador do dia é igual para todos. Há cinco chances, e um erro ou passe reve
 
 1. Liga e temporada
 2. Gols e assistências naquela liga e temporada
-3. Cartões amarelos e vermelhos
+3. Posição principal (ATA, MEI, ZAG, LAT ou GOL)
 4. Idade atual, calculada pelo servidor
-5. Time daquela temporada
+5. Nacionalidade principal do perfil
+6. Time daquela temporada
+
+Depois de quatro erros ou passes, as pistas 5 e 6 aparecem juntas para que as cinco tentativas continuem válidas e o último palpite possa usar todas as informações.
 
 O ciclo determinístico percorre todos os 874 jogadores antes de repetir. A busca ignora acentos e maiúsculas. O resultado pode ser compartilhado sem revelar a resposta.
 
 ## Interface
 
-A tela mobile-first abre diretamente no jogo, em uma coluna central de até 560px. As pistas usam componentes próprios para placar, cartões e time, e a interface pode ser alternada entre português, inglês e espanhol pelo menu do cabeçalho.
+A tela mobile-first abre diretamente no jogo, em uma coluna central de até 560px. As pistas usam componentes próprios para placar, posição e time, e a interface pode ser alternada entre português, inglês e espanhol pelo menu do cabeçalho.
 
 O rodapé liga as páginas Sobre, Desafios anteriores, Como jogar, Política de Privacidade, Política de Cookies, Termos de Uso e Contato para parcerias. As páginas institucionais são estáticas; o arquivo é renderizado pela função Python para publicar as rodadas encerradas automaticamente. O contato informado é `torvicbusiness35@gmail.com`.
 
@@ -60,7 +63,7 @@ O limite é por navegador. Apagar cookies, abrir janela anônima ou usar outro d
 
 ## Catálogo
 
-`data/curated_names.txt` é a lista editorial. `scripts/build_career_catalog.py` cruza esses nomes com o snapshot do [transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets), agrupa as partidas por liga, temporada e clube e escolhe uma temporada representativa. O filtro exige participação relevante e um indicador de reconhecimento de carreira; assim entram estrelas e jogadores sólidos conhecidos, sem carregar elencos inteiros ou reservas obscuros.
+`data/curated_names.txt` é a lista editorial. `scripts/build_career_catalog.py` cruza esses nomes com o snapshot do [transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets), agrupa as partidas por liga, temporada e clube e escolhe uma temporada representativa. O filtro exige participação relevante e um indicador de reconhecimento de carreira; assim entram estrelas e jogadores sólidos conhecidos, sem carregar elencos inteiros ou reservas obscuros. Posição e nacionalidade vêm do perfil de cada jogador no mesmo snapshot; as duas cidadanias ausentes estão verificadas em `scripts/player_metadata.py`, e os quatro registros históricos estão completos em `data/legacy_players.json`.
 
 Os dados sul-americanos são reconstruídos a partir dos eventos de gols, assistências, cartões e substituições. Quatro ídolos anteriores à cobertura principal ficam documentados em `data/legacy_players.json`. Veja [a metodologia e a licença](data/ATTRIBUTION.md).
 

@@ -70,7 +70,7 @@ def archive_html(current_day, page=1):
             f'<h2>{escape(player["name"])}</h2>'
             f'<p>{escape(player["league"])} · {escape(player["season"])} · {escape(player["team"])}</p>'
             f'<p class="archive-numbers">{player["goals"]} gols · {player["assists"]} assistências · '
-            f'{player["yellow"]} amarelos · {player["red"]} vermelhos</p>'
+            f'{escape(player["position"])} · {escape(player["nationality"])}</p>'
         )
         team_content = (
             '<p><strong>Time:</strong> resposta em disputa hoje; volta ao arquivo amanhã.</p>'
@@ -216,24 +216,23 @@ def make_snapshot(moves, player_stats, day):
     done = finished(moves, mode='players')
     birth = date.fromisoformat(player['birth'])
     age = day.year - birth.year - ((day.month, day.day) < (birth.month, birth.day))
-    cards = f"{player['yellow']} amarelo{'s' if player['yellow'] != 1 else ''}"
-    if player['red']:
-        cards += f" · {player['red']} vermelho{'s' if player['red'] != 1 else ''}"
     clues = [dict(key='leagueSeason', label='Liga e temporada', value=f"{player['league']} · {player['season']}",
                   league=player['league'], season=player['season']),
              dict(key='goalsAssists', label='Gols e assistências',
                   value=f"{player['goals']} gols · {player['assists']} assistências",
                   goals=player['goals'], assists=player['assists']),
-             dict(key='cards', label='Cartões', value=cards, yellow=player['yellow'], red=player['red']),
+             dict(key='position', label='Posição', value=player['position'], position=player['position']),
              dict(key='age', label='Idade atual', value=f'{age} anos', age=age),
-             dict(key='team', label='Time', value=player['team'], team=player['team'])]
+             dict(key='nationality', label='Nacionalidade', value=player['nationality'],
+                  nationality=player['nationality'], nationalityCode=player['nationalityCode']),
+             dict(key='team', label='Time da temporada', value=player['team'], team=player['team'])]
     return dict(mode='players', day=str(day), number=(day-EPOCH).days+1, totalPlayers=len(PLAYERS),
                 serverTime=datetime.now(BRASILIA).isoformat(),
                 nextAt=datetime.combine(day+timedelta(days=1), time(), BRASILIA).isoformat(),
                 moves=moves, version=len(moves), done=done,
                 won=any(m['result']=='correct' for m in moves),
-                clues=clues[:5 if done else min(len(moves)+1, 5)],
-                answer=player['name'] if done else None, stats=player_stats, catalog='career-v1')
+                clues=clues[:6 if done or len(moves) >= 4 else len(moves)+1],
+                answer=player['name'] if done else None, stats=player_stats, catalog='career-v2')
 
 def make_team_snapshot(moves, team_stats, day):
     team = team_answer(day)
@@ -375,11 +374,11 @@ class Handler(BaseHTTPRequestHandler):
             return self.send(200, document, 'text/html; charset=utf-8') if document else self.send(404, {'error': 'Página não encontrada.'})
         if url.path == '/api/health':
             if cookie_mode():
-                return self.send(200, {'status': 'ok', 'catalog': 'career-v1', 'players': len(PLAYERS),
+                return self.send(200, {'status': 'ok', 'catalog': 'career-v2', 'players': len(PLAYERS),
                                        'teams': len(TEAMS), 'top10': len(TOP10), 'storage': 'signed-cookie'})
             with connect() as db:
                 db.execute('SELECT 1')
-            return self.send(200, {'status': 'ok', 'catalog': 'career-v1', 'players': len(PLAYERS),
+            return self.send(200, {'status': 'ok', 'catalog': 'career-v2', 'players': len(PLAYERS),
                                    'teams': len(TEAMS), 'top10': len(TOP10), 'storage': 'postgres' if database_url() else 'sqlite'})
         if url.path == '/api/game':
             mode = parse_qs(url.query).get('mode', ['players'])[0].lower()

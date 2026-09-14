@@ -55,10 +55,8 @@ main{position:relative;width:min(100% - 24px,560px);margin:18px auto 0}
 .metric{display:grid;text-align:center;min-width:38px}
 .metric strong,.age-value strong{font-family:"Arial Narrow",Impact,ui-sans-serif,sans-serif;font-size:28px;line-height:.9;letter-spacing:.02em}
 .metric small,.age-value small{margin-top:5px;color:var(--cream);font-size:9px;font-weight:650;letter-spacing:.08em;text-transform:uppercase}
-.cards{display:flex;justify-content:flex-end;gap:13px}
-.card-count{display:flex;align-items:center;gap:6px;font-family:"Arial Narrow",Impact,sans-serif;font-size:21px}
-.card-icon{width:12px;height:18px;border-radius:2px;background:var(--yellow);box-shadow:0 1px 0 #0005}
-.card-icon.red{background:#ff625d}
+.position-value strong{display:inline-flex;align-items:center;justify-content:center;min-width:48px;min-height:31px;padding:2px 9px;border:1px solid #b5e00074;border-radius:5px;background:#b5e00017;color:var(--lime);font-family:"Arial Narrow",Impact,ui-sans-serif,sans-serif;font-size:19px;letter-spacing:.06em}
+.nationality-value{color:var(--white);font-weight:750}
 .age-value{display:flex;align-items:flex-end;justify-content:flex-end;gap:6px}
 .age-value small{margin-bottom:2px}
 .team-value{display:flex;align-items:center;justify-content:flex-end;gap:8px}
