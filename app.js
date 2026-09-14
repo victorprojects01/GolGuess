@@ -676,7 +676,7 @@ function render() {
   $('played').textContent = game.stats.played;
   $('wins').textContent = (game.stats.played ? Math.round(game.stats.wins / game.stats.played * 100) : 0) + '%';
   $('streak').textContent = game.stats.streak;
-  $('catalogCount').textContent = mode === 'top10' ? (game.totalChallenges || 18) : mode === 'teams' ? (game.totalTeams || 269) : game.totalPlayers;
+  if ($('catalogCount')) $('catalogCount').textContent = mode === 'top10' ? (game.totalChallenges || 18) : mode === 'teams' ? (game.totalTeams || 269) : game.totalPlayers;
   if (game.done) {
     $('result').classList.toggle('lost', !game.won);
     $('resultKicker').textContent = t('gameOver');
@@ -982,7 +982,7 @@ $('copyBtn').onclick = async () => {
   trackEvent('share', { method: 'dialog_copy', content_type: 'game_result', item_id: mode });
   try { await navigator.clipboard.writeText($('shareText').value); $('copyBtn').textContent = t('copied'); } catch { $('shareText').focus(); $('shareText').select(); }
 };
-for (const name of ['help','stats','privacy','sources']) $(name + 'Btn').onclick = () => {
+for (const name of ['help','stats']) $(name + 'Btn').onclick = () => {
   trackEvent('view_dialog', { dialog_name: name });
   $(name + 'Dialog').showModal();
 };

@@ -112,7 +112,14 @@
     <p id="aboutGameText" data-i18n="aboutGame">O <strong>GolGuess</strong> é um jogo diário de futebol feito para quem ama o esporte. A cada dia, um novo jogador misterioso é escolhido: use seus palpites para revelar pistas de liga, temporada, gols, assistências, cartões, idade e clubes até acertar o nome em até cinco tentativas.</p>
   </section>
 </main>
-<footer><button id="privacyBtn" data-i18n="privacy">Privacidade</button><span aria-hidden="true">·</span><button id="sourcesBtn" data-i18n="data">Dados</button></footer>
+<footer class="site-footer" aria-label="Informações institucionais">
+  <a href="/sobre.html">Sobre o GolGuess</a>
+  <a href="/como-jogar.html">Como jogar</a>
+  <a href="/politica-de-privacidade.html">Política de Privacidade</a>
+  <a href="/politica-de-cookies.html">Política de Cookies</a>
+  <a href="/termos-de-uso.html">Termos de Uso</a>
+  <a href="/contato.html">Contato para parcerias</a>
+</footer>
 <dialog id="helpDialog">
   <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="howTitle" id="helpTitle">Como jogar</h2>
   <ol class="help-list"><li><b>1</b><span id="helpStep1" data-i18n="help1">Leia a primeira pista.</span></li><li><b>2</b><span id="helpStep2" data-i18n="help2">Escolha um jogador ou revele outra pista.</span></li><li><b>3</b><span id="helpStep3" data-i18n="help3">Acerte em até cinco tentativas.</span></li></ol>
@@ -121,12 +128,6 @@
 <dialog id="statsDialog">
   <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="statsTitle">Estatísticas</h2>
   <div class="stats-grid"><div><strong id="played">0</strong><span data-i18n="played">Partidas</span></div><div><strong id="wins">0%</strong><span data-i18n="winRate">Vitórias</span></div><div><strong id="streak">0</strong><span data-i18n="streak">Sequência</span></div></div>
-</dialog>
-<dialog id="privacyDialog">
-  <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="privacy">Privacidade</h2><p data-i18n="privacyText">Um cookie anônimo mantém sua rodada neste navegador. Não pedimos nome ou e-mail.</p>
-</dialog>
-<dialog id="sourcesDialog">
-  <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="data">Dados</h2><p><strong id="catalogCount">365+</strong> <span id="catalogLabel" data-i18n="catalogText">jogadores conhecidos de sete grandes ligas.</span></p><p><a href="/data/ATTRIBUTION.md" target="_blank" data-i18n="methodology">Créditos e metodologia ↗</a></p>
 </dialog>
 <dialog id="shareDialog">
   <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="share">Compartilhar</h2><textarea id="shareText" readonly aria-label="Resultado para copiar" rows="4"></textarea><button class="primary" id="copyBtn" data-i18n="copy">Copiar resultado</button>

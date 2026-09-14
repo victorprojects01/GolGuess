@@ -190,6 +190,9 @@ input:focus{border-color:var(--blue)}
 .about-game strong{color:var(--white);font-weight:700}
 footer{width:min(100% - 32px,560px);margin:0 auto 24px;display:flex;justify-content:center;align-items:center;gap:10px;color:#c6d3b085}
 footer button{min-height:40px;border:0;background:transparent;color:inherit;font-size:11px}
+.site-footer{display:flex;flex-wrap:wrap;justify-content:center;gap:3px 14px;padding:15px 0;border-top:1px solid var(--line)}
+.site-footer a{display:inline-flex;align-items:center;min-height:40px;color:var(--cream);font-size:11px;text-decoration:none;text-align:center}
+.site-footer a:hover{color:var(--lime);text-decoration:underline;text-underline-offset:4px}
 dialog{width:min(calc(100% - 28px),420px);max-height:85vh;padding:25px;border:1px solid #ffffff38;border-radius:9px;background:#183808;color:var(--white);box-shadow:0 24px 80px #061700b0}
 dialog::backdrop{background:#071800c7}
 dialog h2{margin:0 35px 20px 0;font-size:23px}

@@ -29,9 +29,11 @@ O ciclo determinístico percorre todos os 874 jogadores antes de repetir. A busc
 
 A tela mobile-first abre diretamente no jogo, em uma coluna central de até 560px. As pistas usam componentes próprios para placar, cartões e time, e a interface pode ser alternada entre português, inglês e espanhol pelo menu do cabeçalho.
 
+O rodapé liga a seis páginas institucionais estáticas: Sobre, Como jogar, Política de Privacidade, Política de Cookies, Termos de Uso e Contato para parcerias. Elas são publicadas no build da Vercel e também servidas pelo servidor Python local. O contato informado é `torvicbusiness35@gmail.com`.
+
 ## Deploy no Vercel
 
-O projeto inclui `vercel.json`, funções Python em `api/` e um build que publica somente HTML, CSS, JavaScript e atribuição. O catálogo completo continua dentro da função e não é servido como arquivo estático.
+O projeto inclui `vercel.json`, funções Python em `api/` e um build que publica somente as páginas, CSS, JavaScript, atribuição e arquivos de descoberta necessários. O catálogo completo continua dentro da função e não é servido como arquivo estático.
 
 O SQLite não é persistente nas funções serverless do Vercel. Por isso, sem configuração adicional, a rodada e as estatísticas ficam em um cookie assinado, HttpOnly e Secure. O jogo funciona imediatamente após o deploy e mantém o limite por navegador.
 
@@ -78,4 +80,4 @@ Os testes cobrem catálogo, ordem das pistas, cálculo de idade, resposta oculta
 
 ## Publicidade
 
-Há um espaço reservado após o jogo, sem scripts de anúncios. Ele fica fora do fluxo de pistas e palpite para proteger a jogabilidade em qualquer tela. Antes de ativar AdSense, atualize o texto de privacidade e configure consentimento conforme as regiões atendidas.
+A página do jogo já carrega Google Analytics e Google AdSense; o espaço publicitário fica após o jogo, fora das pistas e do palpite. As páginas de privacidade e cookies descrevem esses serviços. Revise as configurações de consentimento exigidas nas regiões atendidas antes de considerar a integração publicitária concluída.

@@ -100,6 +100,28 @@ class DailyGameTests(unittest.TestCase):
         for path in ['/data/players.json', '/server.py', '/.runtime/game.sqlite3', '/.git/config', '/../server.py']:
             self.assertEqual(self.request(path)[0], 404)
 
+    def test_institutional_pages_are_linked_and_served(self):
+        pages = ('sobre.html', 'como-jogar.html', 'politica-de-privacidade.html',
+                 'politica-de-cookies.html', 'termos-de-uso.html', 'contato.html')
+        conn = http.client.HTTPConnection(*self.http.server_address)
+        conn.request('GET', '/')
+        response = conn.getresponse()
+        self.assertEqual(response.status, 200)
+        home = response.read().decode('utf-8')
+        conn.close()
+        for page in pages:
+            self.assertIn(f'href="/{page}"', home)
+            conn = http.client.HTTPConnection(*self.http.server_address)
+            conn.request('GET', '/' + page)
+            response = conn.getresponse()
+            self.assertEqual(response.status, 200, page)
+            self.assertIn('text/html', response.getheader('Content-Type'))
+            content = response.read().decode('utf-8')
+            self.assertIn('<h1>', content)
+            self.assertIn('href="/"', content)
+            conn.close()
+        self.assertIn('mailto:torvicbusiness35@gmail.com', content)
+
     def test_first_try_win_and_reload_lock(self):
         game, cookie = self.start()
         status, result, _ = self.move(game, cookie, server.answer(server.today())['id'])

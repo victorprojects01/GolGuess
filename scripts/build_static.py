@@ -4,7 +4,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'public'
-FILES = ['index.html', 'app.js', 'styles.css', 'data/ATTRIBUTION.md', 'ads.txt', 'robots.txt', 'sitemap.xml']
+FILES = [
+    'index.html', 'app.js', 'styles.css', 'institucional.css',
+    'sobre.html', 'como-jogar.html', 'politica-de-privacidade.html',
+    'politica-de-cookies.html', 'termos-de-uso.html', 'contato.html',
+    'data/ATTRIBUTION.md', 'ads.txt', 'robots.txt', 'sitemap.xml',
+]
 
 def build():
     for name in FILES:
