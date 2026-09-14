@@ -122,6 +122,37 @@ class DailyGameTests(unittest.TestCase):
             conn.close()
         self.assertIn('mailto:torvicbusiness35@gmail.com', content)
 
+    def test_archive_reveals_only_completed_rounds(self):
+        current_day = server.EPOCH + timedelta(days=16)
+        with patch.object(server, 'today', return_value=current_day):
+            conn = http.client.HTTPConnection(*self.http.server_address)
+            conn.request('GET', '/arquivo.html')
+            response = conn.getresponse()
+            self.assertEqual(response.status, 200)
+            self.assertIn('text/html', response.getheader('Content-Type'))
+            archive = response.read().decode('utf-8')
+            conn.close()
+            self.assertIn(server.answer(current_day - timedelta(days=1))['name'], archive)
+            self.assertNotIn(f'<h2>{server.answer(current_day)["name"]}</h2>', archive)
+            self.assertIn(server.team_answer(current_day - timedelta(days=1))['name'], archive)
+            self.assertIn('arquivo.html?pagina=2', archive)
+            self.assertIn('https://www.golguess.com.br/arquivo.html', archive)
+
+            conn = http.client.HTTPConnection(*self.http.server_address)
+            conn.request('GET', '/arquivo.html?pagina=2')
+            response = conn.getresponse()
+            self.assertEqual(response.status, 200)
+            older = response.read().decode('utf-8')
+            conn.close()
+            self.assertIn(server.answer(server.EPOCH)['name'], older)
+            self.assertNotIn(f'<h2>{server.answer(current_day)["name"]}</h2>', older)
+
+        repeated_day = server.EPOCH + timedelta(days=len(server.TOP10_SCHEDULE))
+        first_round_page = (len(server.TOP10_SCHEDULE) - 1) // 14 + 1
+        repeated_archive = server.archive_html(repeated_day, first_round_page).decode('utf-8')
+        self.assertIn('Este Top 10 está em disputa hoje', repeated_archive)
+        self.assertNotIn(server.top10_answer(repeated_day)['title']['pt'], repeated_archive)
+
     def test_first_try_win_and_reload_lock(self):
         game, cookie = self.start()
         status, result, _ = self.move(game, cookie, server.answer(server.today())['id'])

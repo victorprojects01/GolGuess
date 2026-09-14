@@ -29,11 +29,13 @@ O ciclo determinístico percorre todos os 874 jogadores antes de repetir. A busc
 
 A tela mobile-first abre diretamente no jogo, em uma coluna central de até 560px. As pistas usam componentes próprios para placar, cartões e time, e a interface pode ser alternada entre português, inglês e espanhol pelo menu do cabeçalho.
 
-O rodapé liga a seis páginas institucionais estáticas: Sobre, Como jogar, Política de Privacidade, Política de Cookies, Termos de Uso e Contato para parcerias. Elas são publicadas no build da Vercel e também servidas pelo servidor Python local. O contato informado é `torvicbusiness35@gmail.com`.
+O rodapé liga as páginas Sobre, Desafios anteriores, Como jogar, Política de Privacidade, Política de Cookies, Termos de Uso e Contato para parcerias. As páginas institucionais são estáticas; o arquivo é renderizado pela função Python para publicar as rodadas encerradas automaticamente. O contato informado é `torvicbusiness35@gmail.com`.
 
 ## Deploy no Vercel
 
 O projeto inclui `vercel.json`, funções Python em `api/` e um build que publica somente as páginas, CSS, JavaScript, atribuição e arquivos de descoberta necessários. O catálogo completo continua dentro da função e não é servido como arquivo estático.
+
+O Vercel reescreve `/arquivo.html` para a função `/api/archive`. O arquivo é paginado e nunca mostra a rodada do dia; se uma resposta antiga voltar ao desafio atual após um ciclo, ela fica oculta até a rodada seguinte. As URLs canônicas, o sitemap e o `robots.txt` usam `https://www.golguess.com.br/`.
 
 O SQLite não é persistente nas funções serverless do Vercel. Por isso, sem configuração adicional, a rodada e as estatísticas ficam em um cookie assinado, HttpOnly e Secure. O jogo funciona imediatamente após o deploy e mantém o limite por navegador.
 
@@ -80,4 +82,4 @@ Os testes cobrem catálogo, ordem das pistas, cálculo de idade, resposta oculta
 
 ## Publicidade
 
-A página do jogo já carrega Google Analytics e Google AdSense; o espaço publicitário fica após o jogo, fora das pistas e do palpite. As páginas de privacidade e cookies descrevem esses serviços. Revise as configurações de consentimento exigidas nas regiões atendidas antes de considerar a integração publicitária concluída.
+A página do jogo carrega o script do Google AdSense uma vez e solicita o bloco responsivo `ad_01` (`2219850050`) após o jogo, fora das pistas e do palpite. Google Analytics também está presente. A exibição real depende do estado da conta AdSense e das configurações de anúncios automáticos. As páginas de privacidade e cookies descrevem esses serviços. Revise as configurações de consentimento exigidas nas regiões atendidas antes de considerar a integração publicitária concluída.

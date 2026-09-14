@@ -3,6 +3,9 @@
   "framework": null,
   "buildCommand": "python scripts/build_static.py",
   "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/arquivo.html", "destination": "/api/archive" }
+  ],
   "functions": {
     "api/*.py": {
       "maxDuration": 30,

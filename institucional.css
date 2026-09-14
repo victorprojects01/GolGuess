@@ -29,9 +29,24 @@ strong{color:#fff}
 .mode-list li{padding:13px 15px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
 .mode-list strong{display:block;margin-bottom:4px}
 .note{margin:20px 0;padding:14px 15px;border-left:3px solid #7bc6f2;background:#1b3c0c;color:var(--muted);font-size:14px}
+.archive-round{margin:24px 0;padding:17px 18px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
+.archive-round h2{margin:2px 0 4px;font-size:22px}
+.archive-round p{margin-bottom:7px}
+.archive-date{color:var(--accent);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.archive-numbers{font-variant-numeric:tabular-nums}
+.archive-round details{margin-top:11px;padding-top:10px;border-top:1px solid var(--line)}
+.archive-round summary{min-height:42px;display:list-item;align-content:center;color:var(--accent);cursor:pointer;font-size:14px;font-weight:700}
+.archive-round summary:focus-visible{outline:3px solid #7bc6f2;outline-offset:3px}
+.archive-ranking{columns:2;margin:8px 0;padding:0;list-style:none}
+.archive-ranking li{break-inside:avoid;margin:0 0 5px;font-size:13px}
+.archive-ranking li span{color:var(--accent);font-variant-numeric:tabular-nums}
+.archive-ranking small{color:#c6d3b0}
+.archive-source{font-size:12px}
+.archive-pagination{display:flex;justify-content:space-between;gap:16px;margin-top:28px}
+.archive-pagination a{display:inline-flex;align-items:center;min-height:44px}
 .contact-link{display:inline-flex;align-items:center;min-height:46px;padding:0 16px;margin:8px 0 12px;border-radius:6px;background:var(--accent);color:#122d00;font-weight:750;text-decoration:none;overflow-wrap:anywhere}
 .contact-link:hover{background:#c5ed38}
 .site-footer{width:min(100% - 32px,560px);margin:0 auto 25px;padding:17px 0;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:center;gap:5px 15px}
 .site-footer a{display:inline-flex;align-items:center;min-height:38px;color:#c6d3b0;text-decoration:none;font-size:12px}
 .site-footer a[aria-current=page]{color:var(--accent);text-decoration:underline;text-underline-offset:4px}
-@media(max-width:380px){.site-header{padding-inline:16px}.brand{font-size:19px}.back-link{font-size:12px}main{margin-top:22px}.site-footer{justify-content:flex-start}}
+@media(max-width:380px){.site-header{padding-inline:16px}.brand{font-size:19px}.back-link{font-size:12px}main{margin-top:22px}.site-footer{justify-content:flex-start}.archive-ranking{columns:1}}

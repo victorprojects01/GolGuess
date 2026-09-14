@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://golguess.com/</loc>
-    <lastmod>2026-09-12</lastmod>
+    <loc>https://www.golguess.com.br/</loc>
+    <lastmod>2026-09-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-  <url>
-    <loc>https://golguess.com/?jogo=times</loc>
-    <lastmod>2026-09-12</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url><loc>https://golguess.com/sobre.html</loc><lastmod>2026-09-14</lastmod></url>
-  <url><loc>https://golguess.com/como-jogar.html</loc><lastmod>2026-09-14</lastmod></url>
-  <url><loc>https://golguess.com/politica-de-privacidade.html</loc><lastmod>2026-09-14</lastmod></url>
-  <url><loc>https://golguess.com/politica-de-cookies.html</loc><lastmod>2026-09-14</lastmod></url>
-  <url><loc>https://golguess.com/termos-de-uso.html</loc><lastmod>2026-09-14</lastmod></url>
-  <url><loc>https://golguess.com/contato.html</loc><lastmod>2026-09-14</lastmod></url>
+  <url><loc>https://www.golguess.com.br/sobre.html</loc><lastmod>2026-09-14</lastmod></url>
+  <url><loc>https://www.golguess.com.br/arquivo.html</loc></url>
+  <url><loc>https://www.golguess.com.br/como-jogar.html</loc><lastmod>2026-09-14</lastmod></url>
+  <url><loc>https://www.golguess.com.br/politica-de-privacidade.html</loc><lastmod>2026-09-14</lastmod></url>
+  <url><loc>https://www.golguess.com.br/politica-de-cookies.html</loc><lastmod>2026-09-14</lastmod></url>
+  <url><loc>https://www.golguess.com.br/termos-de-uso.html</loc><lastmod>2026-09-14</lastmod></url>
+  <url><loc>https://www.golguess.com.br/contato.html</loc><lastmod>2026-09-14</lastmod></url>
 </urlset>

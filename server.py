@@ -2,6 +2,7 @@
 import base64
 import hashlib
 import hmac
+import html
 import json
 import os
 import secrets
@@ -42,6 +43,79 @@ def team_answer(day):
 
 def top10_answer(day):
     return TOP10_SCHEDULE[(day - EPOCH).days % len(TOP10_SCHEDULE)]
+
+
+def archive_html(current_day, page=1):
+    """Render completed rounds only; page content updates without a new deploy."""
+    page_size = 14
+    completed = max(0, (current_day - EPOCH).days)
+    pages = max(1, (completed + page_size - 1) // page_size)
+    if page < 1 or page > pages:
+        return None
+    escape = html.escape
+    start = (page - 1) * page_size
+    rounds = []
+    current_player = answer(current_day)['id']
+    current_team = team_answer(current_day)['id']
+    current_top10 = top10_answer(current_day)['id']
+    for offset in range(start, min(start + page_size, completed)):
+        round_day = current_day - timedelta(days=offset + 1)
+        number = (round_day - EPOCH).days + 1
+        player = answer(round_day)
+        team = team_answer(round_day)
+        challenge = top10_answer(round_day)
+        player_content = (
+            '<h2>Jogador em disputa hoje</h2><p>Esta resposta volta ao arquivo amanhã.</p>'
+            if player['id'] == current_player else
+            f'<h2>{escape(player["name"])}</h2>'
+            f'<p>{escape(player["league"])} · {escape(player["season"])} · {escape(player["team"])}</p>'
+            f'<p class="archive-numbers">{player["goals"]} gols · {player["assists"]} assistências · '
+            f'{player["yellow"]} amarelos · {player["red"]} vermelhos</p>'
+        )
+        team_content = (
+            '<p><strong>Time:</strong> resposta em disputa hoje; volta ao arquivo amanhã.</p>'
+            if team['id'] == current_team else
+            f'<p><strong>Time:</strong> {escape(team["name"])} · {escape(team["country"])}</p>'
+        )
+        if challenge['id'] == current_top10:
+            top10_content = '<p>Este Top 10 está em disputa hoje. O ranking volta ao arquivo amanhã.</p>'
+        else:
+            ranking = ''.join(
+                f'<li><span>{item["position"]}.</span> {escape(item["name"])}'
+                f' <small>{escape(str(item["value"]))}</small></li>'
+                for item in challenge['ranking']
+            )
+            top10_content = (
+                f'<details><summary>{escape(challenge["title"]["pt"])} — ver ranking</summary>'
+                f'<ol class="archive-ranking">{ranking}</ol>'
+                f'<p class="archive-source">Fonte do ranking: {escape(challenge["source"])}</p></details>'
+            )
+        rounds.append(
+            f'<article class="archive-round"><p class="archive-date">{round_day.strftime("%d/%m/%Y")} · Desafio #{number}</p>'
+            f'{player_content}{team_content}{top10_content}</article>'
+        )
+    entries = ''.join(rounds) if rounds else '<p>O primeiro desafio encerrado aparecerá aqui amanhã.</p>'
+    links = []
+    if page > 1:
+        links.append(f'<a href="/arquivo.html?pagina={page-1}">Mais recentes</a>')
+    if page < pages:
+        links.append(f'<a href="/arquivo.html?pagina={page+1}">Mais antigos</a>')
+    pagination = f'<nav class="archive-pagination" aria-label="Páginas do arquivo">{"".join(links)}</nav>' if links else ''
+    canonical = 'https://www.golguess.com.br/arquivo.html' + (f'?pagina={page}' if page > 1 else '')
+    document = f'''<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#122D00"><title>Desafios anteriores | GolGuess</title>
+<meta name="description" content="Veja as respostas dos desafios diários de futebol já encerrados no GolGuess: jogadores, times e rankings Top 10.">
+<link rel="canonical" href="{canonical}"><link rel="stylesheet" href="/institucional.css"></head>
+<body><a class="skip-link" href="#conteudo">Ir ao conteúdo</a>
+<header class="site-header"><a class="brand" href="/" aria-label="GolGuess — início"><span class="ball-mark" aria-hidden="true"></span><span>golguess</span><b>.</b></a><a class="back-link" href="/">← Voltar ao jogo</a></header>
+<main id="conteudo"><p class="eyebrow">Arquivo</p><h1>Desafios anteriores</h1>
+<p class="lead">Reviva as rodadas encerradas de jogadores, times e Top 10.</p>
+<p>As respostas aparecem aqui somente depois da meia-noite de Brasília, quando começa o desafio seguinte. A rodada de hoje permanece em segredo. Os números do jogador pertencem à liga e à temporada indicadas; veja <a href="/sobre.html">como os dados são escolhidos</a>.</p>
+{entries}{pagination}</main>
+<footer class="site-footer" aria-label="Páginas institucionais"><a href="/sobre.html">Sobre o GolGuess</a><a href="/arquivo.html" aria-current="page">Desafios anteriores</a><a href="/como-jogar.html">Como jogar</a><a href="/politica-de-privacidade.html">Política de Privacidade</a><a href="/politica-de-cookies.html">Política de Cookies</a><a href="/termos-de-uso.html">Termos de Uso</a><a href="/contato.html">Contato para parcerias</a></footer>
+</body></html>'''
+    return document.encode('utf-8')
 
 def cookie_mode():
     return os.environ.get('GOLGUESS_COOKIE_MODE') == '1' or (bool(os.environ.get('VERCEL')) and not database_url())
@@ -292,6 +366,13 @@ class Handler(BaseHTTPRequestHandler):
 
     def get(self):
         url = urlsplit(self.path)
+        if url.path in ('/arquivo.html', '/api/archive'):
+            try:
+                page = int(parse_qs(url.query).get('pagina', ['1'])[0])
+            except ValueError:
+                page = 0
+            document = archive_html(today(), page)
+            return self.send(200, document, 'text/html; charset=utf-8') if document else self.send(404, {'error': 'Página não encontrada.'})
         if url.path == '/api/health':
             if cookie_mode():
                 return self.send(200, {'status': 'ok', 'catalog': 'career-v1', 'players': len(PLAYERS),
