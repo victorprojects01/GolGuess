@@ -59,6 +59,8 @@ def connect():
                 db.execute('CREATE TABLE IF NOT EXISTS career_rounds (visitor TEXT, day TEXT, moves TEXT NOT NULL, PRIMARY KEY(visitor, day))')
                 db.execute('CREATE TABLE IF NOT EXISTS team_rounds (visitor TEXT, day TEXT, moves TEXT NOT NULL, PRIMARY KEY(visitor, day))')
                 db.execute('CREATE TABLE IF NOT EXISTS top10_rounds (visitor TEXT, day TEXT, moves TEXT NOT NULL, PRIMARY KEY(visitor, day))')
+                db.execute('CREATE TABLE IF NOT EXISTS daily_rankings (visitor TEXT NOT NULL, day TEXT NOT NULL, nickname TEXT NOT NULL, players_score INTEGER NOT NULL, teams_score INTEGER NOT NULL, top10_score INTEGER NOT NULL, total_score INTEGER NOT NULL, submitted_at TEXT NOT NULL, PRIMARY KEY(visitor, day))')
+                db.execute('CREATE INDEX IF NOT EXISTS daily_rankings_order ON daily_rankings(day, total_score DESC, submitted_at)')
                 conn.commit()
                 _initialized.add(identity)
         with conn:

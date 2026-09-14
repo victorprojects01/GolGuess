@@ -14,15 +14,15 @@
   gtag('config', 'G-GWBCQXFG9Q');
 </script>
 <title>GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário</title>
-<meta name="description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 5 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
+<meta name="description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 6 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
 <link rel="canonical" href="https://www.golguess.com.br/">
 <meta property="og:title" content="GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário">
-<meta property="og:description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 5 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
+<meta property="og:description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 6 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.golguess.com.br/">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário">
-<meta name="twitter:description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 5 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
+<meta name="twitter:description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 6 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
 <link rel="stylesheet" href="/styles.css">
 <script type="application/ld+json">
 {
@@ -30,7 +30,7 @@
   "@type": "WebApplication",
   "name": "GolGuess",
   "headline": "Adivinhe o jogador de futebol de hoje",
-  "description": "Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 5 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!",
+  "description": "Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 6 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!",
   "applicationCategory": "GameApplication",
   "inLanguage": "pt-BR"
 }
@@ -49,6 +49,7 @@
     <button class="mode-btn" id="modeTop10Btn" role="tab" aria-selected="false" data-mode="top10" data-i18n="modeTop10">Top 10</button>
   </div>
   <nav aria-label="Menu">
+    <a class="ranking-link" href="/ranking" data-i18n="ranking">Ranking</a>
     <button class="icon-button" id="statsBtn" aria-label="Estatísticas" title="Estatísticas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V13M12 20V5M19 20V9"/></svg></button>
     <button class="icon-button help-button" id="helpBtn" aria-label="Como jogar" title="Como jogar">?</button>
     <details class="language-menu" id="languageMenu">
@@ -115,7 +116,7 @@
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
   </aside>
   <section class="about-game" aria-label="Sobre o GolGuess">
-    <p id="aboutGameText" data-i18n="aboutGame">O <strong>GolGuess</strong> é um jogo diário de futebol feito para quem ama o esporte. Descubra o jogador em até cinco tentativas com pistas de liga, temporada, gols, assistências, posição, idade, nacionalidade e time.</p>
+    <p id="aboutGameText" data-i18n="aboutGame">O <strong>GolGuess</strong> é um jogo diário de futebol feito para quem ama o esporte. Descubra o jogador em até seis tentativas com pistas de liga, temporada, gols, assistências, posição, idade, nacionalidade e time.</p>
   </section>
 </main>
 <footer class="site-footer" aria-label="Informações institucionais">
@@ -129,7 +130,7 @@
 </footer>
 <dialog id="helpDialog">
   <button class="dialog-close" aria-label="Fechar">×</button><h2 data-i18n="howTitle" id="helpTitle">Como jogar</h2>
-  <ol class="help-list"><li><b>1</b><span id="helpStep1" data-i18n="help1">Leia a primeira pista.</span></li><li><b>2</b><span id="helpStep2" data-i18n="help2">Escolha um jogador ou revele outra pista.</span></li><li><b>3</b><span id="helpStep3" data-i18n="help3">Acerte em até cinco tentativas.</span></li></ol>
+  <ol class="help-list"><li><b>1</b><span id="helpStep1" data-i18n="help1">Leia a primeira pista.</span></li><li><b>2</b><span id="helpStep2" data-i18n="help2">Escolha um jogador ou revele outra pista.</span></li><li><b>3</b><span id="helpStep3" data-i18n="help3">Acerte em até seis tentativas.</span></li></ol>
   <button class="primary dialog-done" data-i18n="play">Jogar</button>
 </dialog>
 <dialog id="statsDialog">
@@ -147,6 +148,20 @@
     <button type="button" class="primary" id="giveUpCancelBtn" data-i18n="giveUpConfirmCancel">Continuar jogando</button>
     <button type="button" class="giveup-confirm-btn" id="giveUpConfirmBtn" data-i18n="giveUpConfirmYes">Desistir e revelar</button>
   </div>
+</dialog>
+<dialog id="nicknameDialog" class="nickname-dialog">
+  <button class="dialog-close" aria-label="Fechar">×</button>
+  <h2 data-i18n="rankingReady">Você concluiu os três desafios!</h2>
+  <p data-i18n="rankingPrompt">Escolha um nickname para entrar no ranking diário.</p>
+  <p class="nickname-score"><strong id="nicknameScore">0</strong> <span data-i18n="points">pontos</span></p>
+  <form id="nicknameForm" class="nickname-form">
+    <label for="nicknameInput" data-i18n="nicknameLabel">Seu nickname</label>
+    <input id="nicknameInput" name="nickname" minlength="3" maxlength="20" required autocomplete="nickname" placeholder="Como quer aparecer?">
+    <small data-i18n="nicknameHint">3 a 20 caracteres: letras, números, espaço, _ ou -.</small>
+    <p id="nicknameError" class="nickname-error" role="alert" hidden></p>
+    <button type="submit" class="primary" data-i18n="joinRanking">Entrar no ranking</button>
+  </form>
+  <button type="button" class="nickname-later dialog-done" data-i18n="later">Agora não</button>
 </dialog>
 <noscript><p class="noscript">Ative o JavaScript para jogar.</p></noscript>
 </body>

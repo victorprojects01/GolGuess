@@ -13,6 +13,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 from storage import connect, database_url, StorageUnavailable
+import supabase_ranking
 
 ROOT = Path(__file__).resolve().parent
 BRASILIA = timezone(timedelta(hours=-3))
@@ -163,7 +164,7 @@ def decode_state(value, mode='players'):
                 if not isinstance(pos, int) or not (1 <= pos <= 10):
                     return None
         else:
-            if len(moves) > 5:
+            if len(moves) > (6 if mode == 'players' else 5):
                 return None
             catalog_by_id = TEAMS_BY_ID if mode == 'teams' else BY_ID
             for move in moves:
@@ -191,7 +192,27 @@ def finished(moves, mode='players'):
     if mode == 'top10':
         correct_positions = {m['position'] for m in moves if m.get('result') == 'correct'}
         return len(correct_positions) == 10 or any(m.get('result') == 'giveup' for m in moves)
-    return len(moves) >= 5 or any(m['result'] == 'correct' for m in moves)
+    return len(moves) >= (6 if mode == 'players' else 5) or any(m['result'] == 'correct' for m in moves)
+
+def ranking_scores(rounds):
+    """Calculate a finished visitor's score only from server-stored moves."""
+    if not all(finished(rounds[mode], mode) for mode in ('players', 'teams', 'top10')):
+        return None
+    players = max(0, 100 - 6 * sum(m['result'] in ('wrong', 'skip') for m in rounds['players']))
+    teams = max(0, 100 - 11 * sum(m['result'] in ('wrong', 'skip') for m in rounds['teams']))
+    top10 = (0 if any(m['result'] == 'giveup' for m in rounds['top10']) else
+             max(0, 100 - 2 * sum(m['result'] in ('incorrect', 'wrong_pos') for m in rounds['top10'])))
+    return {'players': players, 'teams': teams, 'top10': top10, 'total': players + teams + top10}
+
+def valid_nickname(value):
+    if not isinstance(value, str):
+        return None
+    name = ' '.join(value.split())
+    if not 3 <= len(name) <= 20:
+        return None
+    if not all(c.isalnum() or c in ' _-' for c in name):
+        return None
+    return name
 
 def stats(db, visitor, day, mode='players'):
     table = 'top10_rounds' if mode == 'top10' else 'team_rounds' if mode == 'teams' else 'career_rounds'
@@ -231,7 +252,7 @@ def make_snapshot(moves, player_stats, day):
                 nextAt=datetime.combine(day+timedelta(days=1), time(), BRASILIA).isoformat(),
                 moves=moves, version=len(moves), done=done,
                 won=any(m['result']=='correct' for m in moves),
-                clues=clues[:6 if done or len(moves) >= 4 else len(moves)+1],
+                clues=clues[:6 if done else min(len(moves)+1, 6)],
                 answer=player['name'] if done else None, stats=player_stats, catalog='career-v2')
 
 def make_team_snapshot(moves, team_stats, day):
@@ -293,7 +314,7 @@ def snapshot(db, visitor, day, mode='players'):
     return make_snapshot(read_moves(db, visitor, day, 'players'), stats(db, visitor, day, 'players'), day)
 
 class Handler(BaseHTTPRequestHandler):
-    def send(self, status, body, content_type='application/json; charset=utf-8', cookie=None, state_cookie=None, state_cookie_teams=None, state_cookie_top10=None):
+    def send(self, status, body, content_type='application/json; charset=utf-8', cookie=None, state_cookie=None, state_cookie_teams=None, state_cookie_top10=None, rank_cookie=None):
         raw = body if isinstance(body, bytes) else json.dumps(body, ensure_ascii=False).encode()
         self.send_response(status)
         self.send_header('Content-Type', content_type)
@@ -315,6 +336,9 @@ class Handler(BaseHTTPRequestHandler):
         if state_cookie_top10:
             secure = '; Secure' if os.environ.get('VERCEL') or os.environ.get('GOLGUESS_SECURE_COOKIE') == '1' else ''
             self.send_header('Set-Cookie', f'gg_state_top10={state_cookie_top10}; HttpOnly; SameSite=Lax; Path=/; Max-Age=34560000{secure}')
+        if rank_cookie:
+            secure = '; Secure' if os.environ.get('VERCEL') or os.environ.get('GOLGUESS_SECURE_COOKIE') == '1' else ''
+            self.send_header('Set-Cookie', f'gg_rank_id={rank_cookie}; HttpOnly; SameSite=Lax; Path=/; Max-Age=34560000{secure}')
         self.end_headers()
         self.wfile.write(raw)
 
@@ -349,6 +373,30 @@ class Handler(BaseHTTPRequestHandler):
             state['day'], state['moves'] = str(day), []
         return state
 
+    def browser_rank_visitor(self, create=False):
+        cookies = SimpleCookie()
+        try:
+            cookies.load(self.headers.get('Cookie', ''))
+        except CookieError:
+            pass
+        item = cookies.get('gg_rank_id')
+        if item:
+            try:
+                token, signature = item.value.rsplit('.', 1)
+                expected = hmac.new(signing_key(), ('rank:' + token).encode(), hashlib.sha256).hexdigest()
+                if len(token) == 32 and hmac.compare_digest(signature, expected):
+                    return token, None
+            except ValueError:
+                pass
+        if not create:
+            return None, None
+        token = secrets.token_urlsafe(24)
+        signature = hmac.new(signing_key(), ('rank:' + token).encode(), hashlib.sha256).hexdigest()
+        return token, token + '.' + signature
+
+    def supabase_rank_ready(self):
+        return supabase_ranking.configured() and len(os.environ.get('GOLGUESS_SECRET', '')) >= 32
+
     def browser_snapshot(self, state, day, mode='players'):
         s = {'played': state['played'], 'wins': state['wins'], 'streak': state['streak']}
         if mode == 'top10':
@@ -375,7 +423,8 @@ class Handler(BaseHTTPRequestHandler):
         if url.path == '/api/health':
             if cookie_mode():
                 return self.send(200, {'status': 'ok', 'catalog': 'career-v2', 'players': len(PLAYERS),
-                                       'teams': len(TEAMS), 'top10': len(TOP10), 'storage': 'signed-cookie'})
+                                       'teams': len(TEAMS), 'top10': len(TOP10), 'storage': 'signed-cookie',
+                                       'rankingStorage': 'supabase' if self.supabase_rank_ready() else 'none'})
             with connect() as db:
                 db.execute('SELECT 1')
             return self.send(200, {'status': 'ok', 'catalog': 'career-v2', 'players': len(PLAYERS),
@@ -388,15 +437,18 @@ class Handler(BaseHTTPRequestHandler):
                 day = today()
                 state = self.browser_state(day, mode=mode)
                 encoded = encode_state(state)
+                rank_cookie = self.browser_rank_visitor(create=True)[1] if self.supabase_rank_ready() else None
                 if mode == 'top10':
-                    return self.send(200, self.browser_snapshot(state, day, mode='top10'), state_cookie_top10=encoded)
+                    return self.send(200, self.browser_snapshot(state, day, mode='top10'), state_cookie_top10=encoded, rank_cookie=rank_cookie)
                 if mode == 'teams':
-                    return self.send(200, self.browser_snapshot(state, day, mode='teams'), state_cookie_teams=encoded)
-                return self.send(200, self.browser_snapshot(state, day, mode='players'), state_cookie=encoded)
+                    return self.send(200, self.browser_snapshot(state, day, mode='teams'), state_cookie_teams=encoded, rank_cookie=rank_cookie)
+                return self.send(200, self.browser_snapshot(state, day, mode='players'), state_cookie=encoded, rank_cookie=rank_cookie)
             with connect() as db:
                 visitor, cookie = self.visitor(db, create=True)
                 payload = snapshot(db, visitor, today(), mode=mode)
             return self.send(200, payload, cookie=cookie)
+        if url.path == '/api/ranking':
+            return self.get_ranking()
         if url.path == '/api/players':
             query = normalize(parse_qs(url.query).get('q', [''])[0].strip())[:80]
             result = [dict(id=p['id'], name=p['name']) for p in PLAYERS if query and query in normalize(p['name'])]
@@ -410,6 +462,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.send(200, result[:8])
         files = {'/': ('index.html', 'text/html; charset=utf-8'),
                  '/index.html': ('index.html', 'text/html; charset=utf-8'),
+                 '/ranking': ('ranking.html', 'text/html; charset=utf-8'),
+                 '/ranking.html': ('ranking.html', 'text/html; charset=utf-8'),
                  '/sobre.html': ('sobre.html', 'text/html; charset=utf-8'),
                  '/como-jogar.html': ('como-jogar.html', 'text/html; charset=utf-8'),
                  '/politica-de-privacidade.html': ('politica-de-privacidade.html', 'text/html; charset=utf-8'),
@@ -419,6 +473,8 @@ class Handler(BaseHTTPRequestHandler):
                  '/styles.css': ('styles.css', 'text/css; charset=utf-8'),
                  '/institucional.css': ('institucional.css', 'text/css; charset=utf-8'),
                  '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
+                 '/ranking.js': ('ranking.js', 'text/javascript; charset=utf-8'),
+                 '/ranking.css': ('ranking.css', 'text/css; charset=utf-8'),
                  '/ads.txt': ('ads.txt', 'text/plain; charset=utf-8'),
                  '/robots.txt': ('robots.txt', 'text/plain; charset=utf-8'),
                  '/sitemap.xml': ('sitemap.xml', 'application/xml; charset=utf-8'),
@@ -428,6 +484,128 @@ class Handler(BaseHTTPRequestHandler):
         file, content_type = files[url.path]
         self.send(200, (ROOT / file).read_bytes(), content_type)
 
+    def get_ranking(self):
+        if cookie_mode():
+            if self.supabase_rank_ready():
+                return self.get_supabase_ranking()
+            return self.send(503, {'error': 'O ranking precisa de um banco de dados compartilhado. Tente novamente mais tarde.',
+                                   'code': 'RANKING_REQUIRES_DATABASE'})
+        day = today()
+        with connect() as db:
+            db.execute('DELETE FROM daily_rankings WHERE day < ?', (str(day),))
+            visitor, _ = self.visitor(db)
+            rounds = {mode: read_moves(db, visitor, day, mode) if visitor else []
+                      for mode in ('players', 'teams', 'top10')}
+            scores = ranking_scores(rounds)
+            rows = db.execute('SELECT visitor, nickname, players_score, teams_score, top10_score, total_score, submitted_at '
+                              'FROM daily_rankings WHERE day=? ORDER BY total_score DESC, submitted_at ASC, visitor ASC LIMIT 100',
+                              (str(day),)).fetchall()
+            entries = [dict(rank=i + 1, nickname=row['nickname'], players=row['players_score'],
+                            teams=row['teams_score'], top10=row['top10_score'], total=row['total_score'],
+                            mine=row['visitor'] == visitor)
+                       for i, row in enumerate(rows)]
+            own = next((entry for entry in entries if entry['mine']), None)
+            if visitor and own is None:
+                row = db.execute('SELECT nickname, players_score, teams_score, top10_score, total_score, submitted_at '
+                                 'FROM daily_rankings WHERE visitor=? AND day=?', (visitor, str(day))).fetchone()
+                if row:
+                    before = db.execute('SELECT COUNT(*) AS n FROM daily_rankings WHERE day=? AND '
+                                        '(total_score > ? OR (total_score = ? AND submitted_at < ?) OR '
+                                        '(total_score = ? AND submitted_at = ? AND visitor < ?))',
+                                        (str(day), row['total_score'], row['total_score'], row['submitted_at'],
+                                         row['total_score'], row['submitted_at'], visitor)).fetchone()['n']
+                    own = dict(rank=before + 1, nickname=row['nickname'], players=row['players_score'],
+                               teams=row['teams_score'], top10=row['top10_score'], total=row['total_score'], mine=True)
+            total = db.execute('SELECT COUNT(*) AS n FROM daily_rankings WHERE day=?', (str(day),)).fetchone()['n']
+        return self.send(200, {'day': str(day), 'serverTime': datetime.now(BRASILIA).isoformat(),
+                               'nextAt': datetime.combine(day + timedelta(days=1), time(), BRASILIA).isoformat(),
+                               'entries': entries, 'totalPlayers': total, 'mine': own,
+                               'completed': {mode: finished(rounds[mode], mode) for mode in rounds},
+                               'eligible': scores is not None, 'submitted': own is not None,
+                               'previewScore': scores})
+
+    def get_supabase_ranking(self):
+        day = today()
+        visitor, _ = self.browser_rank_visitor()
+        rounds = {mode: self.browser_state(day, mode)['moves'] for mode in ('players', 'teams', 'top10')}
+        scores = ranking_scores(rounds)
+        supabase_ranking.purge_old(day)
+        rows, total = supabase_ranking.rows_for_day(day)
+        entries = [dict(rank=i + 1, nickname=row['nickname'], players=row['players_score'],
+                        teams=row['teams_score'], top10=row['top10_score'], total=row['total_score'],
+                        mine=row['visitor'] == visitor)
+                   for i, row in enumerate(rows)]
+        own = next((entry for entry in entries if entry['mine']), None)
+        if visitor and own is None:
+            row = supabase_ranking.own_row(day, visitor)
+            if row:
+                own = dict(rank=supabase_ranking.rank_of(day, row), nickname=row['nickname'],
+                           players=row['players_score'], teams=row['teams_score'],
+                           top10=row['top10_score'], total=row['total_score'], mine=True)
+        return self.send(200, {'day': str(day), 'serverTime': datetime.now(BRASILIA).isoformat(),
+                               'nextAt': datetime.combine(day + timedelta(days=1), time(), BRASILIA).isoformat(),
+                               'entries': entries, 'totalPlayers': total if total is not None else len(entries),
+                               'mine': own,
+                               'completed': {mode: finished(rounds[mode], mode) for mode in rounds},
+                               'eligible': scores is not None, 'submitted': own is not None,
+                               'previewScore': scores})
+
+    def post_supabase_ranking(self, nickname):
+        day = today()
+        visitor, _ = self.browser_rank_visitor()
+        if not visitor:
+            return self.send(403, {'error': 'Abra o jogo neste navegador antes de entrar no ranking.'})
+        rounds = {mode: self.browser_state(day, mode)['moves'] for mode in ('players', 'teams', 'top10')}
+        scores = ranking_scores(rounds)
+        if scores is None:
+            return self.send(403, {'error': 'Conclua os três desafios de hoje antes de entrar no ranking.'})
+        if supabase_ranking.own_row(day, visitor):
+            return self.send(409, {'error': 'Você já entrou no ranking de hoje.'})
+        try:
+            supabase_ranking.insert(day, visitor, nickname, scores)
+        except supabase_ranking.RankingConflict:
+            return self.send(409, {'error': 'Você já entrou no ranking de hoje.'})
+        return self.get_supabase_ranking()
+
+    def post_ranking(self):
+        origin = self.headers.get('Origin')
+        if (origin and urlsplit(origin).netloc != self.headers.get('Host')) or self.headers.get('Content-Type') != 'application/json':
+            return self.send(403, {'error': 'Origem não permitida.'})
+        try:
+            length = int(self.headers.get('Content-Length', '0'))
+            if not 0 < length <= 1024:
+                raise ValueError()
+            body = json.loads(self.rfile.read(length))
+            nickname = valid_nickname(body.get('nickname')) if isinstance(body, dict) else None
+        except (ValueError, UnicodeError, json.JSONDecodeError):
+            nickname = None
+        if not nickname:
+            return self.send(400, {'error': 'Use um nickname de 3 a 20 caracteres: letras, números, espaço, _ ou -.'})
+        if cookie_mode():
+            if self.supabase_rank_ready():
+                return self.post_supabase_ranking(nickname)
+            return self.send(503, {'error': 'O ranking precisa de um banco de dados compartilhado. Tente novamente mais tarde.',
+                                   'code': 'RANKING_REQUIRES_DATABASE'})
+        day = today()
+        with connect() as db:
+            if not db.postgres:
+                db.execute('BEGIN IMMEDIATE')
+            visitor, _ = self.visitor(db)
+            if not visitor:
+                return self.send(403, {'error': 'Abra o jogo neste navegador antes de entrar no ranking.'})
+            db.lock_visitor(visitor)
+            if db.execute('SELECT 1 FROM daily_rankings WHERE visitor=? AND day=?', (visitor, str(day))).fetchone():
+                return self.send(409, {'error': 'Você já entrou no ranking de hoje.'})
+            rounds = {mode: read_moves(db, visitor, day, mode) for mode in ('players', 'teams', 'top10')}
+            scores = ranking_scores(rounds)
+            if scores is None:
+                return self.send(403, {'error': 'Conclua os três desafios de hoje antes de entrar no ranking.'})
+            db.execute('INSERT INTO daily_rankings (visitor, day, nickname, players_score, teams_score, top10_score, total_score, submitted_at) '
+                       'VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(visitor, day) DO NOTHING',
+                       (visitor, str(day), nickname, scores['players'], scores['teams'], scores['top10'],
+                        scores['total'], datetime.now(BRASILIA).isoformat()))
+        return self.get_ranking()
+
     def do_POST(self):
         try:
             self.post()
@@ -435,6 +613,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send(503, {'error': 'Não foi possível salvar o lance. Tente novamente em instantes.', 'code': exc.code})
 
     def post(self):
+        if self.path == '/api/ranking':
+            return self.post_ranking()
         if self.path != '/api/guess':
             return self.send(404, {'error': 'Rota não encontrada.'})
         origin = self.headers.get('Origin')

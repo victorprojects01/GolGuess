@@ -2,19 +2,19 @@
 const $ = id => document.getElementById(id);
 const copy = {
   pt: {
-    modePlayers:'Jogadores', modeTeams:'Times', modeTop10:'Top 10',
+    modePlayers:'Jogadores', modeTeams:'Times', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'Você concluiu os três desafios!', rankingPrompt:'Escolha um nickname para entrar no ranking diário.', points:'pontos', nicknameLabel:'Seu nickname', nicknameHint:'3 a 20 caracteres: letras, números, espaço, _ ou -.', joinRanking:'Entrar no ranking', later:'Agora não',
     dailyPlayer:'Adivinhe o jogador de futebol de hoje', dailyTeam:'Adivinhe o time de futebol de hoje', dailyTop10:'Complete o ranking Top 10 de hoje',
     pageTitle:'GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário',
     pageTitleTeam:'GolGuess – Adivinhe o Time de Futebol | Desafio Diário',
     pageTitleTop10:'GolGuess – Top 10 Desafio Diário de Futebol',
-    aboutGame:'O <strong>GolGuess</strong> é um jogo diário de futebol feito para quem ama o esporte. Descubra o jogador em até cinco tentativas com pistas de liga, temporada, gols, assistências, posição, idade, nacionalidade e time.',
+    aboutGame:'O <strong>GolGuess</strong> é um jogo diário de futebol feito para quem ama o esporte. Descubra o jogador em até seis tentativas com pistas de liga, temporada, gols, assistências, posição, idade, nacionalidade e time.',
     aboutGameTeam:'O <strong>GolGuess</strong> Times é um jogo diário de clubes de futebol. A cada rodada, descubra o clube misterioso através de pistas sobre continente, títulos de liga, país, cores e cidade sede em até cinco tentativas.',
     aboutGameTop10:'O <strong>GolGuess</strong> Top 10 é um desafio diário de rankings históricos e estatísticos do futebol. Em cada rodada, posicione corretamente os 10 jogadores no ranking selecionando a posição e buscando o jogador.',
     guess:'Chutar', retry:'Tentar novamente', share:'Compartilhar',
     nextGame:'Próximo jogador em', nextTeam:'Próximo time em', nextTop10:'Próximo Top 10 em',
     guesses:'Palpites', privacy:'Privacidade', data:'Dados',
     howTitle:'Como jogar',
-    help1:'Leia a primeira pista.', help2:'Escolha um jogador ou revele outra pista.', help3:'Acerte em até cinco tentativas.',
+    help1:'Leia a primeira pista.', help2:'Escolha um jogador ou revele outra pista.', help3:'Acerte em até seis tentativas.',
     help1Team:'Leia a primeira pista sobre o time.', help2Team:'Escolha um time ou revele outra pista.', help3Team:'Acerte o time em até cinco tentativas.',
     help1Top10:'Digite o jogador diretamente no slot da posição.',
     help2Top10:'Escolha o nome na lista de sugestões para enviar o palpite.',
@@ -30,17 +30,17 @@ const copy = {
     teamLabels:['Continente','Títulos de liga','País','Cores','Cidade'],
     locked:'Bloqueada', playerPlaceholder:'Qual jogador?', teamPlaceholder:'Qual time?', slotPlaceholder:'Buscar jogador…',
     posLabel:'Posição:', posOption: n => `${n}º lugar`,
-    skip:'Pular · revelar pista', skipTwo:'Pular · revelar 2 pistas', skipName:'Pista revelada',
+    skip:'Pular · revelar pista', skipName:'Pista revelada',
     noResults:'Nenhum jogador encontrado', noTeamsResults:'Nenhum time encontrado',
     selected:'Jogador selecionado.', selectedTeam:'Time selecionado.',
     pick:'Selecione um nome da lista.', pickTeam:'Selecione um time da lista.',
-    newClue:'Nova pista revelada.', newClues:'Duas pistas reveladas.', wrong:'Não foi dessa vez. Nova pista revelada.', wrongTwo:'Não foi dessa vez. Duas pistas reveladas.',
+    newClue:'Nova pista revelada.', wrong:'Não foi dessa vez. Nova pista revelada.',
     top10Correct:'Na mosca! Posição correta.', top10WrongPos:'Está no Top 10, mas em outra posição!', top10Incorrect:'Não está neste Top 10.',
     top10WrongPosNamed: name => `${name} está no Top 10, mas em outra posição!`,
     top10IncorrectNamed: name => `${name} não está neste Top 10.`,
     loadError:'Não conseguimos acessar o jogo. Tente novamente.',
     guessError:'Não foi possível registrar o palpite.', searchError:'A busca falhou. Tente novamente.',
-    goal:n=>`Golaço! ${n}/5`, top10Win:n=>`Parabéns! Ranking concluído em ${n} palpites!`,
+    goal:(n,total)=>`Golaço! ${n}/${total}`, top10Win:n=>`Parabéns! Ranking concluído em ${n} palpites!`,
     top10Loss:(solved, tot)=>`Fim de jogo · ${solved}/${tot} acertos`,
     top10LossText:'Todas as posições foram reveladas. Amanhã tem um novo Top 10!',
     loss:name=>`Era ${name}.`, lossText:'Hoje não deu. Amanhã tem mais.',
@@ -56,19 +56,19 @@ const copy = {
     solvedProgress:(n, tot)=>`${n}/${tot} posições acertadas`
   },
   en: {
-    modePlayers:'Players', modeTeams:'Teams', modeTop10:'Top 10',
+    modePlayers:'Players', modeTeams:'Teams', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'You finished all three challenges!', rankingPrompt:'Choose a nickname to join today’s leaderboard.', points:'points', nicknameLabel:'Your nickname', nicknameHint:'3–20 characters: letters, numbers, spaces, _ or -.', joinRanking:'Join leaderboard', later:'Maybe later',
     dailyPlayer:'Guess today’s football player', dailyTeam:'Guess today’s football club', dailyTop10:'Complete today’s Top 10 ranking',
     pageTitle:'GolGuess – Guess the Football Player | Daily Challenge',
     pageTitleTeam:'GolGuess – Guess the Football Club | Daily Challenge',
     pageTitleTop10:'GolGuess – Top 10 Daily Football Challenge',
-    aboutGame:'<strong>GolGuess</strong> is a daily football trivia game. Find the mystery player in five tries with clues about league, season, goals, assists, position, age, nationality and club.',
+    aboutGame:'<strong>GolGuess</strong> is a daily football trivia game. Find the mystery player in six tries with clues about league, season, goals, assists, position, age, nationality and club.',
     aboutGameTeam:'<strong>GolGuess</strong> Teams is a daily football club trivia challenge. Guess today\'s mystery football club with clues about continent, league titles, country, colors, and home city in up to 5 attempts.',
     aboutGameTop10:'<strong>GolGuess</strong> Top 10 is a daily challenge of football history and statistics. In each round, correctly position 10 players in the ranking by picking a position and searching for the player.',
     guess:'Guess', retry:'Try again', share:'Share',
     nextGame:'Next player in', nextTeam:'Next team in', nextTop10:'Next Top 10 in',
     guesses:'Guesses', privacy:'Privacy', data:'Data',
     howTitle:'How to play',
-    help1:'Read the first clue.', help2:'Pick a player or reveal another clue.', help3:'Find the player in five tries.',
+    help1:'Read the first clue.', help2:'Pick a player or reveal another clue.', help3:'Find the player in six tries.',
     help1Team:'Read the first clue about the club.', help2Team:'Pick a team or reveal another clue.', help3Team:'Find the team in five tries.',
     help1Top10:'Type the player name directly in the position slot.',
     help2Top10:'Select the player from the suggestions to submit your guess.',
@@ -84,17 +84,17 @@ const copy = {
     teamLabels:['Continent','League titles','Country','Colors','City'],
     locked:'Locked', playerPlaceholder:'Which player?', teamPlaceholder:'Which team?', slotPlaceholder:'Search player…',
     posLabel:'Position:', posOption: n => `${n}${n===1?'st':n===2?'nd':n===3?'rd':'th'} place`,
-    skip:'Skip · reveal clue', skipTwo:'Skip · reveal 2 clues', skipName:'Clue revealed',
+    skip:'Skip · reveal clue', skipName:'Clue revealed',
     noResults:'No players found', noTeamsResults:'No teams found',
     selected:'Player selected.', selectedTeam:'Team selected.',
     pick:'Choose a name from the list.', pickTeam:'Choose a team from the list.',
-    newClue:'New clue revealed.', newClues:'Two clues revealed.', wrong:'Not this time. New clue revealed.', wrongTwo:'Not this time. Two clues revealed.',
+    newClue:'New clue revealed.', wrong:'Not this time. New clue revealed.',
     top10Correct:'Bullseye! Correct position.', top10WrongPos:'In the Top 10, but at another position!', top10Incorrect:'Not in this Top 10.',
     top10WrongPosNamed: name => `${name} is in the Top 10, but at another position!`,
     top10IncorrectNamed: name => `${name} is not in this Top 10.`,
     loadError:'We could not reach the game. Try again.',
     guessError:'We could not save your guess.', searchError:'Search failed. Try again.',
-    goal:n=>`Goal! ${n}/5`, top10Win:n=>`Congratulations! Completed in ${n} guesses!`,
+    goal:(n,total)=>`Goal! ${n}/${total}`, top10Win:n=>`Congratulations! Completed in ${n} guesses!`,
     top10Loss:(solved, tot)=>`Game over · ${solved}/${tot} solved`,
     top10LossText:'All positions have been revealed. A new Top 10 arrives tomorrow!',
     loss:name=>`It was ${name}.`, lossText:'Not today. Come back tomorrow.',
@@ -110,19 +110,19 @@ const copy = {
     solvedProgress:(n, tot)=>`${n}/${tot} positions solved`
   },
   es: {
-    modePlayers:'Jugadores', modeTeams:'Times', modeTop10:'Top 10',
+    modePlayers:'Jugadores', modeTeams:'Times', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'¡Completaste los tres desafíos!', rankingPrompt:'Elige un apodo para entrar en la clasificación diaria.', points:'puntos', nicknameLabel:'Tu apodo', nicknameHint:'3 a 20 caracteres: letras, números, espacios, _ o -.', joinRanking:'Entrar al ranking', later:'Ahora no',
     dailyPlayer:'Adivina el futbolista de hoy', dailyTeam:'Adivina el equipo de fútbol de hoy', dailyTop10:'Completa el ranking Top 10 de hoy',
     pageTitle:'GolGuess – Adivina el Futbolista | Desafío Diario',
     pageTitleTeam:'GolGuess – Adivina el Equipo | Desafío Diario',
     pageTitleTop10:'GolGuess – Top 10 Desafío Diario de Fútbol',
-    aboutGame:'<strong>GolGuess</strong> es un juego diario de fútbol. Descubre al jugador en cinco intentos con pistas de liga, temporada, goles, asistencias, posición, edad, nacionalidad y club.',
+    aboutGame:'<strong>GolGuess</strong> es un juego diario de fútbol. Descubre al jugador en seis intentos con pistas de liga, temporada, goles, asistencias, posición, edad, nacionalidad y club.',
     aboutGameTeam:'<strong>GolGuess</strong> Equipos es un desafío diario de clubes de fútbol. Adivina el club misterioso con pistas de continente, títulos de liga, país, colores y ciudad en hasta 5 intentos.',
     aboutGameTop10:'<strong>GolGuess</strong> Top 10 es un desafío diario de clasificaciones históricas de fútbol. En cada ronda, ubica a los 10 futbolistas exactamente en su posición del ranking.',
     guess:'Adivinar', retry:'Intentar de nuevo', share:'Compartir',
     nextGame:'Próximo jugador en', nextTeam:'Próximo equipo en', nextTop10:'Próximo Top 10 en',
     guesses:'Intentos', privacy:'Privacidade', data:'Datos',
     howTitle:'Cómo jugar',
-    help1:'Lee la primera pista.', help2:'Elige un jugador o revela otra pista.', help3:'Acierta en cinco intentos.',
+    help1:'Lee la primera pista.', help2:'Elige un jugador o revela otra pista.', help3:'Acierta en seis intentos.',
     help1Team:'Lee la primera pista sobre el club.', help2Team:'Elige un equipo o revela otra pista.', help3Team:'Acierta el equipo en cinco intentos.',
     help1Top10:'Escribe el futbolista directamente en la casilla de la posición.',
     help2Top10:'Selecciona el futbolista de la lista de sugerencias para enviar tu pronóstico.',
@@ -138,17 +138,17 @@ const copy = {
     teamLabels:['Continente','Títulos de liga','País','Colores','Ciudad'],
     locked:'Bloqueada', playerPlaceholder:'¿Qué jugador?', teamPlaceholder:'¿Qué equipo?', slotPlaceholder:'Buscar futbolista…',
     posLabel:'Posición:', posOption: n => `${n}º puesto`,
-    skip:'Saltar · revelar pista', skipTwo:'Saltar · revelar 2 pistas', skipName:'Pista revelada',
+    skip:'Saltar · revelar pista', skipName:'Pista revelada',
     noResults:'No se encontraron jugadores', noTeamsResults:'No se encontraron equipos',
     selected:'Jugador seleccionado.', selectedTeam:'Equipo seleccionado.',
     pick:'Elige un nombre de la lista.', pickTeam:'Elige un equipo de la lista.',
-    newClue:'Nueva pista revelada.', newClues:'Dos pistas reveladas.', wrong:'No fue esta vez. Nueva pista revelada.', wrongTwo:'No fue esta vez. Dos pistas reveladas.',
+    newClue:'Nueva pista revelada.', wrong:'No fue esta vez. Nueva pista revelada.',
     top10Correct:'¡En el blanco! Posición correcta.', top10WrongPos:'¡Está en el Top 10, pero en otra posición!', top10Incorrect:'No está en este Top 10.',
     top10WrongPosNamed: name => `¡${name} está en el Top 10, pero en otra posición!`,
     top10IncorrectNamed: name => `¡${name} no está en este Top 10!`,
     loadError:'No pudimos acceder al juego. Inténtalo de nuevo.',
     guessError:'No pudimos guardar tu intento.', searchError:'La búsqueda falló. Inténtalo de nuevo.',
-    goal:n=>`¡Golazo! ${n}/5`, top10Win:n=>`¡Felicidades! ¡Completado en ${n} intentos!`,
+    goal:(n,total)=>`¡Golazo! ${n}/${total}`, top10Win:n=>`¡Felicidades! ¡Completado en ${n} intentos!`,
     top10Loss:(solved, tot)=>`Fin de la partida · ${solved}/${tot} aciertos`,
     top10LossText:'¡Todas las posiciones han sido reveladas! Mañana habrá un nuevo Top 10.',
     loss:name=>`Era ${name}.`, lossText:'Hoy no pudo ser. Mañana hay otra.',
@@ -181,6 +181,7 @@ let mode = (() => {
 let game, selected = null, results = [], active = -1, busy = false, loading = false;
 let currentPos = 1;
 let queryTimer, searchController, blurTimer, serverOffset = 0, nextRefresh = 0;
+let rankingPromptPending = false;
 const input = $('guessInput');
 const channel = 'BroadcastChannel' in window ? new BroadcastChannel('golguess-channel') : null;
 const marks = {correct:'🟩', wrong:'🟥', skip:'🟨', wrong_pos:'🟨', incorrect:'🟥', giveup:'🏳️'};
@@ -240,7 +241,7 @@ function controls() {
   $('guessBtn').disabled = input.disabled || !selected;
   const isTop10 = mode === 'top10';
   const allCluesShown = game?.clues?.length >= (mode === 'players' ? 6 : 5);
-  $('skipBtn').textContent = mode === 'players' && game?.moves?.length === 3 ? t('skipTwo') : t('skip');
+  $('skipBtn').textContent = t('skip');
   $('skipBtn').disabled = input.disabled || isTop10 || allCluesShown;
   $('skipBtn').hidden = isTop10 || (!!game && (game.done || allCluesShown));
   $('clearBtn').disabled = busy;
@@ -331,6 +332,22 @@ function accept(data) {
   game = data;
   serverOffset = Date.parse(data.serverTime) - Date.now();
   render();
+  if (data.done) checkRankingPrompt(data.day);
+}
+async function checkRankingPrompt(day) {
+  if (rankingPromptPending || $('nicknameDialog').open) return;
+  try { if (sessionStorage.getItem(`golguess-ranking-dismissed-${day}`)) return; } catch {}
+  rankingPromptPending = true;
+  try {
+    const response = await fetch('/api/ranking', {cache:'no-store'});
+    if (!response.ok) return;
+    const ranking = await response.json();
+    if (ranking.day !== day || !ranking.eligible || ranking.submitted) return;
+    $('nicknameScore').textContent = ranking.previewScore.total;
+    $('nicknameError').hidden = true;
+    $('nicknameDialog').showModal();
+    $('nicknameInput').focus();
+  } catch {} finally { rankingPromptPending = false; }
 }
 function nationalityName(clue) {
   const homeNations = {
@@ -636,8 +653,7 @@ function renderClues() {
   $('clues').replaceChildren(...labels.map((label, index) => {
     const clue = game.clues[index];
     const li = document.createElement('li');
-    const newlyRevealed = mode === 'players' && game.moves?.length === 4 ? 2 : 1;
-    li.className = `clue ${!clue ? 'locked' : index >= game.clues.length - newlyRevealed && !game.done ? 'latest' : ''}`;
+    li.className = `clue ${!clue ? 'locked' : index === game.clues.length - 1 && !game.done ? 'latest' : ''}`;
     const number = document.createElement('span'); number.className = 'clue-index'; number.textContent = clue ? index + 1 : '🔒'; number.setAttribute('aria-hidden', 'true');
     const title = document.createElement('span'); title.className = 'clue-label'; title.textContent = label;
     const value = clue ? clueContent(clue, index) : document.createElement('span');
@@ -659,7 +675,7 @@ function renderAttempts() {
     }));
     return;
   }
-  $('attemptDots').replaceChildren(...Array.from({length:5}, (_, index) => {
+  $('attemptDots').replaceChildren(...Array.from({length:mode === 'players' ? 6 : 5}, (_, index) => {
     const move = game.moves[index];
     const marker = document.createElement('span'); marker.className = `attempt-marker ${move?.result || ''}`;
     marker.textContent = move ? ({wrong:'×',skip:'—',correct:'✓'}[move.result]) : index + 1;
@@ -705,7 +721,7 @@ function render() {
         : t('top10Loss')(game.solvedCount || 0, 10);
       $('resultText').textContent = game.won ? title : `${title} · ${t('top10LossText')}`;
     } else {
-      $('resultTitle').textContent = game.won ? t('goal')(game.moves.length) : t('loss')(game.answer);
+      $('resultTitle').textContent = game.won ? t('goal')(game.moves.length, mode === 'players' ? 6 : 5) : t('loss')(game.answer);
       $('resultText').textContent = game.won ? game.answer : t('lossText');
     }
     $('resultSquares').textContent = squares();
@@ -799,7 +815,6 @@ async function submit(guessId, slotPos = null) {
   busy = true; controls(); feedback(); closeSearch();
   try {
     const wasDone = game?.done;
-    const previousClues = game?.clues?.length || 0;
     trackEvent('guess_attempt', {
       mode,
       guess_type: guessId === null ? 'skip' : 'guess',
@@ -888,8 +903,7 @@ async function submit(guessId, slotPos = null) {
         }, 50);
       }
     } else {
-      const twoClues = mode === 'players' && data.clues?.length - previousClues === 2;
-      feedback(game.done ? '' : guessId === null ? t(twoClues ? 'newClues' : 'newClue') : t(twoClues ? 'wrongTwo' : 'wrong'));
+      feedback(game.done ? '' : guessId === null ? t('newClue') : t('wrong'));
     }
     if (game.done) { $('resultTitle').tabIndex = -1; $('resultTitle').focus({preventScroll:true}); }
   } catch { feedback(t('guessError'), true); $('retryBtn').hidden = false; }
@@ -960,6 +974,27 @@ if ($('giveUpConfirmBtn')) {
   };
 }
 
+$('nicknameDialog').addEventListener('close', () => {
+  try { if (game?.day) sessionStorage.setItem(`golguess-ranking-dismissed-${game.day}`, '1'); } catch {}
+});
+$('nicknameForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const button = $('nicknameForm').querySelector('[type="submit"]');
+  button.disabled = true;
+  $('nicknameError').hidden = true;
+  try {
+    const response = await fetch('/api/ranking', {method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({nickname:$('nicknameInput').value})});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || t('guessError'));
+    $('nicknameDialog').close();
+    window.location.assign('/ranking');
+  } catch (error) {
+    $('nicknameError').textContent = error.message || t('guessError');
+    $('nicknameError').hidden = false;
+  } finally { button.disabled = false; }
+});
+
 function tick() {
   if (!game) return;
   const remaining = Math.max(0, Math.ceil((Date.parse(game.nextAt) - Date.now() - serverOffset) / 1000));
@@ -971,7 +1006,7 @@ function squares() {
   if (mode === 'top10') {
     return game.moves.map(m => marks[m.result] || '⬜').join('');
   }
-  return Array.from({length:5}, (_, index) => marks[game.moves[index]?.result] || '⬜').join('');
+  return Array.from({length:mode === 'players' ? 6 : 5}, (_, index) => marks[game.moves[index]?.result] || '⬜').join('');
 }
 function shareText() {
   if (mode === 'top10') {
@@ -987,7 +1022,7 @@ function shareText() {
   const tag = isTeams ? `GolGuess Times #${String(game.number).padStart(3,'0')} 🛡️` : `GolGuess #${String(game.number).padStart(3,'0')} ⚽`;
   const url = isTeams ? `${location.origin}/?jogo=times` : `${location.origin}/`;
   const line = isTeams ? t('shareLineTeams') : t('shareLine');
-  return `${tag} ${game.won ? game.moves.length : 'X'}/5\n${squares()}\n${line}\n${url}`;
+  return `${tag} ${game.won ? game.moves.length : 'X'}/${isTeams ? 5 : 6}\n${squares()}\n${line}\n${url}`;
 }
 function shareFallback(text) { $('shareText').value = text; $('copyBtn').textContent = t('copy'); $('shareDialog').showModal(); $('shareText').select(); }
 $('shareBtn').onclick = async () => {

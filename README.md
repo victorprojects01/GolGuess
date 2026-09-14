@@ -15,7 +15,7 @@ Abra http://127.0.0.1:8000. O HTML depende da API; `python -m http.server` não 
 
 ## Pistas e regras
 
-O jogador do dia é igual para todos. Há cinco chances, e um erro ou passe revela a próxima pista nesta ordem:
+O jogador do dia é igual para todos. Há seis chances, e um erro ou passe revela uma pista por vez nesta ordem:
 
 1. Liga e temporada
 2. Gols e assistências naquela liga e temporada
@@ -24,7 +24,7 @@ O jogador do dia é igual para todos. Há cinco chances, e um erro ou passe reve
 5. Nacionalidade principal do perfil
 6. Time daquela temporada
 
-Depois de quatro erros ou passes, as pistas 5 e 6 aparecem juntas para que as cinco tentativas continuem válidas e o último palpite possa usar todas as informações.
+Depois de cinco erros ou passes, todas as pistas ficam visíveis e resta o último palpite. O modo Times continua com cinco tentativas.
 
 O ciclo determinístico percorre todos os 874 jogadores antes de repetir. A busca ignora acentos e maiúsculas. O resultado pode ser compartilhado sem revelar a resposta.
 
@@ -33,6 +33,23 @@ O ciclo determinístico percorre todos os 874 jogadores antes de repetir. A busc
 A tela mobile-first abre diretamente no jogo, em uma coluna central de até 560px. As pistas usam componentes próprios para placar, posição e time, e a interface pode ser alternada entre português, inglês e espanhol pelo menu do cabeçalho.
 
 O rodapé liga as páginas Sobre, Desafios anteriores, Como jogar, Política de Privacidade, Política de Cookies, Termos de Uso e Contato para parcerias. As páginas institucionais são estáticas; o arquivo é renderizado pela função Python para publicar as rodadas encerradas automaticamente. O contato informado é `torvicbusiness35@gmail.com`.
+
+## Ranking diário
+
+O link **Ranking** no cabeçalho abre `/ranking`. Depois de concluir Jogadores, Times e Top 10 no mesmo dia, a interface pede um nickname de 3 a 20 caracteres. A API calcula a pontuação com base nos lances salvos no servidor e aceita uma inscrição por visitante e dia. A classificação exibe até 100 posições e a posição do visitante quando estiver fora desse grupo. À meia-noite de Brasília, o ranking exibido começa vazio; os registros anteriores são apagados na próxima consulta.
+
+Cada modo parte de 100 pontos: erro ou passe em Jogadores desconta 6; erro ou passe em Times desconta 11; palpite incorreto ou jogador na posição errada no Top 10 desconta 2. Desistir do Top 10 atribui 0 ponto ao modo, para que revelar as respostas não renda vantagem. Empates são decididos pela hora de inscrição. O bloco AdSense `ad_3` fica depois da classificação e das regras, usando o slot `2022436715`.
+
+O ranking compartilhado pode usar o Supabase pela API REST enquanto as rodadas permanecem em cookies assinados, ou usar o PostgreSQL já configurado em `DATABASE_URL`/`POSTGRES_URL`. A API não aceita pontuação enviada pelo navegador. Como não há conta, o limite de inscrição continua associado ao cookie deste navegador.
+
+### Supabase no Vercel
+
+1. No SQL Editor do projeto `ucubzsvrlmlcbzrmxjda`, execute [`supabase/ranking.sql`](supabase/ranking.sql). Ele cria a tabela com RLS, permite leitura das colunas públicas apenas para o dia atual e não permite escrita com a chave `anon`.
+2. Nas variáveis de ambiente do Vercel, configure `SUPABASE_SECRET_KEY` com uma chave **secret** (`sb_secret_...`) do projeto. A chave antiga `service_role` também funciona em `SUPABASE_SERVICE_ROLE_KEY`. Não coloque nenhuma delas em arquivos públicos, no navegador ou no Git. A chave `anon` enviada não deve ser usada para gravar o ranking.
+3. Configure `GOLGUESS_SECRET` com uma sequência aleatória de pelo menos 32 caracteres, estável entre deploys. Ela assina os cookies das três rodadas e o identificador anônimo do ranking. Trocar essa chave invalida os cookies anteriores.
+4. Faça novo deploy e confira `/api/health`: `"rankingStorage":"supabase"`. O endereço padrão é `https://ucubzsvrlmlcbzrmxjda.supabase.co`; `SUPABASE_URL` pode substituí-lo se necessário.
+
+O Supabase só recebe nickname, pontuação, dia e identificador anônimo. Os palpites continuam no cookie assinado. A API apaga classificações anteriores ao dia atual na próxima consulta. Sem a chave secreta e `GOLGUESS_SECRET`, a página mostra o ranking como indisponível; a chave pública, sozinha, não consegue habilitar a gravação segura.
 
 ## Deploy no Vercel
 
@@ -49,7 +66,7 @@ Para persistência centralizada e estatísticas mais robustas, conecte um banco 
 3. Faça um novo deploy.
 4. Abra `/api/health`; a resposta indica `"storage":"postgres"`.
 
-O código cria as tabelas `visitors` e `career_rounds` automaticamente. Use a URL de conexão com pool quando o provedor oferecer uma. Credenciais ficam nas variáveis do Vercel e nunca devem entrar no Git.
+O código cria as tabelas de visitantes, rodadas dos três modos e ranking automaticamente. Use a URL de conexão com pool quando o provedor oferecer uma. Credenciais ficam nas variáveis do Vercel e nunca devem entrar no Git.
 
 Sem banco, `/api/health` indica `"storage":"signed-cookie"`. Defina também `GOLGUESS_SECRET` com uma sequência longa e aleatória para que a assinatura seja exclusiva do projeto. Sem essa variável, o jogo usa uma chave padrão adequada apenas ao MVP casual.
 

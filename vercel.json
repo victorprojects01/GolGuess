@@ -4,7 +4,8 @@
   "buildCommand": "python scripts/build_static.py",
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/arquivo.html", "destination": "/api/archive" }
+    { "source": "/arquivo.html", "destination": "/api/archive" },
+    { "source": "/ranking", "destination": "/ranking.html" }
   ],
   "functions": {
     "api/*.py": {
@@ -19,7 +20,7 @@
       "headers": [{ "key": "Cache-Control", "value": "private, no-store" }]
     },
     {
-      "source": "/(index.html|app.js|styles.css|institucional.css|sobre.html|como-jogar.html|politica-de-privacidade.html|politica-de-cookies.html|termos-de-uso.html|contato.html|ads.txt|robots.txt|sitemap.xml)",
+      "source": "/(index.html|app.js|styles.css|institucional.css|ranking.html|ranking.js|ranking.css|sobre.html|como-jogar.html|politica-de-privacidade.html|politica-de-cookies.html|termos-de-uso.html|contato.html|ads.txt|robots.txt|sitemap.xml)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
     },
     {

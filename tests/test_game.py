@@ -1,5 +1,7 @@
 import concurrent.futures
+import hashlib
 import http.client
+import hmac
 import json
 import tempfile
 import threading
@@ -11,6 +13,7 @@ from unittest.mock import patch
 
 import server
 import storage
+import supabase_ranking
 from scripts.player_metadata import position_code
 
 
@@ -94,9 +97,10 @@ class DailyGameTests(unittest.TestCase):
 
     def test_clues_have_requested_order_and_current_age(self):
         game, cookie = self.start()
-        for expected_count in (2, 3, 4, 6):
+        for expected_count in (2, 3, 4, 5, 6):
             _, game, _ = self.move(game, cookie)
             self.assertEqual(len(game['clues']), expected_count)
+            self.assertFalse(game['done'])
         self.assertEqual([c['label'] for c in game['clues']], [
             'Liga e temporada', 'Gols e assistências', 'Posição', 'Idade atual',
             'Nacionalidade', 'Time da temporada'])
@@ -185,6 +189,127 @@ class DailyGameTests(unittest.TestCase):
         self.assertEqual(self.move(reloaded, cookie)[0], 409)
         self.assertEqual(self.request(cookie=cookie)[1]['stats']['played'], 1)
 
+    def test_daily_ranking_requires_three_rounds_and_resets(self):
+        game, cookie = self.start()
+        self.assertEqual(self.request('/api/ranking', {'nickname': 'Torcida 7'}, cookie)[0], 403)
+        self.assertEqual(self.request('/api/ranking', {'nickname': '<script>'}, cookie)[0], 400)
+
+        wrong_player = next(p['id'] for p in server.PLAYERS if p['id'] != server.answer(server.today())['id'])
+        _, game, _ = self.move(game, cookie)
+        _, game, _ = self.move(game, cookie, wrong_player)
+        _, game, _ = self.move(game, cookie, server.answer(server.today())['id'])
+        self.assertTrue(game['done'])
+
+        team = self.request('/api/game?mode=teams', cookie=cookie)[1]
+        wrong_team = next(t['id'] for t in server.TEAMS if t['id'] != server.team_answer(server.today())['id'])
+        for guess_id in (None, wrong_team, server.team_answer(server.today())['id']):
+            _, team, _ = self.request('/api/guess',
+                                      {'mode':'teams', 'day':team['day'], 'version':team['version'], 'teamId':guess_id}, cookie)
+        self.assertTrue(team['done'])
+        self.assertFalse(self.request('/api/ranking', cookie=cookie)[1]['eligible'])
+
+        top10 = self.request('/api/game?mode=top10', cookie=cookie)[1]
+        challenge = server.top10_answer(server.today())
+        correct_ids = {item['player_id'] for item in challenge['ranking']}
+        wrong_top10 = next(p['id'] for p in server.PLAYERS if p['id'] not in correct_ids)
+        _, top10, _ = self.request('/api/guess', {'mode':'top10', 'day':top10['day'],
+                                'version':top10['version'], 'position':1, 'playerId':wrong_top10}, cookie)
+        for item in challenge['ranking']:
+            _, top10, _ = self.request('/api/guess', {'mode':'top10', 'day':top10['day'],
+                                    'version':top10['version'], 'position':item['position'],
+                                    'playerId':item['player_id']}, cookie)
+        self.assertTrue(top10['done'])
+
+        status, preview, _ = self.request('/api/ranking', cookie=cookie)
+        self.assertEqual(status, 200)
+        self.assertEqual(preview['previewScore'], {'players':88, 'teams':78, 'top10':98, 'total':264})
+        self.assertFalse(preview['submitted'])
+        status, ranked, _ = self.request('/api/ranking', {'nickname':'Torcida 7', 'total':300}, cookie)
+        self.assertEqual(status, 200)
+        self.assertEqual(ranked['mine']['total'], 264)
+        self.assertEqual(self.request('/api/ranking', {'nickname':'Novo Nome'}, cookie)[0], 409)
+        outsider, outsider_cookie = self.start()
+        visible = self.request('/api/ranking', cookie=outsider_cookie)[1]
+        self.assertTrue(any(row['nickname'] == 'Torcida 7' and row['total'] == 264 for row in visible['entries']))
+        with patch.object(server, 'today', return_value=server.today() + timedelta(days=1)):
+            next_day = self.request('/api/ranking', cookie=cookie)[1]
+            self.assertEqual(next_day['entries'], [])
+            self.assertFalse(next_day['submitted'])
+            self.assertFalse(next_day['eligible'])
+
+    def test_ranking_page_and_database_requirement(self):
+        conn = http.client.HTTPConnection(*self.http.server_address)
+        conn.request('GET', '/')
+        home = conn.getresponse().read().decode('utf-8')
+        conn.close()
+        self.assertIn('href="/ranking"', home)
+        conn = http.client.HTTPConnection(*self.http.server_address)
+        conn.request('GET', '/ranking')
+        response = conn.getresponse()
+        page = response.read().decode('utf-8')
+        conn.close()
+        self.assertEqual(response.status, 200)
+        self.assertIn('data-ad-slot="2022436715"', page)
+        self.assertIn('https://www.golguess.com.br/ranking', page)
+        with patch.object(server, 'cookie_mode', return_value=True):
+            status, payload, _ = self.request('/api/ranking')
+            self.assertEqual(status, 503)
+            self.assertEqual(payload['code'], 'RANKING_REQUIRES_DATABASE')
+
+    def test_supabase_ranking_uses_signed_rounds_and_server_score(self):
+        secret = 'this-is-a-long-random-test-secret-for-ranking'
+        with patch.dict(os.environ, {'GOLGUESS_SECRET': secret, 'SUPABASE_SECRET_KEY': 'sb_secret_test'}, clear=False), \
+             patch.object(server, 'cookie_mode', return_value=True), \
+             patch.object(supabase_ranking, 'own_row', return_value=None), \
+             patch.object(supabase_ranking, 'insert') as insert, \
+             patch.object(supabase_ranking, 'purge_old'), \
+             patch.object(supabase_ranking, 'rows_for_day', return_value=([], 0)):
+            day = str(server.today())
+            base = {'v':1, 'day':day, 'played':1, 'wins':1, 'streak':1, 'lastWin':day}
+            player_state = server.encode_state(dict(base, moves=[{'id':server.answer(server.today())['id'],
+                                                                   'name':'Jogador', 'result':'correct'}]))
+            team_state = server.encode_state(dict(base, moves=[{'id':server.team_answer(server.today())['id'],
+                                                                 'name':'Time', 'result':'correct'}]))
+            top10_state = server.encode_state(dict(base, moves=[{'id':None, 'name':'Desistência',
+                                                                  'position':None, 'result':'giveup'}]))
+            visitor = 'a' * 32
+            signature = hmac.new(secret.encode(), ('rank:' + visitor).encode(), hashlib.sha256).hexdigest()
+            cookie = f'gg_state={player_state}; gg_state_teams={team_state}; gg_state_top10={top10_state}; gg_rank_id={visitor}.{signature}'
+            self.assertEqual(self.request('/api/ranking', {'nickname':'Teste'}, cookie.replace(signature, '0' * 64))[0], 403)
+            status, payload, _ = self.request('/api/ranking', {'nickname':'Teste', 'total':300}, cookie)
+            self.assertEqual(status, 200)
+            self.assertEqual(payload['previewScore']['total'], 200)
+            self.assertEqual(insert.call_args.args[3], {'players':100, 'teams':100, 'top10':0, 'total':200})
+
+    def test_anon_key_cannot_be_used_as_supabase_write_key(self):
+        with patch.dict(os.environ, {'SUPABASE_SECRET_KEY':
+             'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYW5vbiJ9.signature'}, clear=False):
+            self.assertFalse(supabase_ranking.configured())
+
+    def test_supabase_request_keeps_secret_on_server(self):
+        class Response:
+            headers = {'Content-Range':'0-0/1'}
+            def __enter__(self): return self
+            def __exit__(self, *_): return False
+            def read(self): return b'[{"visitor":"anon","nickname":"Teste"}]'
+        with patch.dict(os.environ, {'SUPABASE_SECRET_KEY':'sb_secret_test',
+                                    'SUPABASE_URL':'https://ucubzsvrlmlcbzrmxjda.supabase.co'}, clear=False), \
+             patch.object(supabase_ranking, 'urlopen', return_value=Response()) as transport:
+            rows, count = supabase_ranking.rows_for_day(server.today())
+            sent = transport.call_args.args[0]
+            self.assertEqual(count, 1)
+            self.assertEqual(rows[0]['nickname'], 'Teste')
+            self.assertIn('ucubzsvrlmlcbzrmxjda.supabase.co/rest/v1/daily_rankings', sent.full_url)
+            self.assertEqual(sent.get_header('Apikey'), 'sb_secret_test')
+            self.assertIsNone(sent.get_header('Authorization'))
+
+    def test_top10_giveup_cannot_earn_full_ranking_score(self):
+        scores = server.ranking_scores({'players':[{'result':'correct'}],
+                                        'teams':[{'result':'correct'}],
+                                        'top10':[{'result':'giveup'}]})
+        self.assertEqual(scores['top10'], 0)
+        self.assertEqual(scores['total'], 200)
+
     def test_fifth_try_win(self):
         game, cookie = self.start()
         for _ in range(4):
@@ -194,9 +319,24 @@ class DailyGameTests(unittest.TestCase):
         self.assertEqual(len(game['moves']), 5)
         self.assertEqual([m['result'] for m in game['moves']], ['skip'] * 4 + ['correct'])
 
-    def test_loss_and_no_sixth_attempt(self):
+    def test_sixth_try_win_in_cookie_mode(self):
+        with patch.dict(os.environ, {'GOLGUESS_COOKIE_MODE': '1'}):
+            game, cookie = self.start()
+            for expected_count in (2, 3, 4, 5, 6):
+                status, game, updated_cookie = self.move(game, cookie)
+                self.assertEqual(status, 200)
+                self.assertFalse(game['done'])
+                self.assertEqual(len(game['clues']), expected_count)
+                cookie = updated_cookie.split(';')[0]
+            status, game, _ = self.move(game, cookie, server.answer(server.today())['id'])
+            self.assertEqual(status, 200)
+            self.assertTrue(game['done'])
+            self.assertTrue(game['won'])
+            self.assertEqual(len(game['moves']), 6)
+
+    def test_loss_and_no_seventh_attempt(self):
         game, cookie = self.start()
-        for _ in range(5):
+        for _ in range(6):
             _, game, _ = self.move(game, cookie)
         self.assertTrue(game['done'])
         self.assertFalse(game['won'])
