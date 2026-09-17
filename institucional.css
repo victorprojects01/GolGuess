@@ -9,8 +9,7 @@ a:focus-visible{outline:3px solid #7bc6f2;outline-offset:3px;border-radius:2px}
 .site-header{max-width:560px;margin:auto;padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{display:flex;align-items:center;gap:7px;color:#fff;text-decoration:none;font-size:21px;font-weight:800;letter-spacing:-.8px;white-space:nowrap}
 .brand b{margin-left:-7px;color:var(--accent)}
-.ball-mark{width:23px;height:23px;border:2px solid var(--accent);border-radius:50%;position:relative}
-.ball-mark:after{content:"";position:absolute;width:6px;height:6px;inset:6.5px;background:var(--accent);clip-path:polygon(50% 0,100% 38%,81% 100%,19% 100%,0 38%)}
+.brand-logo{display:block;width:23px;height:23px;flex:0 0 auto}
 .back-link{font-size:13px;text-decoration:none;color:var(--muted)}
 .back-link:hover,.site-footer a:hover{color:#fff}
 main{width:min(100% - 32px,560px);margin:30px auto 54px}

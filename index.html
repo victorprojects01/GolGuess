@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#122D00">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GWBCQXFG9Q"></script>
 <script>
@@ -20,9 +24,14 @@
 <meta property="og:description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 6 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.golguess.com.br/">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://www.golguess.com.br/assets/golguess-social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo do GolGuess — desafio diário de futebol">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário">
 <meta name="twitter:description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 6 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
+<meta name="twitter:image" content="https://www.golguess.com.br/assets/golguess-social.png">
 <link rel="stylesheet" href="/styles.css">
 <script type="application/ld+json">
 {
@@ -42,7 +51,7 @@
 <body>
 <a class="sr-only skip-link" href="#guessInput">Pular para o palpite</a>
 <header class="site-header">
-  <a class="brand" href="/" aria-label="GolGuess início"><span class="ball-mark" aria-hidden="true"></span><span>golguess</span><b>.</b></a>
+  <a class="brand" href="/" aria-label="GolGuess início"><img class="brand-logo" src="/assets/logo-mark.svg" alt="" width="24" height="24"><span>golguess</span><b>.</b></a>
   <div class="mode-switch" role="tablist" aria-label="Modo de jogo">
     <button class="mode-btn active" id="modePlayersBtn" role="tab" aria-selected="true" data-mode="players" data-i18n="modePlayers">Jogadores</button>
     <button class="mode-btn" id="modeTeamsBtn" role="tab" aria-selected="false" data-mode="teams" data-i18n="modeTeams">Times</button>

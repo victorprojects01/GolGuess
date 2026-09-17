@@ -107,9 +107,10 @@ def archive_html(current_day, page=1):
 <html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#122D00"><title>Desafios anteriores | GolGuess</title>
 <meta name="description" content="Veja as respostas dos desafios diários de futebol já encerrados no GolGuess: jogadores, times e rankings Top 10.">
-<link rel="canonical" href="{canonical}"><link rel="stylesheet" href="/institucional.css"></head>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
+<link rel="canonical" href="{canonical}"><meta property="og:image" content="https://www.golguess.com.br/assets/golguess-social.png"><meta property="og:image:alt" content="Logo do GolGuess — desafio diário de futebol"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://www.golguess.com.br/assets/golguess-social.png"><link rel="stylesheet" href="/institucional.css"></head>
 <body><a class="skip-link" href="#conteudo">Ir ao conteúdo</a>
-<header class="site-header"><a class="brand" href="/" aria-label="GolGuess — início"><span class="ball-mark" aria-hidden="true"></span><span>golguess</span><b>.</b></a><a class="back-link" href="/">← Voltar ao jogo</a></header>
+<header class="site-header"><a class="brand" href="/" aria-label="GolGuess — início"><img class="brand-logo" src="/assets/logo-mark.svg" alt="" width="23" height="23"><span>golguess</span><b>.</b></a><a class="back-link" href="/">← Voltar ao jogo</a></header>
 <main id="conteudo"><p class="eyebrow">Arquivo</p><h1>Desafios anteriores</h1>
 <p class="lead">Reviva as rodadas encerradas de jogadores, times e Top 10.</p>
 <p>As respostas aparecem aqui somente depois da meia-noite de Brasília, quando começa o desafio seguinte. A rodada de hoje permanece em segredo. Os números do jogador pertencem à liga e à temporada indicadas; veja <a href="/sobre.html">como os dados são escolhidos</a>.</p>
@@ -475,6 +476,15 @@ class Handler(BaseHTTPRequestHandler):
                  '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
                  '/ranking.js': ('ranking.js', 'text/javascript; charset=utf-8'),
                  '/ranking.css': ('ranking.css', 'text/css; charset=utf-8'),
+                 '/favicon.ico': ('favicon.ico', 'image/x-icon'),
+                 '/favicon.svg': ('favicon.svg', 'image/svg+xml'),
+                 '/favicon-32.png': ('favicon-32.png', 'image/png'),
+                 '/apple-touch-icon.png': ('apple-touch-icon.png', 'image/png'),
+                 '/icon-192.png': ('icon-192.png', 'image/png'),
+                 '/icon-512.png': ('icon-512.png', 'image/png'),
+                 '/site.webmanifest': ('site.webmanifest', 'application/manifest+json; charset=utf-8'),
+                 '/assets/logo-mark.svg': ('assets/logo-mark.svg', 'image/svg+xml'),
+                 '/assets/golguess-social.png': ('assets/golguess-social.png', 'image/png'),
                  '/ads.txt': ('ads.txt', 'text/plain; charset=utf-8'),
                  '/robots.txt': ('robots.txt', 'text/plain; charset=utf-8'),
                  '/sitemap.xml': ('sitemap.xml', 'application/xml; charset=utf-8'),
