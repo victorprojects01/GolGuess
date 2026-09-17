@@ -38,13 +38,15 @@ class DailyGameTests(unittest.TestCase):
         storage._initialized.clear()
         cls.temp.cleanup()
 
-    def request(self, path='/api/game', body=None, cookie=None, origin=None):
+    def request(self, path='/api/game', body=None, cookie=None, origin=None, extra_headers=None):
         conn = http.client.HTTPConnection(*self.http.server_address)
         headers = {'Content-Type': 'application/json'}
         if cookie:
             headers['Cookie'] = cookie
         if origin:
             headers['Origin'] = origin
+        if extra_headers:
+            headers.update(extra_headers)
         conn.request('POST' if body is not None else 'GET', path,
                      json.dumps(body) if body is not None else None, headers)
         response = conn.getresponse()
@@ -202,9 +204,11 @@ class DailyGameTests(unittest.TestCase):
         first = self.request('/api/ranking', cookie=cookie)[1]
         self.assertTrue(first['eligible'])
         self.assertEqual(first['previewScore'], {'players':88, 'teams':0, 'top10':0, 'total':88})
-        status, ranked, _ = self.request('/api/ranking', {'nickname':'Torcida 7', 'total':300}, cookie)
+        status, ranked, _ = self.request('/api/ranking', {'nickname':'Torcida 7', 'total':300}, cookie,
+                                         extra_headers={'x-vercel-ip-country':'br'})
         self.assertEqual(status, 200)
         self.assertEqual(ranked['mine']['total'], 88)
+        self.assertEqual(ranked['mine']['countryCode'], 'BR')
 
         team = self.request('/api/game?mode=teams', cookie=cookie)[1]
         wrong_team = next(t['id'] for t in server.TEAMS if t['id'] != server.team_answer(server.today())['id'])
@@ -217,6 +221,7 @@ class DailyGameTests(unittest.TestCase):
         status, ranked, _ = self.request('/api/ranking', {'sync':True}, cookie)
         self.assertEqual(status, 200)
         self.assertEqual(ranked['mine']['total'], 166)
+        self.assertEqual(ranked['mine']['countryCode'], 'BR')
 
         top10 = self.request('/api/game?mode=top10', cookie=cookie)[1]
         challenge = server.top10_answer(server.today())
@@ -241,6 +246,7 @@ class DailyGameTests(unittest.TestCase):
         outsider, outsider_cookie = self.start()
         visible = self.request('/api/ranking', cookie=outsider_cookie)[1]
         self.assertTrue(any(row['nickname'] == 'Torcida 7' and row['total'] == 264 for row in visible['entries']))
+        self.assertTrue(any(row['nickname'] == 'Torcida 7' and row['countryCode'] == 'BR' for row in visible['entries']))
         with patch.object(server, 'today', return_value=server.today() + timedelta(days=1)):
             next_day = self.request('/api/ranking', cookie=cookie)[1]
             self.assertEqual(next_day['entries'], [])
@@ -286,12 +292,15 @@ class DailyGameTests(unittest.TestCase):
             signature = hmac.new(secret.encode(), ('rank:' + visitor).encode(), hashlib.sha256).hexdigest()
             cookie = f'gg_state={player_state}; gg_state_teams={team_state}; gg_state_top10={top10_state}; gg_rank_id={visitor}.{signature}'
             self.assertEqual(self.request('/api/ranking', {'nickname':'Teste'}, cookie.replace(signature, '0' * 64))[0], 403)
-            status, payload, _ = self.request('/api/ranking', {'nickname':'Teste', 'total':300}, cookie)
+            status, payload, _ = self.request('/api/ranking', {'nickname':'Teste', 'total':300}, cookie,
+                                              extra_headers={'x-vercel-ip-country':'PT'})
             self.assertEqual(status, 200)
             self.assertEqual(payload['previewScore']['total'], 200)
             self.assertEqual(insert.call_args.args[3], {'players':100, 'teams':100, 'top10':0, 'total':200})
+            self.assertEqual(insert.call_args.args[4], 'PT')
             row = {'visitor':visitor, 'nickname':'Teste', 'players_score':100, 'teams_score':100,
-                   'top10_score':0, 'total_score':200, 'submitted_at':'2026-01-01T00:00:00-03:00'}
+                   'top10_score':0, 'total_score':200, 'country_code':'PT',
+                   'submitted_at':'2026-01-01T00:00:00-03:00'}
             with patch.object(supabase_ranking, 'own_row', return_value=row), \
                  patch.object(supabase_ranking, 'update') as update, \
                  patch.object(supabase_ranking, 'rank_of', return_value=1):
@@ -321,6 +330,11 @@ class DailyGameTests(unittest.TestCase):
             self.assertIn('ucubzsvrlmlcbzrmxjda.supabase.co/rest/v1/daily_rankings', sent.full_url)
             self.assertEqual(sent.get_header('Apikey'), 'sb_secret_test')
             self.assertIsNone(sent.get_header('Authorization'))
+            supabase_ranking.insert(server.today(), 'anon', 'Teste',
+                                    {'players':94, 'teams':0, 'top10':0, 'total':94}, 'PT')
+            sent = transport.call_args.args[0]
+            self.assertEqual(sent.get_method(), 'POST')
+            self.assertEqual(json.loads(sent.data)['country_code'], 'PT')
             supabase_ranking.update(server.today(), 'anon',
                                     {'players':94, 'teams':0, 'top10':0, 'total':94})
             sent = transport.call_args.args[0]
@@ -330,6 +344,9 @@ class DailyGameTests(unittest.TestCase):
                              {'players_score':94, 'teams_score':0, 'top10_score':0, 'total_score':94})
 
     def test_top10_giveup_cannot_earn_full_ranking_score(self):
+        self.assertEqual(server.ranking_country_code({}), 'UN')
+        self.assertEqual(server.ranking_country_code({'x-vercel-ip-country':' us '}), 'US')
+        self.assertEqual(server.ranking_country_code({'x-vercel-ip-country':'unknown'}), 'UN')
         partial = server.ranking_scores({'players':[{'result':'correct'}], 'teams':[], 'top10':[]})
         self.assertEqual(partial, {'players':100, 'teams':0, 'top10':0, 'total':100})
         scores = server.ranking_scores({'players':[{'result':'correct'}],

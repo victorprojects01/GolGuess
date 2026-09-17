@@ -69,7 +69,7 @@ class RankingConflict(Exception):
 
 
 def rows_for_day(day):
-    query = urlencode({'select': 'visitor,nickname,players_score,teams_score,top10_score,total_score,submitted_at',
+    query = urlencode({'select': 'visitor,nickname,country_code,players_score,teams_score,top10_score,total_score,submitted_at',
                        'day': 'eq.' + str(day),
                        'order': 'total_score.desc,submitted_at.asc,visitor.asc',
                        'limit': '100'})
@@ -77,7 +77,7 @@ def rows_for_day(day):
 
 
 def own_row(day, visitor):
-    query = urlencode({'select': 'visitor,nickname,players_score,teams_score,top10_score,total_score,submitted_at',
+    query = urlencode({'select': 'visitor,nickname,country_code,players_score,teams_score,top10_score,total_score,submitted_at',
                        'day': 'eq.' + str(day), 'visitor': 'eq.' + visitor, 'limit': '1'})
     rows, _ = request('GET', query)
     return rows[0] if rows else None
@@ -93,8 +93,8 @@ def rank_of(day, row):
     return (count or 0) + 1
 
 
-def insert(day, visitor, nickname, scores):
-    payload = {'day': str(day), 'visitor': visitor, 'nickname': nickname,
+def insert(day, visitor, nickname, scores, country_code='UN'):
+    payload = {'day': str(day), 'visitor': visitor, 'nickname': nickname, 'country_code': country_code,
                'players_score': scores['players'], 'teams_score': scores['teams'],
                'top10_score': scores['top10'], 'total_score': scores['total']}
     request('POST', payload=payload)

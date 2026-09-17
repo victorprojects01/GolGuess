@@ -9,6 +9,20 @@ function status(message, error = false) {
   byId('rankingStatus').classList.toggle('error', error);
 }
 
+function countryFlagElement(countryCode) {
+  const code = typeof countryCode === 'string' ? countryCode.toUpperCase() : 'UN';
+  const valid = /^[A-Z]{2}$/.test(code) && code !== 'UN';
+  const flag = document.createElement('span');
+  flag.className = 'rank-flag';
+  flag.setAttribute('role', 'img');
+  flag.setAttribute('aria-label', valid ? `País ${code}` : 'País não identificado');
+  flag.title = valid ? code : 'País não identificado';
+  flag.textContent = valid
+    ? String.fromCodePoint(...[...code].map(letter => 127397 + letter.charCodeAt(0)))
+    : '🌎';
+  return flag;
+}
+
 function scoreChanged(data) {
   if (!data.submitted || !data.mine || !data.previewScore) return false;
   return ['players','teams','top10','total'].some(key => data.mine[key] !== data.previewScore[key]);
@@ -40,7 +54,8 @@ function render(data) {
   if (data.mine) {
     byId('myRank').replaceChildren();
     const label = document.createElement('span');
-    label.textContent = `Sua posição: #${data.mine.rank} · ${data.mine.nickname} · `;
+    label.append(document.createTextNode(`Sua posição: #${data.mine.rank} · `),
+      countryFlagElement(data.mine.countryCode), document.createTextNode(` ${data.mine.nickname} · `));
     const score = document.createElement('strong');
     score.textContent = `${data.mine.total} pontos`;
     byId('myRank').append(label, score);
@@ -50,7 +65,8 @@ function render(data) {
     const li = document.createElement('li');
     if (entry.mine) li.className = 'mine';
     const rank = document.createElement('span'); rank.className = 'rank-number'; rank.textContent = `#${entry.rank}`;
-    const name = document.createElement('span'); name.className = 'rank-name'; name.textContent = entry.nickname;
+    const name = document.createElement('span'); name.className = 'rank-name';
+    name.append(countryFlagElement(entry.countryCode), document.createTextNode(entry.nickname));
     const detail = document.createElement('small'); detail.textContent = `Jogadores ${entry.players} · Times ${entry.teams} · Top 10 ${entry.top10}`;
     name.append(detail);
     const points = document.createElement('strong'); points.className = 'rank-score'; points.textContent = entry.total;

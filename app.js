@@ -2,7 +2,7 @@
 const $ = id => document.getElementById(id);
 const copy = {
   pt: {
-    modePlayers:'Jogadores', modeTeams:'Times', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'Você já pode entrar no ranking!', rankingPrompt:'Escolha um nickname. Sua pontuação será atualizada ao concluir os outros desafios.', points:'pontos', nicknameLabel:'Seu nickname', nicknameHint:'3 a 20 caracteres: letras, números, espaço, _ ou -.', joinRanking:'Entrar no ranking', later:'Agora não',
+    modePlayers:'Jogadores', modeTeams:'Times', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'Você já pode entrar no ranking!', rankingPrompt:'Escolha um nickname. Sua pontuação será atualizada ao concluir os outros desafios.', points:'pontos', nicknameLabel:'Seu nickname', nicknameHint:'3 a 20 caracteres: letras, números, espaço, _ ou -.', joinRanking:'Entrar no ranking', rankingJoined:'Você entrou no ranking! Continue jogando para somar pontos.', later:'Agora não',
     dailyPlayer:'Adivinhe o jogador de futebol de hoje', dailyTeam:'Adivinhe o time de futebol de hoje', dailyTop10:'Complete o ranking Top 10 de hoje',
     pageTitle:'GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário',
     pageTitleTeam:'GolGuess – Adivinhe o Time de Futebol | Desafio Diário',
@@ -56,7 +56,7 @@ const copy = {
     solvedProgress:(n, tot)=>`${n}/${tot} posições acertadas`
   },
   en: {
-    modePlayers:'Players', modeTeams:'Teams', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'You can join the leaderboard!', rankingPrompt:'Choose a nickname. Your score will update as you finish the other challenges.', points:'points', nicknameLabel:'Your nickname', nicknameHint:'3–20 characters: letters, numbers, spaces, _ or -.', joinRanking:'Join leaderboard', later:'Maybe later',
+    modePlayers:'Players', modeTeams:'Teams', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'You can join the leaderboard!', rankingPrompt:'Choose a nickname. Your score will update as you finish the other challenges.', points:'points', nicknameLabel:'Your nickname', nicknameHint:'3–20 characters: letters, numbers, spaces, _ or -.', joinRanking:'Join leaderboard', rankingJoined:'You joined the leaderboard! Keep playing to add more points.', later:'Maybe later',
     dailyPlayer:'Guess today’s football player', dailyTeam:'Guess today’s football club', dailyTop10:'Complete today’s Top 10 ranking',
     pageTitle:'GolGuess – Guess the Football Player | Daily Challenge',
     pageTitleTeam:'GolGuess – Guess the Football Club | Daily Challenge',
@@ -110,7 +110,7 @@ const copy = {
     solvedProgress:(n, tot)=>`${n}/${tot} positions solved`
   },
   es: {
-    modePlayers:'Jugadores', modeTeams:'Times', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'¡Ya puedes entrar al ranking!', rankingPrompt:'Elige un apodo. Tu puntuación se actualizará al terminar los otros desafíos.', points:'puntos', nicknameLabel:'Tu apodo', nicknameHint:'3 a 20 caracteres: letras, números, espacios, _ o -.', joinRanking:'Entrar al ranking', later:'Ahora no',
+    modePlayers:'Jugadores', modeTeams:'Times', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'¡Ya puedes entrar al ranking!', rankingPrompt:'Elige un apodo. Tu puntuación se actualizará al terminar los otros desafíos.', points:'puntos', nicknameLabel:'Tu apodo', nicknameHint:'3 a 20 caracteres: letras, números, espacios, _ o -.', joinRanking:'Entrar al ranking', rankingJoined:'¡Entraste al ranking! Sigue jugando para sumar puntos.', later:'Ahora no',
     dailyPlayer:'Adivina el futbolista de hoy', dailyTeam:'Adivina el equipo de fútbol de hoy', dailyTop10:'Completa el ranking Top 10 de hoy',
     pageTitle:'GolGuess – Adivina el Futbolista | Desafío Diario',
     pageTitleTeam:'GolGuess – Adivina el Equipo | Desafío Diario',
@@ -995,7 +995,7 @@ $('nicknameForm').addEventListener('submit', async event => {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || t('guessError'));
     $('nicknameDialog').close();
-    window.location.assign('/ranking');
+    feedback(t('rankingJoined'));
   } catch (error) {
     $('nicknameError').textContent = error.message || t('guessError');
     $('nicknameError').hidden = false;

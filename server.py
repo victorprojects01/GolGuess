@@ -219,6 +219,11 @@ def valid_nickname(value):
         return None
     return name
 
+def ranking_country_code(headers):
+    """Keep only Vercel's ISO country code; never persist the visitor IP."""
+    value = (headers.get('x-vercel-ip-country') or '').strip().upper()
+    return value if len(value) == 2 and value.isascii() and value.isalpha() else 'UN'
+
 def stats(db, visitor, day, mode='players'):
     table = 'top10_rounds' if mode == 'top10' else 'team_rounds' if mode == 'teams' else 'career_rounds'
     rows = db.execute(f'SELECT day, moves FROM {table} WHERE visitor=? AND day<=? ORDER BY day DESC', (visitor, str(day))).fetchall()
@@ -511,16 +516,16 @@ class Handler(BaseHTTPRequestHandler):
             rounds = {mode: read_moves(db, visitor, day, mode) if visitor else []
                       for mode in ('players', 'teams', 'top10')}
             scores = ranking_scores(rounds)
-            rows = db.execute('SELECT visitor, nickname, players_score, teams_score, top10_score, total_score, submitted_at '
+            rows = db.execute('SELECT visitor, nickname, country_code, players_score, teams_score, top10_score, total_score, submitted_at '
                               'FROM daily_rankings WHERE day=? ORDER BY total_score DESC, submitted_at ASC, visitor ASC LIMIT 100',
                               (str(day),)).fetchall()
-            entries = [dict(rank=i + 1, nickname=row['nickname'], players=row['players_score'],
+            entries = [dict(rank=i + 1, nickname=row['nickname'], countryCode=row['country_code'], players=row['players_score'],
                             teams=row['teams_score'], top10=row['top10_score'], total=row['total_score'],
                             mine=row['visitor'] == visitor)
                        for i, row in enumerate(rows)]
             own = next((entry for entry in entries if entry['mine']), None)
             if visitor and own is None:
-                row = db.execute('SELECT nickname, players_score, teams_score, top10_score, total_score, submitted_at '
+                row = db.execute('SELECT nickname, country_code, players_score, teams_score, top10_score, total_score, submitted_at '
                                  'FROM daily_rankings WHERE visitor=? AND day=?', (visitor, str(day))).fetchone()
                 if row:
                     before = db.execute('SELECT COUNT(*) AS n FROM daily_rankings WHERE day=? AND '
@@ -528,7 +533,7 @@ class Handler(BaseHTTPRequestHandler):
                                         '(total_score = ? AND submitted_at = ? AND visitor < ?))',
                                         (str(day), row['total_score'], row['total_score'], row['submitted_at'],
                                          row['total_score'], row['submitted_at'], visitor)).fetchone()['n']
-                    own = dict(rank=before + 1, nickname=row['nickname'], players=row['players_score'],
+                    own = dict(rank=before + 1, nickname=row['nickname'], countryCode=row['country_code'], players=row['players_score'],
                                teams=row['teams_score'], top10=row['top10_score'], total=row['total_score'], mine=True)
             total = db.execute('SELECT COUNT(*) AS n FROM daily_rankings WHERE day=?', (str(day),)).fetchone()['n']
         return self.send(200, {'day': str(day), 'serverTime': datetime.now(BRASILIA).isoformat(),
@@ -545,7 +550,7 @@ class Handler(BaseHTTPRequestHandler):
         scores = ranking_scores(rounds)
         supabase_ranking.purge_old(day)
         rows, total = supabase_ranking.rows_for_day(day)
-        entries = [dict(rank=i + 1, nickname=row['nickname'], players=row['players_score'],
+        entries = [dict(rank=i + 1, nickname=row['nickname'], countryCode=row['country_code'], players=row['players_score'],
                         teams=row['teams_score'], top10=row['top10_score'], total=row['total_score'],
                         mine=row['visitor'] == visitor)
                    for i, row in enumerate(rows)]
@@ -554,6 +559,7 @@ class Handler(BaseHTTPRequestHandler):
             row = supabase_ranking.own_row(day, visitor)
             if row:
                 own = dict(rank=supabase_ranking.rank_of(day, row), nickname=row['nickname'],
+                           countryCode=row['country_code'],
                            players=row['players_score'], teams=row['teams_score'],
                            top10=row['top10_score'], total=row['total_score'], mine=True)
         return self.send(200, {'day': str(day), 'serverTime': datetime.now(BRASILIA).isoformat(),
@@ -582,7 +588,7 @@ class Handler(BaseHTTPRequestHandler):
         if existing:
             return self.send(409, {'error': 'Você já entrou no ranking de hoje.'})
         try:
-            supabase_ranking.insert(day, visitor, nickname, scores)
+            supabase_ranking.insert(day, visitor, nickname, scores, ranking_country_code(self.headers))
         except supabase_ranking.RankingConflict:
             return self.send(409, {'error': 'Você já entrou no ranking de hoje.'})
         return self.get_supabase_ranking()
@@ -632,9 +638,9 @@ class Handler(BaseHTTPRequestHandler):
             else:
                 if existing:
                     return self.send(409, {'error': 'Você já entrou no ranking de hoje.'})
-                db.execute('INSERT INTO daily_rankings (visitor, day, nickname, players_score, teams_score, top10_score, total_score, submitted_at) '
-                           'VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(visitor, day) DO NOTHING',
-                           (visitor, str(day), nickname, scores['players'], scores['teams'], scores['top10'],
+                db.execute('INSERT INTO daily_rankings (visitor, day, nickname, country_code, players_score, teams_score, top10_score, total_score, submitted_at) '
+                           'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(visitor, day) DO NOTHING',
+                           (visitor, str(day), nickname, ranking_country_code(self.headers), scores['players'], scores['teams'], scores['top10'],
                             scores['total'], datetime.now(BRASILIA).isoformat()))
         return self.get_ranking()
 

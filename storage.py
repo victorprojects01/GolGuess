@@ -59,7 +59,13 @@ def connect():
                 db.execute('CREATE TABLE IF NOT EXISTS career_rounds (visitor TEXT, day TEXT, moves TEXT NOT NULL, PRIMARY KEY(visitor, day))')
                 db.execute('CREATE TABLE IF NOT EXISTS team_rounds (visitor TEXT, day TEXT, moves TEXT NOT NULL, PRIMARY KEY(visitor, day))')
                 db.execute('CREATE TABLE IF NOT EXISTS top10_rounds (visitor TEXT, day TEXT, moves TEXT NOT NULL, PRIMARY KEY(visitor, day))')
-                db.execute('CREATE TABLE IF NOT EXISTS daily_rankings (visitor TEXT NOT NULL, day TEXT NOT NULL, nickname TEXT NOT NULL, players_score INTEGER NOT NULL, teams_score INTEGER NOT NULL, top10_score INTEGER NOT NULL, total_score INTEGER NOT NULL, submitted_at TEXT NOT NULL, PRIMARY KEY(visitor, day))')
+                db.execute("CREATE TABLE IF NOT EXISTS daily_rankings (visitor TEXT NOT NULL, day TEXT NOT NULL, nickname TEXT NOT NULL, country_code TEXT NOT NULL DEFAULT 'UN', players_score INTEGER NOT NULL, teams_score INTEGER NOT NULL, top10_score INTEGER NOT NULL, total_score INTEGER NOT NULL, submitted_at TEXT NOT NULL, PRIMARY KEY(visitor, day))")
+                if url:
+                    has_country = db.execute("SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='daily_rankings' AND column_name='country_code'").fetchone()
+                else:
+                    has_country = any(row['name'] == 'country_code' for row in db.execute('PRAGMA table_info(daily_rankings)').fetchall())
+                if not has_country:
+                    db.execute("ALTER TABLE daily_rankings ADD COLUMN country_code TEXT NOT NULL DEFAULT 'UN'")
                 db.execute('CREATE INDEX IF NOT EXISTS daily_rankings_order ON daily_rankings(day, total_score DESC, submitted_at)')
                 conn.commit()
                 _initialized.add(identity)
