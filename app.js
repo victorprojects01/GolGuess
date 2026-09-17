@@ -2,7 +2,7 @@
 const $ = id => document.getElementById(id);
 const copy = {
   pt: {
-    modePlayers:'Jogadores', modeTeams:'Times', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'Você concluiu os três desafios!', rankingPrompt:'Escolha um nickname para entrar no ranking diário.', points:'pontos', nicknameLabel:'Seu nickname', nicknameHint:'3 a 20 caracteres: letras, números, espaço, _ ou -.', joinRanking:'Entrar no ranking', later:'Agora não',
+    modePlayers:'Jogadores', modeTeams:'Times', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'Você já pode entrar no ranking!', rankingPrompt:'Escolha um nickname. Sua pontuação será atualizada ao concluir os outros desafios.', points:'pontos', nicknameLabel:'Seu nickname', nicknameHint:'3 a 20 caracteres: letras, números, espaço, _ ou -.', joinRanking:'Entrar no ranking', later:'Agora não',
     dailyPlayer:'Adivinhe o jogador de futebol de hoje', dailyTeam:'Adivinhe o time de futebol de hoje', dailyTop10:'Complete o ranking Top 10 de hoje',
     pageTitle:'GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário',
     pageTitleTeam:'GolGuess – Adivinhe o Time de Futebol | Desafio Diário',
@@ -56,7 +56,7 @@ const copy = {
     solvedProgress:(n, tot)=>`${n}/${tot} posições acertadas`
   },
   en: {
-    modePlayers:'Players', modeTeams:'Teams', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'You finished all three challenges!', rankingPrompt:'Choose a nickname to join today’s leaderboard.', points:'points', nicknameLabel:'Your nickname', nicknameHint:'3–20 characters: letters, numbers, spaces, _ or -.', joinRanking:'Join leaderboard', later:'Maybe later',
+    modePlayers:'Players', modeTeams:'Teams', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'You can join the leaderboard!', rankingPrompt:'Choose a nickname. Your score will update as you finish the other challenges.', points:'points', nicknameLabel:'Your nickname', nicknameHint:'3–20 characters: letters, numbers, spaces, _ or -.', joinRanking:'Join leaderboard', later:'Maybe later',
     dailyPlayer:'Guess today’s football player', dailyTeam:'Guess today’s football club', dailyTop10:'Complete today’s Top 10 ranking',
     pageTitle:'GolGuess – Guess the Football Player | Daily Challenge',
     pageTitleTeam:'GolGuess – Guess the Football Club | Daily Challenge',
@@ -110,7 +110,7 @@ const copy = {
     solvedProgress:(n, tot)=>`${n}/${tot} positions solved`
   },
   es: {
-    modePlayers:'Jugadores', modeTeams:'Times', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'¡Completaste los tres desafíos!', rankingPrompt:'Elige un apodo para entrar en la clasificación diaria.', points:'puntos', nicknameLabel:'Tu apodo', nicknameHint:'3 a 20 caracteres: letras, números, espacios, _ o -.', joinRanking:'Entrar al ranking', later:'Ahora no',
+    modePlayers:'Jugadores', modeTeams:'Times', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'¡Ya puedes entrar al ranking!', rankingPrompt:'Elige un apodo. Tu puntuación se actualizará al terminar los otros desafíos.', points:'puntos', nicknameLabel:'Tu apodo', nicknameHint:'3 a 20 caracteres: letras, números, espacios, _ o -.', joinRanking:'Entrar al ranking', later:'Ahora no',
     dailyPlayer:'Adivina el futbolista de hoy', dailyTeam:'Adivina el equipo de fútbol de hoy', dailyTop10:'Completa el ranking Top 10 de hoy',
     pageTitle:'GolGuess – Adivina el Futbolista | Desafío Diario',
     pageTitleTeam:'GolGuess – Adivina el Equipo | Desafío Diario',
@@ -336,13 +336,20 @@ function accept(data) {
 }
 async function checkRankingPrompt(day) {
   if (rankingPromptPending || $('nicknameDialog').open) return;
-  try { if (sessionStorage.getItem(`golguess-ranking-dismissed-${day}`)) return; } catch {}
   rankingPromptPending = true;
   try {
     const response = await fetch('/api/ranking', {cache:'no-store'});
     if (!response.ok) return;
     const ranking = await response.json();
-    if (ranking.day !== day || !ranking.eligible || ranking.submitted) return;
+    if (ranking.day !== day || !ranking.eligible) return;
+    if (ranking.submitted) {
+      if (ranking.previewScore && ranking.mine && ranking.previewScore.total !== ranking.mine.total) {
+        await fetch('/api/ranking', {method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({sync:true})});
+      }
+      return;
+    }
+    try { if (sessionStorage.getItem(`golguess-ranking-dismissed-${day}-${mode}`)) return; } catch {}
     $('nicknameScore').textContent = ranking.previewScore.total;
     $('nicknameError').hidden = true;
     $('nicknameDialog').showModal();
@@ -975,7 +982,7 @@ if ($('giveUpConfirmBtn')) {
 }
 
 $('nicknameDialog').addEventListener('close', () => {
-  try { if (game?.day) sessionStorage.setItem(`golguess-ranking-dismissed-${game.day}`, '1'); } catch {}
+  try { if (game?.day) sessionStorage.setItem(`golguess-ranking-dismissed-${game.day}-${mode}`, '1'); } catch {}
 });
 $('nicknameForm').addEventListener('submit', async event => {
   event.preventDefault();

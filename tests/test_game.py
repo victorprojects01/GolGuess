@@ -189,7 +189,7 @@ class DailyGameTests(unittest.TestCase):
         self.assertEqual(self.move(reloaded, cookie)[0], 409)
         self.assertEqual(self.request(cookie=cookie)[1]['stats']['played'], 1)
 
-    def test_daily_ranking_requires_three_rounds_and_resets(self):
+    def test_daily_ranking_starts_after_first_round_updates_and_resets(self):
         game, cookie = self.start()
         self.assertEqual(self.request('/api/ranking', {'nickname': 'Torcida 7'}, cookie)[0], 403)
         self.assertEqual(self.request('/api/ranking', {'nickname': '<script>'}, cookie)[0], 400)
@@ -199,6 +199,12 @@ class DailyGameTests(unittest.TestCase):
         _, game, _ = self.move(game, cookie, wrong_player)
         _, game, _ = self.move(game, cookie, server.answer(server.today())['id'])
         self.assertTrue(game['done'])
+        first = self.request('/api/ranking', cookie=cookie)[1]
+        self.assertTrue(first['eligible'])
+        self.assertEqual(first['previewScore'], {'players':88, 'teams':0, 'top10':0, 'total':88})
+        status, ranked, _ = self.request('/api/ranking', {'nickname':'Torcida 7', 'total':300}, cookie)
+        self.assertEqual(status, 200)
+        self.assertEqual(ranked['mine']['total'], 88)
 
         team = self.request('/api/game?mode=teams', cookie=cookie)[1]
         wrong_team = next(t['id'] for t in server.TEAMS if t['id'] != server.team_answer(server.today())['id'])
@@ -206,7 +212,11 @@ class DailyGameTests(unittest.TestCase):
             _, team, _ = self.request('/api/guess',
                                       {'mode':'teams', 'day':team['day'], 'version':team['version'], 'teamId':guess_id}, cookie)
         self.assertTrue(team['done'])
-        self.assertFalse(self.request('/api/ranking', cookie=cookie)[1]['eligible'])
+        partial = self.request('/api/ranking', cookie=cookie)[1]
+        self.assertEqual(partial['previewScore'], {'players':88, 'teams':78, 'top10':0, 'total':166})
+        status, ranked, _ = self.request('/api/ranking', {'sync':True}, cookie)
+        self.assertEqual(status, 200)
+        self.assertEqual(ranked['mine']['total'], 166)
 
         top10 = self.request('/api/game?mode=top10', cookie=cookie)[1]
         challenge = server.top10_answer(server.today())
@@ -223,8 +233,8 @@ class DailyGameTests(unittest.TestCase):
         status, preview, _ = self.request('/api/ranking', cookie=cookie)
         self.assertEqual(status, 200)
         self.assertEqual(preview['previewScore'], {'players':88, 'teams':78, 'top10':98, 'total':264})
-        self.assertFalse(preview['submitted'])
-        status, ranked, _ = self.request('/api/ranking', {'nickname':'Torcida 7', 'total':300}, cookie)
+        self.assertTrue(preview['submitted'])
+        status, ranked, _ = self.request('/api/ranking', {'sync':True}, cookie)
         self.assertEqual(status, 200)
         self.assertEqual(ranked['mine']['total'], 264)
         self.assertEqual(self.request('/api/ranking', {'nickname':'Novo Nome'}, cookie)[0], 409)
@@ -280,6 +290,15 @@ class DailyGameTests(unittest.TestCase):
             self.assertEqual(status, 200)
             self.assertEqual(payload['previewScore']['total'], 200)
             self.assertEqual(insert.call_args.args[3], {'players':100, 'teams':100, 'top10':0, 'total':200})
+            row = {'visitor':visitor, 'nickname':'Teste', 'players_score':100, 'teams_score':100,
+                   'top10_score':0, 'total_score':200, 'submitted_at':'2026-01-01T00:00:00-03:00'}
+            with patch.object(supabase_ranking, 'own_row', return_value=row), \
+                 patch.object(supabase_ranking, 'update') as update, \
+                 patch.object(supabase_ranking, 'rank_of', return_value=1):
+                status, payload, _ = self.request('/api/ranking', {'sync':True}, cookie)
+                self.assertEqual(status, 200)
+                self.assertEqual(payload['mine']['total'], 200)
+                self.assertEqual(update.call_args.args[2], {'players':100, 'teams':100, 'top10':0, 'total':200})
 
     def test_anon_key_cannot_be_used_as_supabase_write_key(self):
         with patch.dict(os.environ, {'SUPABASE_SECRET_KEY':
@@ -302,8 +321,17 @@ class DailyGameTests(unittest.TestCase):
             self.assertIn('ucubzsvrlmlcbzrmxjda.supabase.co/rest/v1/daily_rankings', sent.full_url)
             self.assertEqual(sent.get_header('Apikey'), 'sb_secret_test')
             self.assertIsNone(sent.get_header('Authorization'))
+            supabase_ranking.update(server.today(), 'anon',
+                                    {'players':94, 'teams':0, 'top10':0, 'total':94})
+            sent = transport.call_args.args[0]
+            self.assertEqual(sent.get_method(), 'PATCH')
+            self.assertIn('visitor=eq.anon', sent.full_url)
+            self.assertEqual(json.loads(sent.data),
+                             {'players_score':94, 'teams_score':0, 'top10_score':0, 'total_score':94})
 
     def test_top10_giveup_cannot_earn_full_ranking_score(self):
+        partial = server.ranking_scores({'players':[{'result':'correct'}], 'teams':[], 'top10':[]})
+        self.assertEqual(partial, {'players':100, 'teams':0, 'top10':0, 'total':100})
         scores = server.ranking_scores({'players':[{'result':'correct'}],
                                         'teams':[{'result':'correct'}],
                                         'top10':[{'result':'giveup'}]})

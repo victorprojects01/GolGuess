@@ -100,5 +100,12 @@ def insert(day, visitor, nickname, scores):
     request('POST', payload=payload)
 
 
+def update(day, visitor, scores):
+    query = urlencode({'day': 'eq.' + str(day), 'visitor': 'eq.' + visitor})
+    payload = {'players_score': scores['players'], 'teams_score': scores['teams'],
+               'top10_score': scores['top10'], 'total_score': scores['total']}
+    request('PATCH', query, payload=payload)
+
+
 def purge_old(day):
     request('DELETE', urlencode({'day': 'lt.' + str(day)}))

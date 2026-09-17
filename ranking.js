@@ -9,6 +9,19 @@ function status(message, error = false) {
   byId('rankingStatus').classList.toggle('error', error);
 }
 
+function scoreChanged(data) {
+  if (!data.submitted || !data.mine || !data.previewScore) return false;
+  return ['players','teams','top10','total'].some(key => data.mine[key] !== data.previewScore[key]);
+}
+
+async function syncScore() {
+  const response = await fetch('/api/ranking', {method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({sync:true})});
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Não foi possível atualizar sua pontuação.');
+  return data;
+}
+
 function render(data) {
   day = data.day;
   nextAt = Date.parse(data.nextAt);
@@ -46,14 +59,19 @@ function render(data) {
   });
   byId('rankingList').replaceChildren(...items);
   byId('rankingEmpty').hidden = data.entries.length > 0;
-  status(data.submitted ? 'Você já está no ranking de hoje.' : data.eligible ? 'Sua vaga está pronta. Escolha um nickname.' : 'Complete os três desafios para participar.');
+  const completedCount = Object.values(data.completed).filter(Boolean).length;
+  status(data.submitted
+    ? `Você está no ranking · ${completedCount}/3 desafios concluídos.`
+    : data.eligible ? 'Seu primeiro resultado já vale pontos. Escolha um nickname.'
+    : 'Conclua um desafio para participar.');
 }
 
 async function load() {
   try {
     const response = await fetch('/api/ranking', {cache:'no-store'});
-    const data = await response.json();
+    let data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Não foi possível carregar o ranking.');
+    if (scoreChanged(data)) data = await syncScore();
     render(data);
   } catch (error) { status(error.message || 'Não foi possível carregar o ranking.', true); }
 }

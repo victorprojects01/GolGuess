@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <title>Ranking diário | GolGuess</title>
-<meta name="description" content="Classificação diária do GolGuess. Complete os desafios de Jogadores, Times e Top 10 para participar sem criar conta.">
+<meta name="description" content="Classificação diária do GolGuess. Conclua um desafio para participar e some pontos nos modos Jogadores, Times e Top 10.">
 <link rel="canonical" href="https://www.golguess.com.br/ranking">
 <meta property="og:title" content="Ranking diário | GolGuess">
 <meta property="og:description" content="Veja a classificação diária dos desafios de futebol do GolGuess.">
@@ -28,14 +28,14 @@
 <header class="site-header"><a class="brand" href="/" aria-label="GolGuess — início"><img class="brand-logo" src="/assets/logo-mark.svg" alt="" width="23" height="23"><span>golguess</span><b>.</b></a><a class="back-link" href="/">← Voltar ao jogo</a></header>
 <main id="conteudo">
   <div class="ranking-heading"><div><p class="eyebrow">Desafio do dia <span id="rankingDay">—</span></p><h1>Ranking diário</h1></div><div class="ranking-clock"><span>Reinicia em</span><strong id="rankingCountdown">--:--:--</strong></div></div>
-  <p class="ranking-intro">Termine Jogadores, Times e Top 10, escolha um nickname e veja sua pontuação aqui. A classificação zera à meia-noite de Brasília.</p>
+  <p class="ranking-intro">Conclua seu primeiro desafio, escolha um nickname e entre no ranking. Sua pontuação aumenta ao terminar os outros modos e zera à meia-noite de Brasília.</p>
   <div id="rankingStatus" class="ranking-status" role="status" aria-live="polite">Carregando classificação…</div>
   <section id="rankingProgress" class="ranking-progress" aria-label="Seus desafios de hoje" hidden>
     <span id="progressPlayers">○ Jogadores</span><span id="progressTeams">○ Times</span><span id="progressTop10">○ Top 10</span>
   </section>
   <form id="rankingForm" class="ranking-form" hidden>
     <label for="rankingNickname">Seu nickname</label>
-    <p>Três desafios concluídos! Sua pontuação: <strong id="previewScore">0</strong> pontos.</p>
+    <p>Você já pode participar! Pontuação atual: <strong id="previewScore">0</strong> pontos.</p>
     <div class="ranking-form-row"><input id="rankingNickname" name="nickname" minlength="3" maxlength="20" autocomplete="nickname" required placeholder="Como quer aparecer?" aria-describedby="nicknameHint"><button type="submit">Entrar no ranking</button></div>
     <small id="nicknameHint">3 a 20 caracteres: letras, números, espaço, _ ou -.</small>
   </form>
@@ -45,7 +45,7 @@
     <ol id="rankingList" aria-label="Top 100 do dia"></ol>
     <p id="rankingEmpty" class="ranking-empty" hidden>Seja a primeira pessoa no ranking de hoje.</p>
   </section>
-  <section class="ranking-rules" aria-labelledby="rulesTitle"><h2 id="rulesTitle">Como pontuar</h2><p>Cada modo começa com 100 pontos. Em Jogadores, cada erro ou passe tira 6; em Times, tira 11. No Top 10, cada jogador incorreto ou na posição errada tira 2. Desistir do Top 10 encerra o modo com 0 ponto. Em empate, fica à frente quem entrou primeiro.</p></section>
+  <section class="ranking-rules" aria-labelledby="rulesTitle"><h2 id="rulesTitle">Como pontuar</h2><p>Você entra no ranking ao concluir o primeiro desafio. Modos ainda abertos valem 0 até serem concluídos. Cada modo começa com 100 pontos: em Jogadores, cada erro ou passe tira 6; em Times, tira 11; no Top 10, cada jogador incorreto ou na posição errada tira 2. Desistir do Top 10 encerra o modo com 0 ponto. Em empate, fica à frente quem entrou primeiro.</p></section>
   <aside class="ranking-ad" aria-label="Espaço publicitário"><span>PUBLICIDADE</span>
     <!-- ad_3 -->
     <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6239237268971394" data-ad-slot="2022436715" data-ad-format="auto" data-full-width-responsive="true"></ins>

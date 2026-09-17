@@ -24,7 +24,7 @@ revoke all on table public.daily_rankings from public, anon, authenticated;
 grant select (day, nickname, players_score, teams_score, top10_score,
               total_score, submitted_at)
   on public.daily_rankings to anon, authenticated;
-grant select, insert, delete on table public.daily_rankings to service_role;
+grant select, insert, update, delete on table public.daily_rankings to service_role;
 
 drop policy if exists "Leitura do ranking de hoje" on public.daily_rankings;
 create policy "Leitura do ranking de hoje"

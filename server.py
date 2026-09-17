@@ -196,13 +196,17 @@ def finished(moves, mode='players'):
     return len(moves) >= (6 if mode == 'players' else 5) or any(m['result'] == 'correct' for m in moves)
 
 def ranking_scores(rounds):
-    """Calculate a finished visitor's score only from server-stored moves."""
-    if not all(finished(rounds[mode], mode) for mode in ('players', 'teams', 'top10')):
+    """Calculate scores for completed modes only, using server-stored moves."""
+    completed = {mode: finished(rounds[mode], mode) for mode in ('players', 'teams', 'top10')}
+    if not any(completed.values()):
         return None
-    players = max(0, 100 - 6 * sum(m['result'] in ('wrong', 'skip') for m in rounds['players']))
-    teams = max(0, 100 - 11 * sum(m['result'] in ('wrong', 'skip') for m in rounds['teams']))
-    top10 = (0 if any(m['result'] == 'giveup' for m in rounds['top10']) else
-             max(0, 100 - 2 * sum(m['result'] in ('incorrect', 'wrong_pos') for m in rounds['top10'])))
+    players = (max(0, 100 - 6 * sum(m['result'] in ('wrong', 'skip') for m in rounds['players']))
+               if completed['players'] else 0)
+    teams = (max(0, 100 - 11 * sum(m['result'] in ('wrong', 'skip') for m in rounds['teams']))
+             if completed['teams'] else 0)
+    top10 = ((0 if any(m['result'] == 'giveup' for m in rounds['top10']) else
+              max(0, 100 - 2 * sum(m['result'] in ('incorrect', 'wrong_pos') for m in rounds['top10'])))
+             if completed['top10'] else 0)
     return {'players': players, 'teams': teams, 'top10': top10, 'total': players + teams + top10}
 
 def valid_nickname(value):
@@ -560,7 +564,7 @@ class Handler(BaseHTTPRequestHandler):
                                'eligible': scores is not None, 'submitted': own is not None,
                                'previewScore': scores})
 
-    def post_supabase_ranking(self, nickname):
+    def post_supabase_ranking(self, nickname=None, sync=False):
         day = today()
         visitor, _ = self.browser_rank_visitor()
         if not visitor:
@@ -568,8 +572,14 @@ class Handler(BaseHTTPRequestHandler):
         rounds = {mode: self.browser_state(day, mode)['moves'] for mode in ('players', 'teams', 'top10')}
         scores = ranking_scores(rounds)
         if scores is None:
-            return self.send(403, {'error': 'Conclua os três desafios de hoje antes de entrar no ranking.'})
-        if supabase_ranking.own_row(day, visitor):
+            return self.send(403, {'error': 'Conclua pelo menos um desafio de hoje antes de entrar no ranking.'})
+        existing = supabase_ranking.own_row(day, visitor)
+        if sync:
+            if not existing:
+                return self.send(409, {'error': 'Escolha um nickname antes de atualizar sua pontuação.'})
+            supabase_ranking.update(day, visitor, scores)
+            return self.get_supabase_ranking()
+        if existing:
             return self.send(409, {'error': 'Você já entrou no ranking de hoje.'})
         try:
             supabase_ranking.insert(day, visitor, nickname, scores)
@@ -586,14 +596,17 @@ class Handler(BaseHTTPRequestHandler):
             if not 0 < length <= 1024:
                 raise ValueError()
             body = json.loads(self.rfile.read(length))
-            nickname = valid_nickname(body.get('nickname')) if isinstance(body, dict) else None
+            if not isinstance(body, dict):
+                raise ValueError()
+            sync = body.get('sync') is True
+            nickname = None if sync else valid_nickname(body.get('nickname'))
         except (ValueError, UnicodeError, json.JSONDecodeError):
-            nickname = None
-        if not nickname:
+            sync, nickname = False, None
+        if not sync and not nickname:
             return self.send(400, {'error': 'Use um nickname de 3 a 20 caracteres: letras, números, espaço, _ ou -.'})
         if cookie_mode():
             if self.supabase_rank_ready():
-                return self.post_supabase_ranking(nickname)
+                return self.post_supabase_ranking(nickname, sync)
             return self.send(503, {'error': 'O ranking precisa de um banco de dados compartilhado. Tente novamente mais tarde.',
                                    'code': 'RANKING_REQUIRES_DATABASE'})
         day = today()
@@ -604,16 +617,25 @@ class Handler(BaseHTTPRequestHandler):
             if not visitor:
                 return self.send(403, {'error': 'Abra o jogo neste navegador antes de entrar no ranking.'})
             db.lock_visitor(visitor)
-            if db.execute('SELECT 1 FROM daily_rankings WHERE visitor=? AND day=?', (visitor, str(day))).fetchone():
-                return self.send(409, {'error': 'Você já entrou no ranking de hoje.'})
             rounds = {mode: read_moves(db, visitor, day, mode) for mode in ('players', 'teams', 'top10')}
             scores = ranking_scores(rounds)
             if scores is None:
-                return self.send(403, {'error': 'Conclua os três desafios de hoje antes de entrar no ranking.'})
-            db.execute('INSERT INTO daily_rankings (visitor, day, nickname, players_score, teams_score, top10_score, total_score, submitted_at) '
-                       'VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(visitor, day) DO NOTHING',
-                       (visitor, str(day), nickname, scores['players'], scores['teams'], scores['top10'],
-                        scores['total'], datetime.now(BRASILIA).isoformat()))
+                return self.send(403, {'error': 'Conclua pelo menos um desafio de hoje antes de entrar no ranking.'})
+            existing = db.execute('SELECT 1 FROM daily_rankings WHERE visitor=? AND day=?',
+                                  (visitor, str(day))).fetchone()
+            if sync:
+                if not existing:
+                    return self.send(409, {'error': 'Escolha um nickname antes de atualizar sua pontuação.'})
+                db.execute('UPDATE daily_rankings SET players_score=?, teams_score=?, top10_score=?, total_score=? '
+                           'WHERE visitor=? AND day=?',
+                           (scores['players'], scores['teams'], scores['top10'], scores['total'], visitor, str(day)))
+            else:
+                if existing:
+                    return self.send(409, {'error': 'Você já entrou no ranking de hoje.'})
+                db.execute('INSERT INTO daily_rankings (visitor, day, nickname, players_score, teams_score, top10_score, total_score, submitted_at) '
+                           'VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(visitor, day) DO NOTHING',
+                           (visitor, str(day), nickname, scores['players'], scores['teams'], scores['top10'],
+                            scores['total'], datetime.now(BRASILIA).isoformat()))
         return self.get_ranking()
 
     def do_POST(self):
