@@ -53,7 +53,16 @@ const copy = {
     attempt:'Tentativa', available:'disponível', wrongAttempt:'incorreta', skippedAttempt:'pulada',
     correctAttempt:'correta', close:'Fechar', stats:'Estatísticas', help:'Como jogar',
     language:'Selecionar idioma', searchLabel:'Jogadores encontrados', searchTeamsLabel:'Times encontrados',
-    solvedProgress:(n, tot)=>`${n}/${tot} posições acertadas`
+    solvedProgress:(n, tot)=>`${n}/${tot} posições acertadas`,
+    recentBadge:'⚡ RETROSPECTIVA DIÁRIA', recentTagline:'ÚLTIMAS RODADAS',
+    recentTitle:'Perdeu os últimos lances? Veja quem passou por aqui',
+    recentSubtitle:'Confira as respostas dos últimos dois desafios antes de chutar a rodada de hoje:',
+    recentSubtitleWon:'Você já garantiu a vitória de hoje! Será que você teria acertado os lances dos últimos dias?',
+    recentSubtitleLost:'A rodada de hoje foi pegada? Calibre a memória conferindo quem esteve em campo nos últimos 2 dias:',
+    recentYesterday:'Ontem', recentDayBefore:'Anteontem',
+    recentRoundLabel:(num, date)=>`Desafio #${num} (${date})`,
+    recentPlayerLabel:'👤 Jogador misterioso', recentTeamLabel:'🛡️ Time de futebol', recentTop10Label:'🏆 Top 10 histórico',
+    recentStatusClosed:'Encerrado', recentArchiveLink:'Explorar todos os desafios anteriores no Arquivo'
   },
   en: {
     modePlayers:'Players', modeTeams:'Teams', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'You can join the leaderboard!', rankingPrompt:'Choose a nickname. Your score will update as you finish the other challenges.', points:'points', nicknameLabel:'Your nickname', nicknameHint:'3–20 characters: letters, numbers, spaces, _ or -.', joinRanking:'Join leaderboard', rankingJoined:'You joined the leaderboard! Keep playing to add more points.', later:'Maybe later',
@@ -107,7 +116,16 @@ const copy = {
     attempt:'Attempt', available:'available', wrongAttempt:'wrong', skippedAttempt:'skipped',
     correctAttempt:'correct', close:'Close', stats:'Statistics', help:'How to play',
     language:'Select language', searchLabel:'Players found', searchTeamsLabel:'Teams found',
-    solvedProgress:(n, tot)=>`${n}/${tot} positions solved`
+    solvedProgress:(n, tot)=>`${n}/${tot} positions solved`,
+    recentBadge:'⚡ DAILY RETROSPECTIVE', recentTagline:'PAST ROUNDS',
+    recentTitle:'Missed recent rounds? See who stepped on the pitch',
+    recentSubtitle:'Check the official answers from the last 2 daily challenges before playing today:',
+    recentSubtitleWon:'You already conquered today’s challenge! Would you have guessed the past players too?',
+    recentSubtitleLost:'Today was tough? Warm up your trivia skills with the answers from the last 2 days:',
+    recentYesterday:'Yesterday', recentDayBefore:'2 days ago',
+    recentRoundLabel:(num, date)=>`Challenge #${num} (${date})`,
+    recentPlayerLabel:'👤 Mystery player', recentTeamLabel:'🛡️ Mystery club', recentTop10Label:'🏆 Historical Top 10',
+    recentStatusClosed:'Finished', recentArchiveLink:'Explore all past challenges in the Archive'
   },
   es: {
     modePlayers:'Jugadores', modeTeams:'Times', modeTop10:'Top 10', ranking:'Ranking', rankingReady:'¡Ya puedes entrar al ranking!', rankingPrompt:'Elige un apodo. Tu puntuación se actualizará al terminar los otros desafíos.', points:'puntos', nicknameLabel:'Tu apodo', nicknameHint:'3 a 20 caracteres: letras, números, espacios, _ o -.', joinRanking:'Entrar al ranking', rankingJoined:'¡Entraste al ranking! Sigue jugando para sumar puntos.', later:'Ahora no',
@@ -161,7 +179,16 @@ const copy = {
     attempt:'Intento', available:'disponible', wrongAttempt:'incorrecto', skippedAttempt:'saltado',
     correctAttempt:'correcto', close:'Cerrar', stats:'Estadísticas', help:'Cómo jugar',
     language:'Seleccionar idioma', searchLabel:'Jugadores encontrados', searchTeamsLabel:'Equipos encontrados',
-    solvedProgress:(n, tot)=>`${n}/${tot} posiciones acertadas`
+    solvedProgress:(n, tot)=>`${n}/${tot} posiciones acertadas`,
+    recentBadge:'⚡ RETROSPECTIVA DIARIA', recentTagline:'ÚLTIMAS RONDAS',
+    recentTitle:'¿Te perdiste las últimas rondas? Mira quién estuvo aquí',
+    recentSubtitle:'Revisa las respuestas de los últimos dos desafíos antes de jugar la ronda de hoy:',
+    recentSubtitleWon:'¡Ya aseguraste la victoria de hoy! ¿Habrías acertado también los desafíos anteriores?',
+    recentSubtitleLost:'¿La ronda de hoy estuvo difícil? Calibra la memoria revisando quién estuvo en cancha:',
+    recentYesterday:'Ayer', recentDayBefore:'Anteayer',
+    recentRoundLabel:(num, date)=>`Desafío #${num} (${date})`,
+    recentPlayerLabel:'👤 Jugador misterioso', recentTeamLabel:'🛡️ Club de fútbol', recentTop10Label:'🏆 Top 10 histórico',
+    recentStatusClosed:'Terminado', recentArchiveLink:'Explorar todos los desafíos anteriores en el Archivo'
   }
 };
 let lang = (() => { try { return localStorage.getItem('golguess-lang') || 'pt'; } catch { return 'pt'; } })();
@@ -324,14 +351,90 @@ function applyLanguage() {
 
   updateModeButtons();
   if (game) render();
+  renderRecentChallenges();
 }
+let cachedRecentChallenges = null;
+
+function renderRecentChallenges(items) {
+  const container = $('recentGrid');
+  if (!container) return;
+  if (items && items.length) {
+    cachedRecentChallenges = items;
+  }
+  const list = cachedRecentChallenges || game?.recentChallenges;
+
+  if ($('recentBadge')) $('recentBadge').textContent = t('recentBadge');
+  if ($('recentTagline')) $('recentTagline').textContent = t('recentTagline');
+  if ($('recentChallengesTitle')) $('recentChallengesTitle').textContent = t('recentTitle');
+  if ($('recentArchiveLink')) {
+    const linkSpan = $('recentArchiveLink').querySelector('span[data-i18n]');
+    if (linkSpan) linkSpan.textContent = t('recentArchiveLink');
+  }
+
+  const subtitleEl = $('recentSubtitle');
+  if (subtitleEl) {
+    if (game && game.done) {
+      subtitleEl.textContent = game.won ? t('recentSubtitleWon') : t('recentSubtitleLost');
+    } else {
+      subtitleEl.textContent = t('recentSubtitle');
+    }
+  }
+
+  if (!list || !list.length) return;
+
+  container.innerHTML = list.map(item => {
+    const rel = item.offset === 1 ? t('recentYesterday') : t('recentDayBefore');
+    const roundTxt = typeof t('recentRoundLabel') === 'function'
+      ? t('recentRoundLabel')(item.number, item.date)
+      : `${item.date} · #${item.number}`;
+    const p = item.player || {};
+    const tItem = item.team || {};
+    const top = item.top10 || {};
+    const top10Title = (top.title && (top.title[lang] || top.title.pt || top.title)) || '';
+    const top10Leader = top.leader ? `<small>(#1 ${top.leader})</small>` : '';
+
+    return `<article class="recent-card">
+      <div class="recent-card-top">
+        <span class="recent-card-date">${rel} · ${roundTxt}</span>
+        <span class="recent-card-tag">${t('recentStatusClosed')}</span>
+      </div>
+      <div class="recent-card-body">
+        <div class="recent-entity">
+          <span class="recent-entity-label">${t('recentPlayerLabel')}</span>
+          <strong class="recent-entity-name">${p.name || ''}</strong>
+          <div class="recent-meta-chips">
+            <span class="recent-chip">${p.league || ''} ${p.season || ''}</span>
+            <span class="recent-chip">${p.team || ''}</span>
+            <span class="recent-chip">${p.goals || 0} ${t('goals')} · ${p.assists || 0} ${t('assists')}</span>
+            <span class="recent-chip">${p.nationality || ''}</span>
+          </div>
+        </div>
+        <div class="recent-sub-grid">
+          <div class="recent-sub-item">
+            <span class="recent-sub-label">${t('recentTeamLabel')}</span>
+            <strong class="recent-sub-value">${tItem.name || ''} <small>(${tItem.country || ''})</small></strong>
+          </div>
+          <div class="recent-sub-item">
+            <span class="recent-sub-label">${t('recentTop10Label')}</span>
+            <span class="recent-sub-value">${top10Title} ${top10Leader}</span>
+          </div>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
 function accept(data) {
   if (game && game.mode === data.mode && (data.day < game.day || (data.day === game.day && data.version < game.version))) return;
   const changed = game && (game.day !== data.day || game.version !== data.version || game.mode !== data.mode);
   if (changed) resetSearch();
   game = data;
   serverOffset = Date.parse(data.serverTime) - Date.now();
+  if (data.recentChallenges) {
+    cachedRecentChallenges = data.recentChallenges;
+  }
   render();
+  renderRecentChallenges(data.recentChallenges);
   if (data.done) checkRankingPrompt(data.day);
 }
 async function checkRankingPrompt(day) {
@@ -734,6 +837,7 @@ function render() {
     $('resultSquares').textContent = squares();
   }
   controls(); tick();
+  renderRecentChallenges();
 }
 async function loadGame() {
   if (loading || busy) return;

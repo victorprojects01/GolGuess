@@ -46,6 +46,45 @@ def top10_answer(day):
     return TOP10_SCHEDULE[(day - EPOCH).days % len(TOP10_SCHEDULE)]
 
 
+def get_recent_challenges(current_day, limit=2):
+    items = []
+    completed = max(0, (current_day - EPOCH).days)
+    limit = min(limit, completed)
+    for offset in range(limit):
+        round_day = current_day - timedelta(days=offset + 1)
+        number = (round_day - EPOCH).days + 1
+        p = answer(round_day)
+        t = team_answer(round_day)
+        top = top10_answer(round_day)
+        items.append(dict(
+            date=round_day.strftime('%d/%m/%Y'),
+            dayIso=str(round_day),
+            relative='Ontem' if offset == 0 else 'Anteontem',
+            offset=offset + 1,
+            number=number,
+            player=dict(
+                name=p['name'],
+                league=p['league'],
+                season=p['season'],
+                team=p['team'],
+                goals=p['goals'],
+                assists=p['assists'],
+                position=p['position'],
+                nationality=p['nationality'],
+                nationalityCode=p.get('nationalityCode', '')
+            ),
+            team=dict(
+                name=t['name'],
+                country=t['country']
+            ),
+            top10=dict(
+                title=top['title'],
+                leader=top['ranking'][0]['name'] if top.get('ranking') else ''
+            )
+        ))
+    return items
+
+
 def archive_html(current_day, page=1):
     """Render completed rounds only; page content updates without a new deploy."""
     page_size = 14
@@ -263,7 +302,8 @@ def make_snapshot(moves, player_stats, day):
                 moves=moves, version=len(moves), done=done,
                 won=any(m['result']=='correct' for m in moves),
                 clues=clues[:6 if done else min(len(moves)+1, 6)],
-                answer=player['name'] if done else None, stats=player_stats, catalog='career-v2')
+                answer=player['name'] if done else None, stats=player_stats, catalog='career-v2',
+                recentChallenges=get_recent_challenges(day))
 
 def make_team_snapshot(moves, team_stats, day):
     team = team_answer(day)
@@ -283,7 +323,8 @@ def make_team_snapshot(moves, team_stats, day):
                 moves=moves, version=len(moves), done=done,
                 won=any(m['result']=='correct' for m in moves),
                 clues=clues[:5 if done else min(len(moves)+1, 5)],
-                answer=team['name'] if done else None, stats=team_stats, catalog='teams-v1')
+                answer=team['name'] if done else None, stats=team_stats, catalog='teams-v1',
+                recentChallenges=get_recent_challenges(day))
 
 def make_top10_snapshot(moves, top10_stats, day):
     challenge = top10_answer(day)
@@ -314,7 +355,8 @@ def make_top10_snapshot(moves, top10_stats, day):
                 moves=moves, version=len(moves), done=done,
                 won=won, solvedCount=solved_count, totalPositions=10,
                 challenge=dict(id=challenge['id'], title=challenge['title'], source=challenge['source']),
-                slots=slots, stats=top10_stats, catalog='top10-v1')
+                slots=slots, stats=top10_stats, catalog='top10-v1',
+                recentChallenges=get_recent_challenges(day))
 
 def snapshot(db, visitor, day, mode='players'):
     if mode == 'top10':
@@ -350,7 +392,8 @@ class Handler(BaseHTTPRequestHandler):
             secure = '; Secure' if os.environ.get('VERCEL') or os.environ.get('GOLGUESS_SECURE_COOKIE') == '1' else ''
             self.send_header('Set-Cookie', f'gg_rank_id={rank_cookie}; HttpOnly; SameSite=Lax; Path=/; Max-Age=34560000{secure}')
         self.end_headers()
-        self.wfile.write(raw)
+        if self.command != 'HEAD':
+            self.wfile.write(raw)
 
     def visitor(self, db, create=False):
         cookies = SimpleCookie()
@@ -415,6 +458,9 @@ class Handler(BaseHTTPRequestHandler):
             return make_team_snapshot(state['moves'], s, day)
         return make_snapshot(state['moves'], s, day)
 
+    def do_HEAD(self):
+        self.do_GET()
+
     def do_GET(self):
         try:
             self.get()
@@ -459,6 +505,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.send(200, payload, cookie=cookie)
         if url.path == '/api/ranking':
             return self.get_ranking()
+        if url.path == '/api/recent':
+            return self.send(200, get_recent_challenges(today()))
         if url.path == '/api/players':
             query = normalize(parse_qs(url.query).get('q', [''])[0].strip())[:80]
             result = [dict(id=p['id'], name=p['name']) for p in PLAYERS if query and query in normalize(p['name'])]
