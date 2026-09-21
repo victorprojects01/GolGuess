@@ -28,19 +28,25 @@ strong{color:#fff}
 .mode-list li{padding:13px 15px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
 .mode-list strong{display:block;margin-bottom:4px}
 .note{margin:20px 0;padding:14px 15px;border-left:3px solid #7bc6f2;background:#1b3c0c;color:var(--muted);font-size:14px}
-.archive-round{margin:24px 0;padding:17px 18px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
-.archive-round h2{margin:2px 0 4px;font-size:22px}
-.archive-round p{margin-bottom:7px}
-.archive-date{color:var(--accent);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
-.archive-numbers{font-variant-numeric:tabular-nums}
-.archive-round details{margin-top:11px;padding-top:10px;border-top:1px solid var(--line)}
-.archive-round summary{min-height:42px;display:list-item;align-content:center;color:var(--accent);cursor:pointer;font-size:14px;font-weight:700}
+.archive-round{margin:24px 0;padding:17px 18px;border:1px solid var(--line);border-radius:7px;background:var(--surface);display:flex;flex-direction:column;gap:12px}
+.archive-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.archive-date{color:var(--accent);font-size:11px;letter-spacing:.05em;text-transform:uppercase;margin:0}
+.archive-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a9bc93;background:#ffffff10;padding:2px 7px;border-radius:4px}
+.archive-mode-block{padding:11px 13px;border-radius:6px;background:#0d260088;border:1px solid #ffffff18}
+.archive-mode-badge{display:inline-block;font-size:10px;font-weight:750;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:6px}
+.archive-player-name{margin:2px 0 6px;font-size:20px;color:#fff}
+.archive-player-club{margin:0 0 6px;font-size:13px;color:var(--muted)}
+.archive-team-answer{margin:0;font-size:14px;color:#fff}
+.archive-mode-note{display:block;margin-top:4px;font-size:11px;color:#bed0ab}
+.archive-numbers{font-variant-numeric:tabular-nums;margin:0;font-size:13px}
+.archive-round details{margin-top:2px;padding-top:2px}
+.archive-round summary{min-height:38px;display:list-item;align-content:center;color:var(--accent);cursor:pointer;font-size:13px;font-weight:700}
 .archive-round summary:focus-visible{outline:3px solid #7bc6f2;outline-offset:3px}
 .archive-ranking{columns:2;margin:8px 0;padding:0;list-style:none}
 .archive-ranking li{break-inside:avoid;margin:0 0 5px;font-size:13px}
 .archive-ranking li span{color:var(--accent);font-variant-numeric:tabular-nums}
 .archive-ranking small{color:#c6d3b0}
-.archive-source{font-size:12px}
+.archive-source{font-size:11px;color:#bed0ab;margin:8px 0 0}
 .archive-pagination{display:flex;justify-content:space-between;gap:16px;margin-top:28px}
 .archive-pagination a{display:inline-flex;align-items:center;min-height:44px}
 .contact-link{display:inline-flex;align-items:center;min-height:46px;padding:0 16px;margin:8px 0 12px;border-radius:6px;background:var(--accent);color:#122d00;font-weight:750;text-decoration:none;overflow-wrap:anywhere}

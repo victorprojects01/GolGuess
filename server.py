@@ -8,6 +8,7 @@ import os
 import secrets
 import unicodedata
 from datetime import date, datetime, time, timedelta, timezone
+from zoneinfo import ZoneInfo
 from http.cookies import SimpleCookie, CookieError
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -16,7 +17,10 @@ from storage import connect, database_url, StorageUnavailable
 import supabase_ranking
 
 ROOT = Path(__file__).resolve().parent
-BRASILIA = timezone(timedelta(hours=-3))
+try:
+    BRASILIA = ZoneInfo('America/Sao_Paulo')
+except Exception:
+    BRASILIA = timezone(timedelta(hours=-3))
 EPOCH = date(2026, 9, 11)
 PLAYERS = json.loads((ROOT / 'data/players.json').read_text(encoding='utf-8'))
 BY_ID = {p['id']: p for p in PLAYERS}
@@ -95,44 +99,43 @@ def archive_html(current_day, page=1):
     escape = html.escape
     start = (page - 1) * page_size
     rounds = []
-    current_player = answer(current_day)['id']
-    current_team = team_answer(current_day)['id']
-    current_top10 = top10_answer(current_day)['id']
     for offset in range(start, min(start + page_size, completed)):
         round_day = current_day - timedelta(days=offset + 1)
         number = (round_day - EPOCH).days + 1
         player = answer(round_day)
         team = team_answer(round_day)
         challenge = top10_answer(round_day)
-        player_content = (
-            '<h2>Jogador em disputa hoje</h2><p>Esta resposta volta ao arquivo amanhã.</p>'
-            if player['id'] == current_player else
-            f'<h2>{escape(player["name"])}</h2>'
-            f'<p>{escape(player["league"])} · {escape(player["season"])} · {escape(player["team"])}</p>'
+
+        ranking = ''.join(
+            f'<li><span>{item["position"]}.</span> {escape(item["name"])}'
+            f' <small>{escape(str(item["value"]))}</small></li>'
+            for item in challenge['ranking']
+        )
+        rounds.append(
+            f'<article class="archive-round">'
+            f'<div class="archive-header">'
+            f'<p class="archive-date">{round_day.strftime("%d/%m/%Y")} · Desafio #{number}</p>'
+            f'<span class="archive-tag">Encerrado</span>'
+            f'</div>'
+            f'<div class="archive-mode-block archive-mode-player">'
+            f'<span class="archive-mode-badge">Modo Jogadores</span>'
+            f'<h2 class="archive-player-name">{escape(player["name"])}</h2>'
+            f'<p class="archive-player-club"><strong>Clube na temporada {escape(player["season"])}:</strong> {escape(player["team"])} ({escape(player["league"])})</p>'
             f'<p class="archive-numbers">{player["goals"]} gols · {player["assists"]} assistências · '
             f'{escape(player["position"])} · {escape(player["nationality"])}</p>'
-        )
-        team_content = (
-            '<p><strong>Time:</strong> resposta em disputa hoje; volta ao arquivo amanhã.</p>'
-            if team['id'] == current_team else
-            f'<p><strong>Time:</strong> {escape(team["name"])} · {escape(team["country"])}</p>'
-        )
-        if challenge['id'] == current_top10:
-            top10_content = '<p>Este Top 10 está em disputa hoje. O ranking volta ao arquivo amanhã.</p>'
-        else:
-            ranking = ''.join(
-                f'<li><span>{item["position"]}.</span> {escape(item["name"])}'
-                f' <small>{escape(str(item["value"]))}</small></li>'
-                for item in challenge['ranking']
-            )
-            top10_content = (
-                f'<details><summary>{escape(challenge["title"]["pt"])} — ver ranking</summary>'
-                f'<ol class="archive-ranking">{ranking}</ol>'
-                f'<p class="archive-source">Fonte do ranking: {escape(challenge["source"])}</p></details>'
-            )
-        rounds.append(
-            f'<article class="archive-round"><p class="archive-date">{round_day.strftime("%d/%m/%Y")} · Desafio #{number}</p>'
-            f'{player_content}{team_content}{top10_content}</article>'
+            f'</div>'
+            f'<div class="archive-mode-block archive-mode-team">'
+            f'<span class="archive-mode-badge">Modo Times</span>'
+            f'<p class="archive-team-answer"><strong>Resposta do desafio de times:</strong> {escape(team["name"])} · {escape(team["country"])}</p>'
+            f'<small class="archive-mode-note">Desafio independente de adivinhar o clube de futebol.</small>'
+            f'</div>'
+            f'<div class="archive-mode-block archive-mode-top10">'
+            f'<span class="archive-mode-badge">Modo Top 10</span>'
+            f'<details><summary>{escape(challenge["title"]["pt"])} — ver ranking completo</summary>'
+            f'<ol class="archive-ranking">{ranking}</ol>'
+            f'<p class="archive-source">Fonte do ranking: {escape(challenge["source"])}</p></details>'
+            f'</div>'
+            f'</article>'
         )
     entries = ''.join(rounds) if rounds else '<p>O primeiro desafio encerrado aparecerá aqui amanhã.</p>'
     links = []
@@ -469,11 +472,13 @@ class Handler(BaseHTTPRequestHandler):
 
     def get(self):
         url = urlsplit(self.path)
-        if url.path in ('/arquivo.html', '/api/archive'):
+        if url.path in ('/arquivo.html', '/arquivo', '/api/archive'):
             try:
                 page = int(parse_qs(url.query).get('pagina', ['1'])[0])
-            except ValueError:
-                page = 0
+            except (ValueError, IndexError):
+                page = 1
+            if page < 1:
+                page = 1
             document = archive_html(today(), page)
             return self.send(200, document, 'text/html; charset=utf-8') if document else self.send(404, {'error': 'Página não encontrada.'})
         if url.path == '/api/health':
@@ -528,6 +533,8 @@ class Handler(BaseHTTPRequestHandler):
                  '/politica-de-cookies.html': ('politica-de-cookies.html', 'text/html; charset=utf-8'),
                  '/termos-de-uso.html': ('termos-de-uso.html', 'text/html; charset=utf-8'),
                  '/contato.html': ('contato.html', 'text/html; charset=utf-8'),
+                 '/atribuicao.html': ('atribuicao.html', 'text/html; charset=utf-8'),
+                 '/atribuicao': ('atribuicao.html', 'text/html; charset=utf-8'),
                  '/styles.css': ('styles.css', 'text/css; charset=utf-8'),
                  '/institucional.css': ('institucional.css', 'text/css; charset=utf-8'),
                  '/app.js': ('app.js', 'text/javascript; charset=utf-8'),

@@ -13,7 +13,7 @@ FILES = [
     'assets/logo-mark.svg', 'assets/golguess-social.png',
     'sobre.html', 'como-jogar.html', 'politica-de-privacidade.html',
     'politica-de-cookies.html', 'termos-de-uso.html', 'contato.html',
-    'arquivo.html',
+    'atribuicao.html', 'arquivo.html',
     'data/ATTRIBUTION.md', 'ads.txt', 'robots.txt', 'sitemap.xml',
 ]
 

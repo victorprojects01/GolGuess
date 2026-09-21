@@ -183,9 +183,10 @@ input:focus{border-color:var(--blue)}
 .result .primary{width:100%}
 .next-game{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:16px;padding-top:13px;border-top:1px solid #ffffff24;color:var(--cream);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
 .next-game strong{font-family:"Arial Narrow",Impact,monospace;font-size:19px;color:var(--yellow);letter-spacing:.06em}
-.ad-slot{width:100%;min-height:280px;margin:32px 0 24px;padding:14px 10px 16px;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:flex-start;text-align:center;border:1px solid #ffffff1c;border-radius:8px;background:#0d240099;box-sizing:border-box}
+.ad-slot{width:100%;min-height:280px;margin:160px 0 32px;padding:16px 10px 16px;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:flex-start;text-align:center;border:1px solid #ffffff1c;border-radius:8px;background:#0d240099;box-sizing:border-box}
 .ad-slot .ad-label{display:block;color:#a3b88c;font-size:11px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;line-height:1}
-.ad-slot .adsbygoogle{width:100%;min-height:250px}
+.ad-slot .adsbygoogle{width:100%;min-height:250px;background:transparent}
+ins.adsbygoogle[data-ad-status="unfilled"],.ad-slot:has(ins[data-ad-status="unfilled"]),.ad-slot.is-unfilled{display:none!important}
 .about-game{width:100%;margin:12px 0 6px;padding:14px 16px;border:1px solid #ffffff1c;border-radius:8px;background:#0d240099;color:var(--cream);font-size:13px;line-height:1.6}
 .about-game p{margin:0}
 .about-game strong{color:var(--white);font-weight:700}
@@ -212,6 +213,7 @@ input:focus{border-color:var(--blue)}
 .recent-sub-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#a3b88c}
 .recent-sub-value{font-size:12px;color:var(--white);font-weight:650;line-height:1.35}
 .recent-sub-value small{color:var(--cream);font-weight:400}
+.recent-item-hint{font-size:10px;color:#a3b88c;display:block;margin-top:2px}
 .recent-footer-action{margin-top:2px}
 .recent-archive-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:42px;padding:0 16px;border:1px solid #b5e00055;border-radius:6px;background:#b5e00014;color:var(--lime);font-size:13px;font-weight:750;text-decoration:none;transition:background .15s,border-color .15s}
 .recent-archive-link:hover{background:#b5e00028;border-color:var(--lime);color:var(--white)}

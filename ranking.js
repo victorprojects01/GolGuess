@@ -75,11 +75,43 @@ function render(data) {
   });
   byId('rankingList').replaceChildren(...items);
   byId('rankingEmpty').hidden = data.entries.length > 0;
+  const adEl = byId('rankingAd');
+  if (adEl) {
+    if (data.entries && data.entries.length > 0) {
+      adEl.hidden = false;
+      observeAdStatus(adEl);
+    } else {
+      adEl.hidden = true;
+    }
+  }
   const completedCount = Object.values(data.completed).filter(Boolean).length;
   status(data.submitted
     ? `Você está no ranking · ${completedCount}/3 desafios concluídos.`
     : data.eligible ? 'Seu primeiro resultado já vale pontos. Escolha um nickname.'
     : 'Conclua um desafio para participar.');
+}
+
+function observeAdStatus(container) {
+  if (!container) return;
+  const ins = container.querySelector('ins.adsbygoogle');
+  if (!ins) return;
+  if (ins.getAttribute('data-ad-status') === 'unfilled') {
+    container.classList.add('is-unfilled');
+    container.hidden = true;
+    return;
+  }
+  const observer = new MutationObserver(mutations => {
+    for (const m of mutations) {
+      if (m.type === 'attributes' && m.attributeName === 'data-ad-status') {
+        if (ins.getAttribute('data-ad-status') === 'unfilled') {
+          container.classList.add('is-unfilled');
+          container.hidden = true;
+          observer.disconnect();
+        }
+      }
+    }
+  });
+  observer.observe(ins, { attributes: true, attributeFilter: ['data-ad-status'] });
 }
 
 async function load() {
@@ -89,7 +121,11 @@ async function load() {
     if (!response.ok) throw new Error(data.error || 'Não foi possível carregar o ranking.');
     if (scoreChanged(data)) data = await syncScore();
     render(data);
-  } catch (error) { status(error.message || 'Não foi possível carregar o ranking.', true); }
+  } catch (error) {
+    const adEl = byId('rankingAd');
+    if (adEl) adEl.hidden = true;
+    status(error.message || 'Não foi possível carregar o ranking.', true);
+  }
 }
 
 function tick() {
