@@ -120,17 +120,46 @@ def editorial_note(entity_id):
     return f'<p class="editorial-note">{html.escape(text)} <a href="{url}">{html.escape(source)}</a>.</p>'
 
 
-def retrospective_html(day):
+def get_recent_challenges(current_day, limit=2):
     items = []
-    for offset, label in ((1, 'Ontem'), (2, 'Anteontem')):
-        closed = day - timedelta(days=offset)
-        if closed < EPOCH:
-            continue
-        info = round_info(closed)
-        # Only link to closed rounds. No answer is embedded in this public summary.
-        items.append(f'<li><a href="/arquivo.html?data={closed}">{label} · '
-                     f'{closed:%d/%m/%Y} · Desafio #{info["number"]}</a></li>')
-    return '<h2>Últimos desafios encerrados</h2><ul>' + ''.join(items) + '</ul>'
+    for offset in range(1, min(limit, max(0, (current_day - EPOCH).days)) + 1):
+        day = current_day - timedelta(days=offset)
+        player, team, top = answer(day), team_answer(day), top10_answer(day)
+        items.append(dict(dayIso=str(day), date=f'{day:%d/%m/%Y}', offset=offset,
+                          relative='Ontem' if offset == 1 else 'Anteontem', number=round_info(day)['number'],
+                          player=({key: player[key] for key in ('name','league','season','team','goals','assists','nationality')}
+                                  if player['id'] != answer(current_day)['id'] else None),
+                          team=({'name':team['name'], 'country':team['country']}
+                                if team['id'] != team_answer(current_day)['id'] else None),
+                          top10=({'title':top['title'], 'leader':top['ranking'][0]['name']}
+                                 if top['id'] != top10_answer(current_day)['id'] else None)))
+    return items
+
+
+def retrospective_html(day):
+    cards = []
+    escape = lambda value: html.escape(str(value))
+    for item in get_recent_challenges(day):
+        player, team, top = item['player'], item['team'], item['top10']
+        player_html = ('<strong class="recent-entity-name">Resposta em disputa hoje</strong>' if not player else
+                       f'<strong class="recent-entity-name">{escape(player["name"])}</strong>'
+                       f'<div class="recent-meta-chips"><span class="recent-chip">{escape(player["league"])} {escape(player["season"])}</span>'
+                       f'<span class="recent-chip">{escape(player["team"])}</span>'
+                       f'<span class="recent-chip">{player["goals"]} gols · {player["assists"]} assistências</span>'
+                       f'<span class="recent-chip">{escape(player["nationality"])}</span></div>')
+        team_html = f'{escape(team["name"])} ({escape(team["country"])})' if team else 'Resposta em disputa hoje'
+        top_html = f'{escape(top["title"]["pt"])} · #1 {escape(top["leader"])}' if top else 'Top 10 em disputa hoje'
+        cards.append(f'<article class="recent-card"><div class="recent-card-top"><a class="recent-card-date" href="/arquivo.html?data={item["dayIso"]}">'
+                     f'{item["relative"]} · {item["date"]} · Desafio #{item["number"]}</a><span class="recent-card-tag">Encerrado</span></div>'
+                     f'<div class="recent-card-body"><div class="recent-entity"><span class="recent-entity-label">Jogador misterioso</span>{player_html}</div>'
+                     f'<div class="recent-sub-grid"><div class="recent-sub-item"><span class="recent-sub-label">Time de futebol</span><strong class="recent-sub-value">{team_html}</strong></div>'
+                     f'<div class="recent-sub-item"><span class="recent-sub-label">Top 10 histórico</span><span class="recent-sub-value">{top_html}</span></div></div></div></article>')
+    return ('<div class="recent-header"><div class="recent-kicker-row"><span id="recentBadge" class="recent-badge">RETROSPECTIVA DIÁRIA</span>'
+            '<span id="recentTagline" class="recent-tagline">ÚLTIMAS RODADAS</span></div>'
+            '<h2 id="recentChallengesTitle" class="recent-title">Últimos desafios encerrados</h2>'
+            '<p id="recentSubtitle" class="recent-subtitle">Confira as respostas dos últimos dois desafios.</p></div>'
+            f'<div id="recentGrid" class="recent-grid">{"".join(cards)}</div>'
+            '<a href="/arquivo.html" id="recentArchiveLink" class="recent-archive-link"><span data-i18n="recentArchiveLink">Explorar todos os desafios anteriores no Arquivo</span></a>')
 
 
 def home_html(day):
@@ -178,7 +207,7 @@ def archive_html(current_day, page=1, selected_day=None):
             f'{escape(player["position"])} · {escape(player["nationality"])}</p>'
             f'<p>Idade na data do desafio: {age_on(player["birth"], round_day)} anos. '
             f'Participações registradas: {player["matches"]}.</p>'
-            f'<p>Fonte dos números: {escape(player["source"])}. <a href="/data/ATTRIBUTION.md">Método e limitações</a>.</p>'
+            f'<p>Fonte dos números: {escape(player["source"])}. <a href="/atribuicao.html">Método e limitações</a>.</p>'
             + editorial_note(player['id'])
         )
         team_content = (
@@ -204,7 +233,9 @@ def archive_html(current_day, page=1, selected_day=None):
             )
         rounds.append(
             f'<article class="archive-round"><p class="archive-date"><a href="/arquivo.html?data={round_day}">{round_day.strftime("%d/%m/%Y")} · Desafio #{number}</a></p>'
-            f'{player_content}{team_content}{top10_content}</article>'
+            f'<div class="archive-mode-block archive-mode-player"><span class="archive-mode-badge">Modo Jogadores</span>{player_content}</div>'
+            f'<div class="archive-mode-block archive-mode-team"><span class="archive-mode-badge">Modo Times</span>{team_content}</div>'
+            f'<div class="archive-mode-block archive-mode-top10"><span class="archive-mode-badge">Modo Top 10</span>{top10_content}</div></article>'
         )
     entries = ''.join(rounds) if rounds else '<p>O primeiro desafio encerrado aparecerá aqui amanhã.</p>'
     links = []
@@ -231,7 +262,7 @@ def archive_html(current_day, page=1, selected_day=None):
 <form class="archive-search" action="/arquivo.html"><label for="archiveDate">Buscar por data</label> <input id="archiveDate" name="data" type="date" min="{EPOCH}" max="{current_day - timedelta(days=1)}" required> <button>Consultar</button></form>
 <details><summary>Como interpretar as pistas</summary><p>Gols e assistências pertencem à liga, temporada e clube indicados, não a todas as competições. A idade é calculada na data da rodada, não na temporada. ATA: ataque; MEI: meio-campo; ZAG: zaga; LAT: lateral; GOL: goleiro. A nacionalidade é a principal do perfil. Em Brasil e Argentina, participações são reconstruídas por eventos e podem ser incompletas.</p><p>Títulos dos times são o recorte cadastrado de liga: não representam todas as taças do clube. O catálogo não registra a data de corte por time nem uma fonte individual; esses totais precisam de conferência editorial. O resultado do Top 10 é a lista de jogadores do desafio, não a classificação dos visitantes.</p><p>No Top 10, posições e valores reproduzem a ordem cadastrada. Valores iguais não tornam posições intercambiáveis no jogo; o catálogo não documenta um critério adicional de desempate. A ordem vale para a competição ou premiação indicada, não para toda a carreira.</p></details>
 {entries}{pagination}</main>
-<footer class="site-footer" aria-label="Páginas institucionais"><a href="/sobre.html">Sobre o GolGuess</a><a href="/arquivo.html" aria-current="page">Desafios anteriores</a><a href="/como-jogar.html">Como jogar</a><a href="/politica-de-privacidade.html">Política de Privacidade</a><a href="/politica-de-cookies.html">Política de Cookies</a><a href="/termos-de-uso.html">Termos de Uso</a><a href="/contato.html">Contato para parcerias</a></footer>
+<footer class="site-footer" aria-label="Páginas institucionais"><a href="/sobre.html">Sobre o GolGuess</a><a href="/arquivo.html" aria-current="page">Desafios anteriores</a><a href="/como-jogar.html">Como jogar</a><a href="/politica-de-privacidade.html">Política de Privacidade</a><a href="/politica-de-cookies.html">Política de Cookies</a><a href="/termos-de-uso.html">Termos de Uso</a><a href="/atribuicao.html">Atribuição de Dados</a><a href="/contato.html">Contato para parcerias</a></footer>
 </body></html>'''
     return document.encode('utf-8')
 
@@ -377,7 +408,7 @@ def make_snapshot(moves, player_stats, day):
                 moves=moves, version=len(moves), done=done,
                 won=any(m['result']=='correct' for m in moves),
                 clues=clues[:6 if done else min(len(moves)+1, 6)],
-                answer=player['name'] if done else None, stats=player_stats, catalog='career-v2')
+                answer=player['name'] if done else None, stats=player_stats, catalog='career-v2', recentChallenges=get_recent_challenges(day))
 
 def make_team_snapshot(moves, team_stats, day):
     team = team_answer(day)
@@ -396,7 +427,7 @@ def make_team_snapshot(moves, team_stats, day):
                 moves=moves, version=len(moves), done=done,
                 won=any(m['result']=='correct' for m in moves),
                 clues=clues[:5 if done else min(len(moves)+1, 5)],
-                answer=team['name'] if done else None, stats=team_stats, catalog='teams-v1')
+                answer=team['name'] if done else None, stats=team_stats, catalog='teams-v1', recentChallenges=get_recent_challenges(day))
 
 def make_top10_snapshot(moves, top10_stats, day):
     challenge = top10_answer(day)
@@ -426,7 +457,7 @@ def make_top10_snapshot(moves, top10_stats, day):
                 moves=moves, version=len(moves), done=done,
                 won=won, solvedCount=solved_count, totalPositions=10,
                 challenge=dict(id=challenge['id'], title=challenge['title'], source=challenge['source']),
-                slots=slots, stats=top10_stats, catalog='top10-v1')
+                slots=slots, stats=top10_stats, catalog='top10-v1', recentChallenges=get_recent_challenges(day))
 
 def snapshot(db, visitor, day, mode='players'):
     if mode == 'top10':
@@ -462,7 +493,8 @@ class Handler(BaseHTTPRequestHandler):
             secure = '; Secure' if os.environ.get('VERCEL') or os.environ.get('GOLGUESS_SECURE_COOKIE') == '1' else ''
             self.send_header('Set-Cookie', f'gg_rank_id={rank_cookie}; HttpOnly; SameSite=Lax; Path=/; Max-Age=34560000{secure}')
         self.end_headers()
-        self.wfile.write(raw)
+        if self.command != 'HEAD':
+            self.wfile.write(raw)
 
     def visitor(self, db, create=False):
         cookies = SimpleCookie()
@@ -527,6 +559,9 @@ class Handler(BaseHTTPRequestHandler):
             return make_team_snapshot(state['moves'], s, day)
         return make_snapshot(state['moves'], s, day)
 
+    def do_HEAD(self):
+        self.do_GET()
+
     def do_GET(self):
         try:
             self.get()
@@ -544,7 +579,7 @@ class Handler(BaseHTTPRequestHandler):
         if url.path == '/api/public_config':
             return self.send(200, {'adsEnabled': os.environ.get('GOLGUESS_ADS_ENABLED') == '1',
                                    'cmpId': os.environ.get('GOLGUESS_CMP_ID', '')})
-        if url.path in ('/arquivo.html', '/api/archive'):
+        if url.path in ('/arquivo.html', '/arquivo', '/api/archive'):
             try:
                 query = parse_qs(url.query)
                 page = int(query.get('pagina', ['1'])[0])
@@ -582,6 +617,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.send(200, payload, cookie=cookie)
         if url.path == '/api/ranking':
             return self.get_ranking()
+        if url.path == '/api/recent':
+            return self.send(200, get_recent_challenges(today()))
         if url.path == '/api/players':
             query = normalize(parse_qs(url.query).get('q', [''])[0].strip())[:80]
             result = [dict(id=p['id'], name=p['name']) for p in PLAYERS if query and query in normalize(p['name'])]
@@ -603,6 +640,8 @@ class Handler(BaseHTTPRequestHandler):
                  '/politica-de-cookies.html': ('politica-de-cookies.html', 'text/html; charset=utf-8'),
                  '/termos-de-uso.html': ('termos-de-uso.html', 'text/html; charset=utf-8'),
                  '/contato.html': ('contato.html', 'text/html; charset=utf-8'),
+                 '/atribuicao.html': ('atribuicao.html', 'text/html; charset=utf-8'),
+                 '/atribuicao': ('atribuicao.html', 'text/html; charset=utf-8'),
                  '/styles.css': ('styles.css', 'text/css; charset=utf-8'),
                  '/institucional.css': ('institucional.css', 'text/css; charset=utf-8'),
                  '/app.js': ('app.js', 'text/javascript; charset=utf-8'),

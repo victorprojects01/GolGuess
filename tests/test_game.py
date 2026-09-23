@@ -221,6 +221,30 @@ class DailyGameTests(unittest.TestCase):
             note = server.editorial_note(entry['id'])
             self.assertIn('https://', note, entry['name'])
 
+    def test_merged_recent_cards_share_calendar_and_hide_repeated_answers(self):
+        day = server.EPOCH + timedelta(days=12)
+        self.assertEqual(server.get_recent_challenges(server.EPOCH), [])
+        recent = server.get_recent_challenges(day)
+        self.assertEqual([item['number'] for item in recent], [12, 11])
+        self.assertEqual([item['dayIso'] for item in recent], ['2026-09-22', '2026-09-21'])
+        document = server.home_html(day).decode()
+        self.assertEqual(document.count('id="retrospective"'), 1)
+        self.assertIn('id="recentGrid"', document)
+        self.assertIn(recent[0]['player']['name'], document)
+        for schedule, key in ((server.SCHEDULE, 'player'), (server.TEAMS_SCHEDULE, 'team'), (server.TOP10_SCHEDULE, 'top10')):
+            repeated = server.EPOCH + timedelta(days=len(schedule))
+            rows = server.get_recent_challenges(repeated, limit=len(schedule))
+            self.assertIsNone(rows[-1][key])
+
+    def test_merged_head_routes_and_attribution(self):
+        for path in ('/', '/arquivo', '/atribuicao.html', '/atribuicao', '/api/recent'):
+            conn = http.client.HTTPConnection(*self.http.server_address)
+            conn.request('HEAD', path)
+            response = conn.getresponse()
+            self.assertEqual(response.status, 200, path)
+            self.assertEqual(response.read(), b'')
+            conn.close()
+
     def test_first_try_win_and_reload_lock(self):
         game, cookie = self.start()
         status, result, _ = self.move(game, cookie, server.answer(server.today())['id'])

@@ -17,6 +17,14 @@
       "destination": "/api/archive"
     },
     {
+      "source": "/arquivo",
+      "destination": "/api/archive"
+    },
+    {
+      "source": "/atribuicao",
+      "destination": "/atribuicao.html"
+    },
+    {
       "source": "/ranking",
       "destination": "/ranking.html"
     }
