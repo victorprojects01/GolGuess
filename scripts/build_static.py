@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'public'
 DIST = ROOT / 'dist'
 FILES = [
-    'daily.js', 'ads.js', 'ads.css', 'app.js', 'styles.css', 'institucional.css',
+    'daily.js', 'consent.js', 'consent.css', 'ads.js', 'ads.css', 'app.js', 'styles.css', 'institucional.css',
     'ranking.html', 'ranking.js', 'ranking.css',
     'favicon.ico', 'favicon.svg', 'favicon-32.png', 'apple-touch-icon.png',
     'icon-192.png', 'icon-512.png', 'site.webmanifest',

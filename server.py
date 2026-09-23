@@ -253,7 +253,7 @@ def archive_html(current_day, page=1, selected_day=None):
 <meta name="theme-color" content="#122D00"><title>Desafios anteriores | GolGuess</title>
 <meta name="description" content="Veja as respostas dos desafios diários de futebol já encerrados no GolGuess: jogadores, times e rankings Top 10.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
-<link rel="canonical" href="{canonical}"><meta property="og:image" content="https://www.golguess.com.br/assets/golguess-social.png"><meta property="og:image:alt" content="Logo do GolGuess — desafio diário de futebol"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://www.golguess.com.br/assets/golguess-social.png"><link rel="stylesheet" href="/institucional.css"></head>
+<link rel="canonical" href="{canonical}"><meta property="og:image" content="https://www.golguess.com.br/assets/golguess-social.png"><meta property="og:image:alt" content="Logo do GolGuess — desafio diário de futebol"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://www.golguess.com.br/assets/golguess-social.png"><link rel="stylesheet" href="/institucional.css"><link rel="stylesheet" href="/consent.css"><script src="/consent.js" defer></script></head>
 <body data-round-day="{current_day}"><script src="/daily.js" defer></script><a class="skip-link" href="#conteudo">Ir ao conteúdo</a>
 <header class="site-header"><a class="brand" href="/" aria-label="GolGuess — início"><img class="brand-logo" src="/assets/logo-mark.svg" alt="" width="23" height="23"><span>golguess</span><b>.</b></a><a class="back-link" href="/">← Voltar ao jogo</a></header>
 <main id="conteudo"><p class="eyebrow">Arquivo</p><h1>Desafios anteriores</h1>
@@ -262,7 +262,7 @@ def archive_html(current_day, page=1, selected_day=None):
 <form class="archive-search" action="/arquivo.html"><label for="archiveDate">Buscar por data</label> <input id="archiveDate" name="data" type="date" min="{EPOCH}" max="{current_day - timedelta(days=1)}" required> <button>Consultar</button></form>
 <details><summary>Como interpretar as pistas</summary><p>Gols e assistências pertencem à liga, temporada e clube indicados, não a todas as competições. A idade é calculada na data da rodada, não na temporada. ATA: ataque; MEI: meio-campo; ZAG: zaga; LAT: lateral; GOL: goleiro. A nacionalidade é a principal do perfil. Em Brasil e Argentina, participações são reconstruídas por eventos e podem ser incompletas.</p><p>Títulos dos times são o recorte cadastrado de liga: não representam todas as taças do clube. O catálogo não registra a data de corte por time nem uma fonte individual; esses totais precisam de conferência editorial. O resultado do Top 10 é a lista de jogadores do desafio, não a classificação dos visitantes.</p><p>No Top 10, posições e valores reproduzem a ordem cadastrada. Valores iguais não tornam posições intercambiáveis no jogo; o catálogo não documenta um critério adicional de desempate. A ordem vale para a competição ou premiação indicada, não para toda a carreira.</p></details>
 {entries}{pagination}</main>
-<footer class="site-footer" aria-label="Páginas institucionais"><a href="/sobre.html">Sobre o GolGuess</a><a href="/arquivo.html" aria-current="page">Desafios anteriores</a><a href="/como-jogar.html">Como jogar</a><a href="/politica-de-privacidade.html">Política de Privacidade</a><a href="/politica-de-cookies.html">Política de Cookies</a><a href="/termos-de-uso.html">Termos de Uso</a><a href="/atribuicao.html">Atribuição de Dados</a><a href="/contato.html">Contato para parcerias</a></footer>
+<footer class="site-footer" aria-label="Páginas institucionais"><a href="/sobre.html">Sobre o GolGuess</a><a href="/arquivo.html" aria-current="page">Desafios anteriores</a><a href="/como-jogar.html">Como jogar</a><a href="/politica-de-privacidade.html">Política de Privacidade</a><a href="/politica-de-cookies.html">Política de Cookies</a><a href="/termos-de-uso.html">Termos de Uso</a><a href="/atribuicao.html">Atribuição de Dados</a><a href="/contato.html">Contato para parcerias</a><button type="button" class="privacy-settings" data-privacy-settings>Preferências de privacidade</button><span id="privacy-status" role="status"></span></footer>
 </body></html>'''
     return document.encode('utf-8')
 
@@ -474,7 +474,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Length', str(len(raw)))
         self.send_header('Cache-Control', 'no-store')
         self.send_header('X-Content-Type-Options', 'nosniff')
-        self.send_header('Referrer-Policy', 'same-origin')
+        self.send_header('Referrer-Policy', 'strict-origin-when-cross-origin')
         if os.environ.get('GOLGUESS_ALLOW_FRAME') != '1' and os.environ.get('HOST') != '0.0.0.0':
             self.send_header('X-Frame-Options', 'DENY')
         if cookie:
@@ -578,7 +578,8 @@ class Handler(BaseHTTPRequestHandler):
                                       retrospective=retrospective_html(day), dateLabel=f'{day:%d/%m/%Y}'))
         if url.path == '/api/public_config':
             return self.send(200, {'adsEnabled': os.environ.get('GOLGUESS_ADS_ENABLED') == '1',
-                                   'cmpId': os.environ.get('GOLGUESS_CMP_ID', '')})
+                                   'cmpEnabled': os.environ.get('GOLGUESS_CMP_ENABLED', '1') == '1',
+                                   'cmpId': os.environ.get('GOLGUESS_CMP_ID') or '300'})
         if url.path in ('/arquivo.html', '/arquivo', '/api/archive'):
             try:
                 query = parse_qs(url.query)
@@ -647,6 +648,8 @@ class Handler(BaseHTTPRequestHandler):
                  '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
                  '/daily.js': ('daily.js', 'text/javascript; charset=utf-8'),
                  '/ads.js': ('ads.js', 'text/javascript; charset=utf-8'),
+                 '/consent.js': ('consent.js', 'text/javascript; charset=utf-8'),
+                 '/consent.css': ('consent.css', 'text/css; charset=utf-8'),
                  '/ads.css': ('ads.css', 'text/css; charset=utf-8'),
                  '/ranking.js': ('ranking.js', 'text/javascript; charset=utf-8'),
                  '/ranking.css': ('ranking.css', 'text/css; charset=utf-8'),

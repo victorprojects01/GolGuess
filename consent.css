@@ -1,0 +1,7 @@
+.site-footer .privacy-settings {
+  background: transparent; border: 0; padding: 0; color: inherit;
+  font: inherit; text-decoration: underline; cursor: pointer;
+}
+.privacy-settings:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+#privacy-status { flex-basis: 100%; font-size: .85rem; }
+#privacy-status:empty { display: none; }

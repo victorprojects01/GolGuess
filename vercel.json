@@ -56,7 +56,7 @@
       ]
     },
     {
-      "source": "/(app.js|daily.js|ads.js|ads.css|styles.css|institucional.css|ranking.html|ranking.js|ranking.css|sobre.html|como-jogar.html|politica-de-privacidade.html|politica-de-cookies.html|termos-de-uso.html|contato.html|favicon.ico|favicon.svg|favicon-32.png|apple-touch-icon.png|icon-192.png|icon-512.png|site.webmanifest|assets/logo-mark.svg|assets/golguess-social.png|ads.txt|robots.txt|sitemap.xml)",
+      "source": "/(app.js|daily.js|consent.js|consent.css|ads.js|ads.css|styles.css|institucional.css|ranking.html|ranking.js|ranking.css|sobre.html|como-jogar.html|politica-de-privacidade.html|politica-de-cookies.html|termos-de-uso.html|contato.html|favicon.ico|favicon.svg|favicon-32.png|apple-touch-icon.png|icon-192.png|icon-512.png|site.webmanifest|assets/logo-mark.svg|assets/golguess-social.png|ads.txt|robots.txt|sitemap.xml)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -73,7 +73,7 @@
         },
         {
           "key": "Referrer-Policy",
-          "value": "same-origin"
+          "value": "strict-origin-when-cross-origin"
         },
         {
           "key": "X-Frame-Options",
