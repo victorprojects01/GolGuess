@@ -4,31 +4,73 @@
   "buildCommand": "python scripts/build_static.py",
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/arquivo.html", "destination": "/api/archive" },
-    { "source": "/ranking", "destination": "/ranking.html" }
+    {
+      "source": "/",
+      "destination": "/api/home"
+    },
+    {
+      "source": "/index.html",
+      "destination": "/api/home"
+    },
+    {
+      "source": "/arquivo.html",
+      "destination": "/api/archive"
+    },
+    {
+      "source": "/ranking",
+      "destination": "/ranking.html"
+    }
   ],
   "functions": {
     "api/*.py": {
       "maxDuration": 30,
-      "includeFiles": "data/{players.json,teams.json,top10.json}",
+      "includeFiles": "{data/players.json,data/teams.json,data/top10.json,index.html}",
       "excludeFiles": "{tests/**,public/**,.runtime/**,scripts/**,data/curated_names.txt,data/legacy_players.json,data/unmatched_curated.txt,README.md}"
     }
   },
   "headers": [
     {
-      "source": "/api/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "private, no-store" }]
+      "source": "/(index.html|arquivo.html)?",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
     },
     {
-      "source": "/(index.html|app.js|styles.css|institucional.css|ranking.html|ranking.js|ranking.css|sobre.html|como-jogar.html|politica-de-privacidade.html|politica-de-cookies.html|termos-de-uso.html|contato.html|favicon.ico|favicon.svg|favicon-32.png|apple-touch-icon.png|icon-192.png|icon-512.png|site.webmanifest|assets/logo-mark.svg|assets/golguess-social.png|ads.txt|robots.txt|sitemap.xml)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    },
+    {
+      "source": "/(app.js|daily.js|ads.js|ads.css|styles.css|institucional.css|ranking.html|ranking.js|ranking.css|sobre.html|como-jogar.html|politica-de-privacidade.html|politica-de-cookies.html|termos-de-uso.html|contato.html|favicon.ico|favicon.svg|favicon-32.png|apple-touch-icon.png|icon-192.png|icon-512.png|site.webmanifest|assets/logo-mark.svg|assets/golguess-social.png|ads.txt|robots.txt|sitemap.xml)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "same-origin" },
-        { "key": "X-Frame-Options", "value": "DENY" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
       ]
     }
   ]

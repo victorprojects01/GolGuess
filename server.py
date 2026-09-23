@@ -12,11 +12,12 @@ from http.cookies import SimpleCookie, CookieError
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
+from zoneinfo import ZoneInfo
 from storage import connect, database_url, StorageUnavailable
 import supabase_ranking
 
 ROOT = Path(__file__).resolve().parent
-BRASILIA = timezone(timedelta(hours=-3))
+BRASILIA = ZoneInfo('America/Sao_Paulo')
 EPOCH = date(2026, 9, 11)
 PLAYERS = json.loads((ROOT / 'data/players.json').read_text(encoding='utf-8'))
 BY_ID = {p['id']: p for p in PLAYERS}
@@ -46,12 +47,114 @@ def top10_answer(day):
     return TOP10_SCHEDULE[(day - EPOCH).days % len(TOP10_SCHEDULE)]
 
 
-def archive_html(current_day, page=1):
+def round_info(day):
+    return dict(day=str(day), number=(day - EPOCH).days + 1,
+                nextAt=datetime.combine(day + timedelta(days=1), time(), BRASILIA).isoformat())
+
+
+def age_on(birth, day):
+    birth = date.fromisoformat(birth)
+    return day.year - birth.year - ((day.month, day.day) < (birth.month, birth.day))
+
+
+def editorial_note(entity_id):
+    notes = {
+        'tm-357119': ('Antes de se firmar como zagueiro, Konaté começou como aspirante a atacante. '
+                      'O perfil do Liverpool situa a mudança de posição na formação no Sochaux: '
+                      'a pista ZAG descreve sua função principal, não todo o caminho até o futebol profissional.',
+                      'https://www.liverpoolfc.com/team/first-team/player/ibrahima-konate', 'Liverpool: perfil de Konaté'),
+        'tm-292818': ('A temporada 2020/21 de Bamba faz parte do título francês do Lille. '
+                      'Na retrospectiva de sua passagem, o clube distingue essa conquista do Trophée des Champions '
+                      'que veio em seguida. Os números da pista são da liga, não da soma dessas competições.',
+                      'https://www.losc.fr/actualites/2023-07-19/le-losc-et-les-lillois-remercient-jonathan-bamba', 'LOSC: despedida de Bamba'),
+        'tm-964580': ('Wesley chegou à Roma por transferência definitiva do Flamengo em 2025. '
+                      'Assim, o recorte italiano de 2025/26 registra o começo dessa etapa europeia; '
+                      'quem o associa ao Flamengo precisa observar também a temporada da pista.',
+                      'https://www.asroma.com/en/news/73612/wesley-franca-joins-roma', 'Roma: contratação de Wesley'),
+        'tm-237662': ('Embolo abriu a Bundesliga 2019/20 como titular do Gladbach justamente contra '
+                      'seu antigo clube, o Schalke. A escalação oficial o coloca no ataque com Marcus Thuram '
+                      'e Alassane Plea: um ponto de partida concreto para situar a temporada do desafio.',
+                      'https://www.bundesliga.com/en/bundesliga/matchday/2019-2020/1/borussia-moenchengladbach-vs-fc-schalke-04/liveticker', 'Bundesliga: Gladbach x Schalke'),
+        'tm-496094': ('Adeyemi foi eleito Rookie of the Season da Bundesliga em 2022/23. '
+                      'O Dortmund o identifica como o segundo jogador do clube a receber essa distinção, '
+                      'depois de Dembélé. A pista de 2024/25 pertence a uma fase posterior à sua temporada de estreia.',
+                      'https://www.bvb.de/de/de/aktuelles/news/news.html/News/Uebersicht/Karim-Adeyemi-ist-Rookie-of-the-Season-2022-2023.html', 'Dortmund: prêmio de Adeyemi'),
+        'tm-27511': ('Na campanha campeã de 2016/17, Cahill atuou pelo lado esquerdo de uma defesa '
+                      'com três zagueiros. O Chelsea destaca essa adaptação ao comparar seus dois títulos '
+                      'ingleses pelo clube: o mesmo rótulo ZAG pode esconder funções táticas diferentes.',
+                      'https://www.chelseafc.com/en/news/article/farewell-to-gary-cahill--a-winner-and-a-legend', 'Chelsea: trajetória de Cahill'),
+        'tm-272642': ('O Nice anunciou a saída de Saint-Maximin para o Newcastle em agosto de 2019, '
+                      'após duas temporadas no clube. Seu comunicado apresenta totais de toda a passagem '
+                      'e de todas as competições; por isso eles não devem ser confundidos com a pista de Ligue 1 de 2018/19.',
+                      'https://www.ogcnice.com/fr/article/34144/officiel-allan-saint-maximin-transfere.html', 'Nice: transferência de Saint-Maximin'),
+        'tm-129476': ('Em abril de 2022, Deulofeu comentou que já havia chegado a dez gols, ainda com '
+                      'oito jogos pela frente; no Watford, lembrava ter alcançado o décimo apenas no último jogo '
+                      'da liga. A entrevista permite acompanhar a construção da temporada, sem confundir '
+                      'aquele balanço parcial com o total final usado no desafio.',
+                      'https://www.udinese.it/news/squadra/deulofeu-molto-contento-dei-goal-ma-non-voglio-fermami-qua', 'Udinese: entrevista de abril de 2022'),
+        'tm-7600': ('O Barcelona de Iniesta terminou a liga de 2012/13 com 100 pontos e liderou '
+                      'a tabela do início ao fim. Esse é o cenário coletivo do recorte individual: '
+                      'as pistas de gols e assistências mostram apenas uma parte da atuação do meio-campista.',
+                      'https://www.fcbarcelona.com/en/news/1139075/all-fc-barcelonas-201213-league-records', 'Barcelona: recordes da liga 2012/13'),
+        'tm-170527': ('Werner marcou 28 gols na Bundesliga de 2019/20, mas não terminou como artilheiro: '
+                      'Lewandowski fez 34. É um exemplo de como uma temporada de muitos gols pode se destacar '
+                      'sem liderar a competição; o desafio pede reconhecer o jogador, não necessariamente o primeiro do ranking.',
+                      'https://www.bundesliga.com/en/bundesliga/news/a-history-of-top-scorers-by-season-lewandowski-muller-aubameyang-19353', 'Bundesliga: artilheiros por temporada'),
+        'tm-495666': ('Saliba disputou todos os 3.420 minutos da campanha do Arsenal na liga de 2023/24. '
+                      'A análise do clube destaca a continuidade da defesa, com Gabriel à esquerda e Ben White '
+                      'à direita durante boa parte do campeonato. Essa regularidade é um contexto que os gols da pista não capturam.',
+                      'https://www.arsenal.com/feature/arsenal-analysed-9-reasons-why-we-shined-in-2324-ayLOm1D997nm', 'Arsenal: análise de 2023/24'),
+        'tm-177907': ('Maguire foi escolhido jogador da temporada do Leicester em 2017/18. '
+                      'Isso ajuda a ler uma pista de zagueiro: gols e assistências são apenas parte '
+                      'do retrato daquela passagem, não uma medida completa do desempenho defensivo.',
+                      'https://www.lcfc.com/media-article/LCFC-Men-Records', 'Leicester City: registros do clube'),
+        'cf-montreal': ('O clube de Montreal estreou na MLS em 2012, mas sua história profissional '
+                        'começa em 1993. O Campeonato Canadense conquistado em 2021 é outra competição: '
+                        'por isso, uma pista de títulos de liga não deve ser lida como ausência de troféus.',
+                        'https://en.cfmontreal.com/club/history', 'CF Montréal: história oficial'),
+    }
+    note = notes.get(entity_id)
+    if not note:
+        return ''
+    text, url, source = note
+    return f'<p class="editorial-note">{html.escape(text)} <a href="{url}">{html.escape(source)}</a>.</p>'
+
+
+def retrospective_html(day):
+    items = []
+    for offset, label in ((1, 'Ontem'), (2, 'Anteontem')):
+        closed = day - timedelta(days=offset)
+        if closed < EPOCH:
+            continue
+        info = round_info(closed)
+        # Only link to closed rounds. No answer is embedded in this public summary.
+        items.append(f'<li><a href="/arquivo.html?data={closed}">{label} · '
+                     f'{closed:%d/%m/%Y} · Desafio #{info["number"]}</a></li>')
+    return '<h2>Últimos desafios encerrados</h2><ul>' + ''.join(items) + '</ul>'
+
+
+def home_html(day):
+    info = round_info(day)
+    clue = make_snapshot([], {}, day)['clues'][0]
+    initial_clue = ('<li class="clue"><span class="clue-index">1</span>'
+                    f'<span class="clue-label">{html.escape(clue["label"])}</span>'
+                    f'<span class="clue-value">{html.escape(clue["value"])}</span></li>')
+    document = (ROOT / 'index.html').read_text(encoding='utf-8')
+    return (document.replace('{{ROUND_NUMBER}}', f'{info["number"]:03d}')
+            .replace('{{ROUND_DATE}}', f'{day:%d/%m/%Y}')
+            .replace('{{ROUND_DAY}}', str(day))
+            .replace('{{INITIAL_CLUE}}', initial_clue)
+            .replace('{{RETROSPECTIVE}}', retrospective_html(day)).encode('utf-8'))
+
+
+def archive_html(current_day, page=1, selected_day=None):
     """Render completed rounds only; page content updates without a new deploy."""
     page_size = 14
     completed = max(0, (current_day - EPOCH).days)
     pages = max(1, (completed + page_size - 1) // page_size)
     if page < 1 or page > pages:
+        return None
+    if selected_day is not None and not EPOCH <= selected_day < current_day:
         return None
     escape = html.escape
     start = (page - 1) * page_size
@@ -59,9 +162,10 @@ def archive_html(current_day, page=1):
     current_player = answer(current_day)['id']
     current_team = team_answer(current_day)['id']
     current_top10 = top10_answer(current_day)['id']
-    for offset in range(start, min(start + page_size, completed)):
-        round_day = current_day - timedelta(days=offset + 1)
-        number = (round_day - EPOCH).days + 1
+    days = [selected_day] if selected_day else [current_day - timedelta(days=i + 1)
+                                               for i in range(start, min(start + page_size, completed))]
+    for round_day in days:
+        number = round_info(round_day)['number']
         player = answer(round_day)
         team = team_answer(round_day)
         challenge = top10_answer(round_day)
@@ -72,11 +176,18 @@ def archive_html(current_day, page=1):
             f'<p>{escape(player["league"])} · {escape(player["season"])} · {escape(player["team"])}</p>'
             f'<p class="archive-numbers">{player["goals"]} gols · {player["assists"]} assistências · '
             f'{escape(player["position"])} · {escape(player["nationality"])}</p>'
+            f'<p>Idade na data do desafio: {age_on(player["birth"], round_day)} anos. '
+            f'Participações registradas: {player["matches"]}.</p>'
+            f'<p>Fonte dos números: {escape(player["source"])}. <a href="/data/ATTRIBUTION.md">Método e limitações</a>.</p>'
+            + editorial_note(player['id'])
         )
         team_content = (
             '<p><strong>Time:</strong> resposta em disputa hoje; volta ao arquivo amanhã.</p>'
             if team['id'] == current_team else
-            f'<p><strong>Time:</strong> {escape(team["name"])} · {escape(team["country"])}</p>'
+            f'<h3>Time: {escape(team["name"])}</h3><p>{escape(team["continent"])} · {escape(team["country"])} · '
+            f'{escape(team["city"])} · {escape(team["colors"])}</p>'
+            f'<p>Títulos de liga no catálogo: {team["titles"]} · {escape(team["league"])}</p>'
+            + editorial_note(team['id'])
         )
         if challenge['id'] == current_top10:
             top10_content = '<p>Este Top 10 está em disputa hoje. O ranking volta ao arquivo amanhã.</p>'
@@ -89,10 +200,10 @@ def archive_html(current_day, page=1):
             top10_content = (
                 f'<details><summary>{escape(challenge["title"]["pt"])} — ver ranking</summary>'
                 f'<ol class="archive-ranking">{ranking}</ol>'
-                f'<p class="archive-source">Fonte do ranking: {escape(challenge["source"])}</p></details>'
+                f'<p class="archive-source">Fonte indicada no catálogo: {escape(challenge["source"])}</p></details>'
             )
         rounds.append(
-            f'<article class="archive-round"><p class="archive-date">{round_day.strftime("%d/%m/%Y")} · Desafio #{number}</p>'
+            f'<article class="archive-round"><p class="archive-date"><a href="/arquivo.html?data={round_day}">{round_day.strftime("%d/%m/%Y")} · Desafio #{number}</a></p>'
             f'{player_content}{team_content}{top10_content}</article>'
         )
     entries = ''.join(rounds) if rounds else '<p>O primeiro desafio encerrado aparecerá aqui amanhã.</p>'
@@ -103,17 +214,22 @@ def archive_html(current_day, page=1):
         links.append(f'<a href="/arquivo.html?pagina={page+1}">Mais antigos</a>')
     pagination = f'<nav class="archive-pagination" aria-label="Páginas do arquivo">{"".join(links)}</nav>' if links else ''
     canonical = 'https://www.golguess.com.br/arquivo.html' + (f'?pagina={page}' if page > 1 else '')
+    if selected_day:
+        canonical = f'https://www.golguess.com.br/arquivo.html?data={selected_day}'
+        pagination = '<nav class="archive-pagination"><a href="/arquivo.html">Ver todo o arquivo</a></nav>'
     document = f'''<!doctype html>
 <html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#122D00"><title>Desafios anteriores | GolGuess</title>
 <meta name="description" content="Veja as respostas dos desafios diários de futebol já encerrados no GolGuess: jogadores, times e rankings Top 10.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
 <link rel="canonical" href="{canonical}"><meta property="og:image" content="https://www.golguess.com.br/assets/golguess-social.png"><meta property="og:image:alt" content="Logo do GolGuess — desafio diário de futebol"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://www.golguess.com.br/assets/golguess-social.png"><link rel="stylesheet" href="/institucional.css"></head>
-<body><a class="skip-link" href="#conteudo">Ir ao conteúdo</a>
+<body data-round-day="{current_day}"><script src="/daily.js" defer></script><a class="skip-link" href="#conteudo">Ir ao conteúdo</a>
 <header class="site-header"><a class="brand" href="/" aria-label="GolGuess — início"><img class="brand-logo" src="/assets/logo-mark.svg" alt="" width="23" height="23"><span>golguess</span><b>.</b></a><a class="back-link" href="/">← Voltar ao jogo</a></header>
 <main id="conteudo"><p class="eyebrow">Arquivo</p><h1>Desafios anteriores</h1>
 <p class="lead">Reviva as rodadas encerradas de jogadores, times e Top 10.</p>
 <p>As respostas aparecem aqui somente depois da meia-noite de Brasília, quando começa o desafio seguinte. A rodada de hoje permanece em segredo. Os números do jogador pertencem à liga e à temporada indicadas; veja <a href="/sobre.html">como os dados são escolhidos</a>.</p>
+<form class="archive-search" action="/arquivo.html"><label for="archiveDate">Buscar por data</label> <input id="archiveDate" name="data" type="date" min="{EPOCH}" max="{current_day - timedelta(days=1)}" required> <button>Consultar</button></form>
+<details><summary>Como interpretar as pistas</summary><p>Gols e assistências pertencem à liga, temporada e clube indicados, não a todas as competições. A idade é calculada na data da rodada, não na temporada. ATA: ataque; MEI: meio-campo; ZAG: zaga; LAT: lateral; GOL: goleiro. A nacionalidade é a principal do perfil. Em Brasil e Argentina, participações são reconstruídas por eventos e podem ser incompletas.</p><p>Títulos dos times são o recorte cadastrado de liga: não representam todas as taças do clube. O catálogo não registra a data de corte por time nem uma fonte individual; esses totais precisam de conferência editorial. O resultado do Top 10 é a lista de jogadores do desafio, não a classificação dos visitantes.</p><p>No Top 10, posições e valores reproduzem a ordem cadastrada. Valores iguais não tornam posições intercambiáveis no jogo; o catálogo não documenta um critério adicional de desempate. A ordem vale para a competição ou premiação indicada, não para toda a carreira.</p></details>
 {entries}{pagination}</main>
 <footer class="site-footer" aria-label="Páginas institucionais"><a href="/sobre.html">Sobre o GolGuess</a><a href="/arquivo.html" aria-current="page">Desafios anteriores</a><a href="/como-jogar.html">Como jogar</a><a href="/politica-de-privacidade.html">Política de Privacidade</a><a href="/politica-de-cookies.html">Política de Cookies</a><a href="/termos-de-uso.html">Termos de Uso</a><a href="/contato.html">Contato para parcerias</a></footer>
 </body></html>'''
@@ -245,8 +361,7 @@ def stats(db, visitor, day, mode='players'):
 def make_snapshot(moves, player_stats, day):
     player = answer(day)
     done = finished(moves, mode='players')
-    birth = date.fromisoformat(player['birth'])
-    age = day.year - birth.year - ((day.month, day.day) < (birth.month, birth.day))
+    age = age_on(player['birth'], day)
     clues = [dict(key='leagueSeason', label='Liga e temporada', value=f"{player['league']} · {player['season']}",
                   league=player['league'], season=player['season']),
              dict(key='goalsAssists', label='Gols e assistências',
@@ -257,9 +372,8 @@ def make_snapshot(moves, player_stats, day):
              dict(key='nationality', label='Nacionalidade', value=player['nationality'],
                   nationality=player['nationality'], nationalityCode=player['nationalityCode']),
              dict(key='team', label='Time da temporada', value=player['team'], team=player['team'])]
-    return dict(mode='players', day=str(day), number=(day-EPOCH).days+1, totalPlayers=len(PLAYERS),
+    return dict(mode='players', **round_info(day), totalPlayers=len(PLAYERS),
                 serverTime=datetime.now(BRASILIA).isoformat(),
-                nextAt=datetime.combine(day+timedelta(days=1), time(), BRASILIA).isoformat(),
                 moves=moves, version=len(moves), done=done,
                 won=any(m['result']=='correct' for m in moves),
                 clues=clues[:6 if done else min(len(moves)+1, 6)],
@@ -277,9 +391,8 @@ def make_team_snapshot(moves, team_stats, day):
         dict(key='colors', label='Cores', value=team['colors'], colors=team['colors']),
         dict(key='city', label='Cidade', value=team['city'], city=team['city']),
     ]
-    return dict(mode='teams', day=str(day), number=(day-EPOCH).days+1, totalTeams=len(TEAMS),
+    return dict(mode='teams', **round_info(day), totalTeams=len(TEAMS),
                 serverTime=datetime.now(BRASILIA).isoformat(),
-                nextAt=datetime.combine(day+timedelta(days=1), time(), BRASILIA).isoformat(),
                 moves=moves, version=len(moves), done=done,
                 won=any(m['result']=='correct' for m in moves),
                 clues=clues[:5 if done else min(len(moves)+1, 5)],
@@ -308,9 +421,8 @@ def make_top10_snapshot(moves, top10_stats, day):
             value=item['value'] if (is_solved or done) else None,
             status='correct' if is_solved else ('missed' if done else 'empty')
         ))
-    return dict(mode='top10', day=str(day), number=(day-EPOCH).days+1, totalChallenges=len(TOP10),
+    return dict(mode='top10', **round_info(day), totalChallenges=len(TOP10),
                 serverTime=datetime.now(BRASILIA).isoformat(),
-                nextAt=datetime.combine(day+timedelta(days=1), time(), BRASILIA).isoformat(),
                 moves=moves, version=len(moves), done=done,
                 won=won, solvedCount=solved_count, totalPositions=10,
                 challenge=dict(id=challenge['id'], title=challenge['title'], source=challenge['source']),
@@ -423,12 +535,23 @@ class Handler(BaseHTTPRequestHandler):
 
     def get(self):
         url = urlsplit(self.path)
+        if url.path in ('/', '/index.html', '/api/home'):
+            return self.send(200, home_html(today()), 'text/html; charset=utf-8')
+        if url.path == '/api/daily':
+            day = today()
+            return self.send(200, dict(**round_info(day), serverTime=datetime.now(BRASILIA).isoformat(),
+                                      retrospective=retrospective_html(day), dateLabel=f'{day:%d/%m/%Y}'))
+        if url.path == '/api/public_config':
+            return self.send(200, {'adsEnabled': os.environ.get('GOLGUESS_ADS_ENABLED') == '1',
+                                   'cmpId': os.environ.get('GOLGUESS_CMP_ID', '')})
         if url.path in ('/arquivo.html', '/api/archive'):
             try:
-                page = int(parse_qs(url.query).get('pagina', ['1'])[0])
+                query = parse_qs(url.query)
+                page = int(query.get('pagina', ['1'])[0])
+                selected_day = date.fromisoformat(query['data'][0]) if 'data' in query else None
             except ValueError:
-                page = 0
-            document = archive_html(today(), page)
+                return self.send(404, {'error': 'Data ou página inválida.'})
+            document = archive_html(today(), page, selected_day)
             return self.send(200, document, 'text/html; charset=utf-8') if document else self.send(404, {'error': 'Página não encontrada.'})
         if url.path == '/api/health':
             if cookie_mode():
@@ -483,6 +606,9 @@ class Handler(BaseHTTPRequestHandler):
                  '/styles.css': ('styles.css', 'text/css; charset=utf-8'),
                  '/institucional.css': ('institucional.css', 'text/css; charset=utf-8'),
                  '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
+                 '/daily.js': ('daily.js', 'text/javascript; charset=utf-8'),
+                 '/ads.js': ('ads.js', 'text/javascript; charset=utf-8'),
+                 '/ads.css': ('ads.css', 'text/css; charset=utf-8'),
                  '/ranking.js': ('ranking.js', 'text/javascript; charset=utf-8'),
                  '/ranking.css': ('ranking.css', 'text/css; charset=utf-8'),
                  '/favicon.ico': ('favicon.ico', 'image/x-icon'),

@@ -178,6 +178,49 @@ class DailyGameTests(unittest.TestCase):
         self.assertIn('Este Top 10 está em disputa hoje', repeated_archive)
         self.assertNotIn(server.top10_answer(repeated_day)['title']['pt'], repeated_archive)
 
+    def test_server_rendered_dates_and_archive_at_midnight(self):
+        from datetime import date, datetime, timezone
+        before = datetime(2026, 9, 23, 2, 59, 59, tzinfo=timezone.utc).astimezone(server.BRASILIA).date()
+        after = datetime(2026, 9, 23, 3, 0, 0, tzinfo=timezone.utc).astimezone(server.BRASILIA).date()
+        self.assertEqual(before, date(2026, 9, 22))
+        self.assertEqual(after, date(2026, 9, 23))
+        for day in (before, after):
+            with patch.object(server, 'today', return_value=day):
+                for path in ('/', '/index.html', '/api/home', '/arquivo.html'):
+                    conn = http.client.HTTPConnection(*self.http.server_address)
+                    conn.request('GET', path)
+                    response = conn.getresponse()
+                    document = response.read().decode()
+                    self.assertEqual(response.status, 200)
+                    self.assertIn('no-store', response.getheader('Cache-Control'))
+                    self.assertNotIn('{{', document)
+                    yesterday = day - timedelta(days=1)
+                    self.assertIn(f'arquivo.html?data={yesterday}', document)
+                    conn.close()
+                home = server.home_html(day).decode()
+                self.assertIn(f'Ontem · {yesterday:%d/%m/%Y}', home)
+                self.assertIn(f'Anteontem · {day-timedelta(days=2):%d/%m/%Y}', home)
+                self.assertIn(f'#{server.round_info(day)["number"]:03d}', home)
+        self.assertIsNone(server.archive_html(before, selected_day=before))
+        self.assertIsNotNone(server.archive_html(after, selected_day=before))
+        self.assertIsNone(server.archive_html(after, selected_day=after + timedelta(days=1)))
+        self.assertIsNone(server.archive_html(after, selected_day=server.EPOCH - timedelta(days=1)))
+
+    def test_archive_detail_has_all_clues_and_original_sources(self):
+        from datetime import date
+        document = server.archive_html(date(2026,9,23), selected_day=date(2026,9,22)).decode()
+        self.assertIn('33 anos', document)
+        self.assertIn('Leicester City: registros do clube', document)
+        self.assertIn('CF Montréal: história oficial', document)
+        for clue in ('Américas', 'Canadá', 'Montreal', 'Azul e preto', 'Títulos de liga'):
+            self.assertIn(clue, document)
+        self.assertIn('archive-ranking', document)
+        self.assertIn('critério adicional', document)
+        for offset in range(12):
+            entry = server.answer(server.EPOCH + timedelta(days=offset))
+            note = server.editorial_note(entry['id'])
+            self.assertIn('https://', note, entry['name'])
+
     def test_first_try_win_and_reload_lock(self):
         game, cookie = self.start()
         status, result, _ = self.move(game, cookie, server.answer(server.today())['id'])

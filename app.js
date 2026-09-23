@@ -194,6 +194,7 @@ function trackEvent(name, params = {}) {
 }
 
 function feedback(message = '', error = false) {
+  if (error) window.golguessAds?.setEligible(false);
   $('feedback').textContent = message;
   $('feedback').classList.toggle('error', error);
 }
@@ -691,6 +692,7 @@ function renderAttempts() {
   }));
 }
 function render() {
+  window.golguessAds?.setEligible(true);
   $('game').setAttribute('aria-busy', 'false');
   $('dayNumber').textContent = '#' + String(game.number).padStart(3, '0');
   renderClues(); renderAttempts();
@@ -738,6 +740,7 @@ function render() {
 async function loadGame() {
   if (loading || busy) return;
   loading = true;
+  window.golguessAds?.setEligible(false);
   $('game').setAttribute('aria-busy', 'true');
   try {
     const response = await fetch(`/api/game?mode=${mode}`, {cache:'no-store'});
@@ -980,6 +983,7 @@ if ($('giveUpConfirmBtn')) {
     submitGiveUp();
   };
 }
+window.addEventListener('dailychange', loadGame);
 
 $('nicknameDialog').addEventListener('close', () => {
   try { if (game?.day) sessionStorage.setItem(`golguess-ranking-dismissed-${game.day}-${mode}`, '1'); } catch {}

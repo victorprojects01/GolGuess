@@ -5,6 +5,7 @@ let day = '';
 let serverOffset = 0;
 
 function status(message, error = false) {
+  if (error) window.golguessAds?.setEligible(false);
   byId('rankingStatus').textContent = message;
   byId('rankingStatus').classList.toggle('error', error);
 }
@@ -37,6 +38,7 @@ async function syncScore() {
 }
 
 function render(data) {
+  window.golguessAds?.setEligible(data.entries.length > 0);
   day = data.day;
   nextAt = Date.parse(data.nextAt);
   serverOffset = Date.parse(data.serverTime) - Date.now();
@@ -83,6 +85,7 @@ function render(data) {
 }
 
 async function load() {
+  window.golguessAds?.setEligible(false);
   try {
     const response = await fetch('/api/ranking', {cache:'no-store'});
     let data = await response.json();

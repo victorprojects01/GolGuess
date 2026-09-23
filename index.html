@@ -8,15 +8,7 @@
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWBCQXFG9Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-GWBCQXFG9Q');
-</script>
 <title>GolGuess – Adivinhe o Jogador de Futebol | Desafio Diário</title>
 <meta name="description" content="Adivinhe o jogador de futebol de hoje no GolGuess! Teste seu conhecimento em 6 tentativas com pistas diárias de estatísticas, temporada, idade e clubes. Jogue grátis!">
 <link rel="canonical" href="https://www.golguess.com.br/">
@@ -44,11 +36,13 @@
   "inLanguage": "pt-BR"
 }
 </script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6239237268971394"
-     crossorigin="anonymous"></script>
+
+<script src="/ads.js" defer></script>
+<script src="/daily.js" defer></script>
 <script src="/app.js" defer></script>
+<link rel="stylesheet" href="/ads.css">
 </head>
-<body>
+<body data-round-day="{{ROUND_DAY}}">
 <a class="sr-only skip-link" href="#guessInput">Pular para o palpite</a>
 <header class="site-header">
   <a class="brand" href="/" aria-label="GolGuess início"><img class="brand-logo" src="/assets/logo-mark.svg" alt="" width="24" height="24"><span>golguess</span><b>.</b></a>
@@ -74,15 +68,16 @@
 <main>
   <section class="game" aria-label="Desafio de hoje" aria-busy="true" id="game">
     <div class="round-bar">
-      <h1 class="round-heading"><span class="round-kicker" id="roundKicker" data-i18n="dailyPlayer">Adivinhe o jogador de futebol de hoje</span> <strong id="dayNumber">#—</strong></h1>
+      <h1 class="round-heading"><span class="round-kicker" id="roundKicker" data-i18n="dailyPlayer">Adivinhe o jogador de futebol de hoje</span> <strong id="dayNumber">#{{ROUND_NUMBER}}</strong></h1>
       <div id="attemptDots" class="attempt-dots" aria-label="Tentativas"></div>
     </div>
+    <p class="round-date">{{ROUND_DATE}} · Horário de Brasília</p>
     <div id="top10Header" class="top10-header" hidden>
       <h2 id="top10Title" class="top10-title"></h2>
       <span id="top10Progress" class="top10-progress"></span>
     </div>
     <div id="top10Notice" class="top10-notice" role="alert" hidden></div>
-    <ol id="clues" class="clues" aria-label="Pistas"><li class="loading">Preparando…</li></ol>
+    <ol id="clues" class="clues" aria-label="Pistas">{{INITIAL_CLUE}}</ol>
     <div id="top10Actions" class="top10-actions" hidden>
       <button type="button" id="top10GiveUpBtn" class="top10-giveup-btn" data-i18n="giveUpBtn">Desistir e revelar</button>
     </div>
@@ -113,20 +108,20 @@
       <ol id="history"></ol>
     </section>
   </section>
-  <aside class="ad-slot" aria-label="Espaço publicitário">
+  <aside hidden class="ad-slot" aria-label="Espaço publicitário">
     <span>PUBLICIDADE</span>
     <!-- ad_01 -->
     <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-6239237268971394"
          data-ad-slot="2219850050"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+         data-ad-format="horizontal"
+         data-full-width-responsive="false"></ins>
   </aside>
   <section class="about-game" aria-label="Sobre o GolGuess">
     <p id="aboutGameText" data-i18n="aboutGame">O <strong>GolGuess</strong> é um jogo diário de futebol feito para quem ama o esporte. Descubra o jogador em até seis tentativas com pistas de liga, temporada, gols, assistências, posição, idade, nacionalidade e time.</p>
   </section>
+<section id="retrospective" class="retrospective">{{RETROSPECTIVE}}</section>
 </main>
 <footer class="site-footer" aria-label="Informações institucionais">
   <a href="/sobre.html">Sobre o GolGuess</a>

@@ -1,0 +1,10 @@
+/* One bounded display placement, separated from all preceding and following links. */
+.ad-slot,.ranking-ad{box-sizing:border-box;width:100%;margin:160px 0;min-height:120px;display:block;text-align:center;color:#bfcca9;font-size:9px;letter-spacing:.12em}
+.ad-slot[hidden],.ranking-ad[hidden]{display:none!important}
+.ad-slot>span,.ranking-ad>span{display:block;margin-bottom:10px}
+.ad-slot .adsbygoogle,.ranking-ad .adsbygoogle{display:block;width:100%;height:100px}
+.ad-slot[data-suppressed],.ranking-ad[data-suppressed]{visibility:hidden;pointer-events:none}
+.retrospective{margin:24px 0;font-size:14px;line-height:1.6}
+.retrospective h2{font-size:17px}.retrospective a{color:inherit}
+.round-date{padding:0 12px;font-size:12px;color:#c9d8b6}
+.top10-slot:nth-last-child(-n+4) .slot-suggestions{top:auto;bottom:calc(100% + 4px)}

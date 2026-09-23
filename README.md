@@ -102,4 +102,14 @@ Os testes cobrem catálogo, ordem das pistas, cálculo de idade, resposta oculta
 
 ## Publicidade
 
-A página do jogo carrega o script do Google AdSense uma vez e solicita o bloco responsivo `ad_01` (`2219850050`) após o jogo, fora das pistas e do palpite. Google Analytics também está presente. A exibição real depende do estado da conta AdSense e das configurações de anúncios automáticos. As páginas de privacidade e cookies descrevem esses serviços. Revise as configurações de consentimento exigidas nas regiões atendidas antes de considerar a integração publicitária concluída.
+Publicidade desativada por padrão (`GOLGUESS_ADS_ENABLED=0`); Analytics desativado. `ads.js` exige conteúdo carregado e consentimento TCF de uma CMP cujo ID corresponda a `GOLGUESS_CMP_ID`. A CMP ainda precisa ser instalada e verificada: definir variáveis não a instala. O bloqueio é conservador em todas as regiões e não habilita anúncios limitados/não personalizados como alternativa. Preview e localhost nunca solicitam Google. Consulte [a entrega e as pendências externas](docs/qualidade-adsense.md) antes de ativar.
+
+A unidade manual mantém 160 px de separação e não é atualizada entre palpites, modos ou viradas. Ranking vazio, falhas e carregamento não habilitam anúncios. O fim da partida continua elegível porque preserva pistas, resultado e histórico. Espaços sem preenchimento ficam invisíveis e só são recolhidos fora da área visível quando isso não desloca controles.
+
+## Calendário e HTML inicial
+
+`/`, `/index.html` e `/api/home` renderizam a página inicial no servidor com número, data, primeira pista pública e retrospectiva. `round_info` é compartilhado com os três modos, e o fuso usa a base IANA `America/Sao_Paulo` (`tzdata` no Windows). O build não publica um `index.html` estático que possa encobrir a função. Arquivo e início usam `no-store`; assets revalidam a cada navegação. Não é necessário cron nem novo deploy diário.
+
+`daily.js` consulta o relógio do servidor no início, na retomada e à meia-noite. Atualiza a retrospectiva e o jogo sem recarregar anúncios. O arquivo, sem publicidade, recarrega após a virada. `/arquivo.html?data=AAAA-MM-DD` é um filtro com URL estável que rejeita datas abertas/futuras; a lista também mantém paginação e busca por data.
+
+Para os testes adicionais: `node --test tests/ads.test.mjs`. O teste visual opcional requer `pip install playwright` e Edge instalado: `python tests/browser_smoke.py`. Ele usa SQLite temporário, bloqueia tráfego externo e salva capturas em `.runtime/screenshots/`.
