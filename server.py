@@ -577,7 +577,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.send(200, dict(**round_info(day), serverTime=datetime.now(BRASILIA).isoformat(),
                                       retrospective=retrospective_html(day), dateLabel=f'{day:%d/%m/%Y}'))
         if url.path == '/api/public_config':
-            return self.send(200, {'adsEnabled': os.environ.get('GOLGUESS_ADS_ENABLED') == '1',
+            return self.send(200, {'adsEnabled': os.environ.get('GOLGUESS_ADS_ENABLED', '1') == '1',
                                    'cmpEnabled': os.environ.get('GOLGUESS_CMP_ENABLED', '1') == '1',
                                    'cmpId': os.environ.get('GOLGUESS_CMP_ID') or '300'})
         if url.path in ('/arquivo.html', '/arquivo', '/api/archive'):
